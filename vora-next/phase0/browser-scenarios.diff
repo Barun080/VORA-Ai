@@ -1,0 +1,40 @@
+--- /root/vora/docs/kiosk-redesign/browser-scenarios.js	2026-10-31 20:49:31.000000000 +0700
++++ browser-scenarios.js	2026-10-31 22:43:00.300557802 +0700
+@@ -112,6 +112,8 @@
+   rec(6, 'คนออกจากพื้นที่ → ปิด Session และล้าง Tracking ID', s.session === null && s.tracks === 0, JSON.stringify(s));
+   await ev(page, () => { document.getElementById('tReset').click(); });
+   await idle(page);
++  // รอให้พ้นช่วง "คนเดิมกลับมา" (= คูลดาวน์ 4 วิ นับจากคนก่อนออก) ก่อน มิฉะนั้นระบบถือว่าเป็นคนเดิม (VISITOR_RETURNED) ซึ่งถูกต้องตามสเปก
++  await page.waitForTimeout(4500);
+   await ev(page, () => VORA.simulateVisitor(2500));
+   await page.waitForTimeout(500);
+   s = await ev(page, () => ({ session: VORA.tracker.snapshot().session }));
+@@ -133,22 +135,25 @@
+   await idle(page);
+   await ev(page, () => VORA.simulateVisitor(2200, [{ x: .1, y: .3, w: .18, h: .24 }, { x: .6, y: .32, w: .2, h: .26 }]));
+   await page.waitForFunction(() => /ทุกคน/.test(document.getElementById('caption').textContent), null, { timeout: 6000 }).catch(() => {});
+-  s = await ev(page, () => ({ people: VORA.tracker.snapshot().session?.people, caption: document.getElementById('caption').textContent.slice(0, 40) }));
++  // people = จำนวนคนในเฟรมล่าสุด (กล้องเสมือนส่งเฟรมว่างแทรกได้) จึงตรวจ maxPeople = จำนวนสูงสุดที่เห็นใน Session นี้
++  s = await ev(page, () => ({ people: VORA.tracker.snapshot().session?.maxPeople, caption: document.getElementById('caption').textContent.slice(0, 40) }));
+   rec(8, 'หลายคนเข้ามาพร้อมกัน → ทักครั้งเดียวแบบกลุ่ม', s.people === 2 && /ทุกคน/.test(s.caption), JSON.stringify(s));
+   await idle(page, 20000);
+   await ev(page, () => VORA.simulateEmpty(7000));
+ 
+   // 9 มีคนเข้ามาขณะกำลังประกาศข่าว → พักประกาศ ทักทาย แล้วประกาศต่อภายหลัง
++  //   voice.js แบ่งประโยคหลัง "ค่ะ" จึงพูดเป็นหลายช่วง: นับว่าถูกตัดถ้าช่วงใดก็ได้ของประกาศถูก cancel
+   await ev(page, () => { document.getElementById('tReset').click(); VORA.S.lastGreetAt = 0; VORA.S.resumeAt = 0; });
+   await idle(page);
+-  const ann = 'ประกาศค่ะ ทดสอบประกาศข่าวยาว วิทยาลัยเปิดรับสมัครนักเรียนใหม่ ระดับ ปวช. และ ปวส. ตั้งแต่วันนี้ถึงสิ้นเดือน';
++  // ข้อความยาวพอให้ตัวจำลองเสียงพูดนานสุด 6 วิ — เครื่องทดสอบที่ไม่มี GPU ตรวจจับคนช้า ถ้าประกาศสั้นจะจบก่อนคนถูกตรวจพบ
++  const ann = 'ประกาศค่ะ ทดสอบประกาศข่าวยาว วิทยาลัยเปิดรับสมัครนักเรียนใหม่ ระดับ ปวช. และ ปวส. ตั้งแต่วันนี้ถึงสิ้นเดือน ' + 'ผู้สนใจสามารถสอบถามรายละเอียดเพิ่มเติมได้ที่งานประชาสัมพันธ์ '.repeat(4);
+   await ev(page, (text) => VORA.enqueue({ kind: 'text', text_th: text, text_en: text, priority: 2 }), ann);
+   await page.waitForFunction(() => document.getElementById('app').dataset.avatar === 'announcing', null, { timeout: 5000 });
+   await page.screenshot({ path: 'shots/t9_announcing.png' });
+   await page.waitForTimeout(500);
+   const vp9 = ev(page, () => VORA.simulateVisitor(3000));
+   await page.waitForFunction(() => document.getElementById('app').dataset.avatar === 'greeting', null, { timeout: 5000 }).catch(() => {});
+-  s = await ev(page, (text) => ({ cancelled: window.__speech.some((x) => x.ev === 'cancel' && x.text.includes('ทดสอบประกาศข่าวยาว')), queued: VORA.S.queue.some((q) => q.text_th === text && q.resumed), avatar: document.getElementById('app').dataset.avatar }), ann);
++  s = await ev(page, (text) => ({ cancelled: window.__speech.some((x) => x.ev === 'cancel' && text.replace(/\s+/g, ' ').includes(x.text.trim())), queued: VORA.S.queue.some((q) => q.text_th === text && q.resumed), avatar: document.getElementById('app').dataset.avatar }), ann);
+   await vp9;
+   await idle(page, 20000);
+   const resumedWhilePresent = await ev(page, () => window.__speech.filter((x) => x.ev === 'start' && x.text.includes('ทดสอบประกาศข่าวยาว')).length);

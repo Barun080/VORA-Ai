@@ -1,0 +1,26 @@
+PASS 1@1366 Idle แล้วอวตารขยาย 1.3–1.5 เท่า และซ่อนเครื่องมือ (1366×768) scale=1.398
+PASS 2@1366 อวตารไม่ถูกตัดขอบจอ และอยู่กึ่งกลางทั้งแนวนอน/ตั้ง (1366×768) top=12 bottom=757/768 cx=683/683 cy=384/384
+PASS 3@1366 กลับ Active แล้วอวตารลดขนาดกลับตำแหน่งเดิม และเครื่องมือกลับมา (1366×768) Δtop=0.0 Δh=0.0
+PASS E@1366 ไม่มี JavaScript error (1366×768) 
+PASS 1@1600 Idle แล้วอวตารขยาย 1.3–1.5 เท่า และซ่อนเครื่องมือ (1600×900) scale=1.388
+PASS 2@1600 อวตารไม่ถูกตัดขอบจอ และอยู่กึ่งกลางทั้งแนวนอน/ตั้ง (1600×900) top=14 bottom=887/900 cx=800/800 cy=450/450
+PASS 3@1600 กลับ Active แล้วอวตารลดขนาดกลับตำแหน่งเดิม และเครื่องมือกลับมา (1600×900) Δtop=0.0 Δh=0.0
+PASS E@1600 ไม่มี JavaScript error (1600×900) 
+PASS 1@1920 Idle แล้วอวตารขยาย 1.3–1.5 เท่า และซ่อนเครื่องมือ (1920×1080) scale=1.378
+PASS 2@1920 อวตารไม่ถูกตัดขอบจอ และอยู่กึ่งกลางทั้งแนวนอน/ตั้ง (1920×1080) top=16 bottom=1063/1080 cx=961/960 cy=540/540
+PASS 3@1920 กลับ Active แล้วอวตารลดขนาดกลับตำแหน่งเดิม และเครื่องมือกลับมา (1920×1080) Δtop=0.0 Δh=0.0
+PASS E@1920 ไม่มี JavaScript error (1920×1080) 
+PASS 4 อวตารยังพูดได้ในโหมด Idle (ไม่ปลุกหน้าจอ แสดงกล่องคำพูด) {"mode":"idle","avatar":"announcing","bubble":true,"spoke":true}
+PASS 5 อวตารทักทายได้ในโหมด Idle และหน้าจอไม่สลับเป็น Active เพราะเห็นคนอย่างเดียว {"mode":"idle","bubble":"สวัสดีค่ะ หนูชื่อวอร่า หุ่นยนต"}
+PASS 5b ลำดับ Event: VISITOR_DETECTED → GREETING_STARTED → AVATAR_SPEAKING → GREETING_FINISHED → AVATAR_IDLE visitor:detected → avatar:idle → avatar:alert → greeting:started → avatar:emotion → avatar:gesture → avatar:caption → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:idle → avatar:alert → greeting:finished → avatar:idle → avatar:alert → avatar:idle → avatar:alert
+PASS 5c คนเดิมกลับเข้ามาในช่วงคูลดาวน์ → VISITOR_RETURNED ไม่ทักซ้ำ visitor:left → visitor:returned
+PASS 6 กล้องทำงานต่อเนื่องขณะ Idle (stream เดิน, สถานะ on) videoTime 54.4→63.1s ใน 8 วิ
+PASS 7 Face Detection ทำงานต่อเนื่องขณะ Idle (อัตราไม่ต่ำกว่าโหมด Active) faceFrames ใน 8 วิ: Active 4 / Idle 4
+PASS 8 MediaPipe (ใบหน้า+ท่ามือ) ทำงานต่อเนื่องขณะ Idle (อัตราไม่ต่ำกว่าโหมด Active) loop ticks ใน 8 วิ: Active 13 / Idle 13
+PASS 8b WebSocket และสถานะหุ่นยนต์ไม่หยุดระหว่าง Idle {"ws":true,"robot":"ok"}
+PASS 8c ท่ามือหน้ากล้อง (Event CAMERA_GESTURE) ปลุกหน้าจอเป็น Active 
+PASS 9 สลับ Idle/Active 40 ครั้งติดกัน: จบที่สถานะถูกต้อง ไม่มี Animation ค้าง/ซ้อน {"scale":"1.398","expected":"1.398","finiteRunning":0,"animations":"CSS animations 5→5"}
+PASS 10 สลับ 300 ครั้ง: จำนวน Event Listener ไม่เพิ่ม และหน่วยความจำไม่โตผิดปกติ window listeners 19→19, bus listeners 24→24, heap 20.5→20.5 MB
+PASS R หลังสลับโหมดหลายร้อยครั้ง: ถาม-ตอบ AI และปุ่มหยุด (/api/robot/stop) ยังทำงาน 
+PASS T Idle Timer: ไม่ซ่อนเครื่องมือระหว่างตอบคำถาม และเข้า Idle เองเมื่อว่างครบเวลา ระหว่างตอบ=active, หลังว่าง=idle
+PASS E ไม่มี JavaScript error ตลอดการทดสอบ 

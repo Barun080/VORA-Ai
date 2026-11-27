@@ -1,0 +1,133 @@
+{
+  "date": "2026-10-31T17:45:17.176Z",
+  "pass": 21,
+  "total": 21,
+  "results": [
+    {
+      "id": 1,
+      "name": "Avatar Adapter: AvatarController มีคำสั่งครบตามสัญญา (loadCharacter, setState, setExpression, playAnimation, setGaze, setSpeech, setVisibility, dispose, capabilities)",
+      "pass": true,
+      "note": "missing=[] kind=placeholder"
+    },
+    {
+      "id": "1b",
+      "name": "capabilities(): สถานะมาตรฐาน 10 แบบ + ท่าทาง + สีหน้า + Lip Sync",
+      "pass": true,
+      "note": "{\"kind\":\"placeholder\",\"states\":[\"idle\",\"greeting\",\"listening\",\"thinking\",\"speaking\",\"presenting\",\"pointing\",\"waving\",\"thanking\",\"happy\"],\"extraStates\":[\"announcing\",\"error\"],\"animations\":[\"wave\",\"bow\",\"nod\",\"shake\",\"present\",\"point_screen\",\"point_direction\",\"explain\",\"think\",\"happy\",\"shrug\",\"listen\",\"dance\",\"spin\",\"idle\"],\"expressions\":[\"neutral\",\"happy\",\"sorry\"],\"lipSync\":\"level\"}"
+    },
+    {
+      "id": 2,
+      "name": "setState: ทั้ง 10 สถานะเปลี่ยนได้ และสถานะใหม่เล่นท่าเข้าที่ถูกต้อง",
+      "pass": true,
+      "note": "{\"idle\":{\"state\":\"idle\",\"gesture\":null},\"greeting\":{\"state\":\"greeting\",\"gesture\":\"wave\"},\"listening\":{\"state\":\"listening\",\"gesture\":\"listen\"},\"thinking\":{\"state\":\"thinking\",\"gesture\":\"think\"},\"speaking\":{\"state\":\"speaking\",\"gesture\":null},\"presenting\":{\"state\":\"presenting\",\"gesture\":\"present\"},\"pointing\":{\"state\":\"pointing\",\"gesture\":\"point_screen\"},\"waving\":{\"state\":\"waving\",\"gesture\":\"wave\"},\"thanking\":{\"state\":\"thanking\",\"gesture\":\"bow\"},\"happy\":{\"state\":\"happy\",\"gesture\":\"happy\"}}"
+    },
+    {
+      "id": 3,
+      "name": "playAnimation/setExpression: ท่าที่มี → supported:true, ท่าที่ไม่มี → supported:false (ไม่แสดงว่าเล่นสำเร็จ)",
+      "pass": true,
+      "note": "{\"ok\":{\"name\":\"wave\",\"supported\":true,\"durationMs\":2200},\"bad\":{\"name\":\"backflip\",\"supported\":false,\"durationMs\":0},\"ex\":{\"expression\":\"happy\",\"supported\":true},\"exBad\":{\"expression\":\"neutral\",\"supported\":false}}"
+    },
+    {
+      "id": 4,
+      "name": "setGaze มองตามทิศ, setSpeech แสดงคำพูด+ระดับปาก, setVisibility ซ่อนแล้วหยุดวาด/แสดงแล้ววาดต่อ",
+      "pass": true,
+      "note": "{\"look\":{\"target\":0.8,\"x\":0.4524892366210943,\"moved\":0.4524892366210943},\"bubble\":\"ทดสอบกล่องคำพูด\",\"mouth\":0.7,\"hiddenCalls\":0,\"vis\":\"hidden\",\"shownCalls\":7}"
+    },
+    {
+      "id": 5,
+      "name": "ลำดับสถานะ: presenting < คิด/ฟัง, พูดในท่านำเสนอ (ปากขยับ), pointing ชั่วคราวแล้วกลับ presenting, ขัดข้องทับได้, ล้างแล้วกลับ idle",
+      "pass": true,
+      "note": "{\"idle\":\"presenting\",\"thinking\":\"thinking\",\"listening\":\"listening\",\"speaking\":\"presenting\",\"talking\":true,\"pointing\":\"pointing\",\"afterPointing\":\"presenting\",\"alert\":\"error\",\"afterAlert\":\"presenting\",\"cleared\":\"idle\"}"
+    },
+    {
+      "id": 6,
+      "name": "ใช้งานจริง: เปิดนำเสนอ → presenting, เปิดรายละเอียด → pointing, ปิด → ล้างสถานะ, ส่งแบบประเมิน → thanking",
+      "pass": true,
+      "note": "{\"inPres\":\"presenting\",\"ptr\":\"pointing\",\"afterClose\":{\"hint\":null,\"avatar\":\"idle\"},\"thank\":true}"
+    },
+    {
+      "id": 7,
+      "name": "Person Detection: ตรวจพบผู้เข้าชม → Visitor Session ชั่วคราว + VISITOR_DETECTED",
+      "pass": true,
+      "note": "{\"session\":{\"id\":\"V1\",\"people\":1,\"maxPeople\":1},\"log\":[\"visitor:detected\"]}"
+    },
+    {
+      "id": 8,
+      "name": "Greeting ไม่ซ้ำ: คนเดิมยืนอยู่นานกว่าคูลดาวน์ 4 เท่า → ทักทายครั้งเดียว",
+      "pass": true,
+      "note": "greets=1"
+    },
+    {
+      "id": 9,
+      "name": "Smart Greeting: หลังทักทายแนะนำหมวดตามข้อมูลจริง (ไฮไลต์เมนู + ข้อความในโหมดว่าง) และอวตารหันไปทางผู้เข้าชม",
+      "pass": true,
+      "note": "{\"suggested\":[\"admission\",\"departments\"],\"hint\":\"แนะนำ: รับสมัคร · สาขาวิชา — แตะหน้าจอได้เลย\",\"mode\":\"idle\",\"hasAdmission\":true,\"gazeX\":-0.7}"
+    },
+    {
+      "id": 10,
+      "name": "Presence Session: ออก → ปิด Session ล้าง Tracking ID มองตรง · กลับในคูลดาวน์ไม่ทัก · พ้นคูลดาวน์ทักใหม่",
+      "pass": true,
+      "note": "{\"left\":{\"session\":null,\"tracks\":0,\"lookT\":0},\"returned\":0,\"fresh\":1}"
+    },
+    {
+      "id": 11,
+      "name": "หลายคน: ตรวจนับได้ 3 คน ทักครั้งเดียวด้วยข้อความกลาง (\"ทุกคน\") ไม่ระบุตัวบุคคล",
+      "pass": true,
+      "note": "{\"max\":3,\"caption\":\"สวัสดีค่ะทุกคน หนูชื่อวอร่า หุ\",\"greets\":1,\"body\":\"/api/greet {\\\"session_id\\\":null,\\\"lang\\\":\\\"th\\\",\\\"trigger\\\":\\\"face\\\",\\\"people\\\":3}\"}"
+    },
+    {
+      "id": 12,
+      "name": "ไม่มีการระบุตัวบุคคล: ไม่มีภาพ/Embedding/Landmark ใบหน้าใน Request ที่ส่งออก, Storage หรือ Visitor Session",
+      "pass": true,
+      "note": "{\"requests\":8,\"leak\":0,\"store\":4,\"storeHasImage\":false,\"snapKeys\":\"{\\\"session\\\":null,\\\"tracks\\\":[]}\"}"
+    },
+    {
+      "id": 13,
+      "name": "Camera Stream ต่อเนื่องและไม่เปิดซ้ำ ระหว่างสลับโหมด",
+      "pass": true,
+      "note": "{\"c0\":{\"gum\":1,\"vt\":104.440278},\"c1\":{\"gum\":1,\"vt\":116.790099,\"track\":\"live\",\"running\":true}}"
+    },
+    {
+      "id": 14,
+      "name": "Privacy Pause (หัวจอ): กล้องหยุดจริง (track ไม่ live, MediaPipe หยุด) ล้าง Session แสดงสถานะ + นับถอยหลังทั้งหัวจอ แผงสถานะ และป้ายในโหมดว่าง",
+      "pass": true,
+      "note": "{\"cam\":\"paused\",\"track\":\"none\",\"running\":false,\"session\":null,\"pill\":\"กลับมาใน 0:04\",\"pressed\":\"true\",\"row\":\"พักกล้องชั่วคราว\",\"badge\":{\"shown\":true,\"text\":\"พักกล้องชั่วคราว · กลับมาใน 0:03แตะเพื่อเปิดกล้อง\"}}"
+    },
+    {
+      "id": 15,
+      "name": "Privacy Pause: ครบเวลาแล้วกล้องกลับมาเอง เปิดใหม่ 1 ครั้ง (ไม่ซ้อน)",
+      "pass": true,
+      "note": "{\"back\":true,\"gumBefore\":1,\"gum\":2,\"running\":true}"
+    },
+    {
+      "id": 16,
+      "name": "Privacy Pause (ป้ายโหมดว่าง): พักได้ ระหว่างพักไม่ประมวลผลภาพ และแตะอีกครั้งเปิดกล้องทันที",
+      "pass": true,
+      "note": "{\"badgeReady\":true,\"pausedByBadge\":true,\"faces0\":72,\"faces1\":72,\"resumed\":true}"
+    },
+    {
+      "id": "E",
+      "name": "ไม่มี JavaScript error ตลอดการทดสอบหลัก",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": 17,
+      "name": "ไม่ได้รับสิทธิ์กล้อง: แสดงสถานะ ไม่มีปุ่มพักกล้อง แตะป้ายกล้องเปิดแผงช่วยเหลือ และถาม-ตอบยังใช้ได้",
+      "pass": true,
+      "note": "{\"cam\":\"denied\",\"badge\":true,\"tools\":true,\"chat\":true,\"errs\":[]}"
+    },
+    {
+      "id": 18,
+      "name": "loadCharacter: โหลดไม่ได้ → ใช้ตัวเดิมต่อ (fallback) · โหลดชุดเลเยอร์ PSD ได้ · AI/เมนูทำงานเหมือนเดิม · กลับเป็นตัวจำลองได้",
+      "pass": true,
+      "note": "{\"bad\":{\"kind\":\"placeholder\",\"ok\":false,\"fallback\":true,\"error\":\"โหลด manifest ไม่ได้ (404)\"},\"afterBad\":\"placeholder\",\"good\":{\"kind\":\"layered\",\"ok\":true,\"fallback\":false},\"images\":20,\"state\":\"presenting\",\"anim\":true,\"cap\":\"layered\",\"chat\":true,\"layout\":\"orbital\",\"svgH\":533.109375,\"back\":{\"kind\":\"placeholder\",\"ok\":true,\"fallback\":false,\"images\":0},\"errs\":[]}"
+    },
+    {
+      "id": 19,
+      "name": "dispose(): ยกเลิก Event ของอวตารทั้งหมด และหยุดวงรอบวาด",
+      "pass": true,
+      "note": "{\"before\":32,\"after\":15,\"calls\":0}"
+    }
+  ]
+}

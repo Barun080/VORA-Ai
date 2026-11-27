@@ -1,0 +1,25 @@
+PASS 1 เปิด Kiosk แล้วกล้องเริ่มทำงานเอง (ไม่ต้องกดปุ่ม) {"cam":"on","gum":1,"video":true}
+PASS 1b เรียกเปิดกล้องซ้ำ 3 ครั้ง ไม่เปิดซ้อน {"gum":1,"same":true}
+PASS 13 สนทนาด้วยข้อความผ่าน /api/chat เดิม และพูดตอบ {"bot":"ระดับ ปวช. มีสาขาช่างยนต์ ช่างไฟฟ้ากำลัง อิเล็กทรอนิกส์ เทคโ","cards":7,"spoken":2}
+PASS 13b ปุ่มหยุด: ตัดเสียงที่กำลังพูดจริง และส่งคำสั่งหยุดหุ่น {"state":"idle","cancel":true,"speaking":false}
+PASS M เมนูซ้าย: สาขา/ข่าว/ข้อมูลวิทยาลัย เปิดข้อมูลจริงและถาม AI ได้ programs=7 news=4 about=7
+PASS 4 มีคนเดินเข้ามา → อวตารทักทาย + ข้อความบนจอ {"session":{"id":"V1","people":1,"maxPeople":1},"bubble":"สวัสดีค่ะ หนูชื่อวอร่า หุ่นยนต์ประชาสัมพันธ์ของวิท"}
+PASS 5 คนเดิมยังอยู่ในพื้นที่ → ไม่ทักซ้ำ (แม้พ้นคูลดาวน์) greets=1
+PASS 6 คนออกจากพื้นที่ → ปิด Session และล้าง Tracking ID {"session":null,"tracks":0}
+PASS 7 คนใหม่เดินเข้ามา → Session ใหม่ + ทักทายใหม่ V1 -> V2, greets=2
+PASS 7b Cooldown: เข้าออกถี่ภายในเวลาคูลดาวน์ → ไม่ทักรัว greets=0
+PASS 8 หลายคนเข้ามาพร้อมกัน → ทักครั้งเดียวแบบกลุ่ม {"people":2,"caption":"สวัสดีค่ะทุกคน หนูชื่อวอร่า หุ่นยนต์ประช"}
+PASS 9 คนเข้ามาขณะประกาศข่าว → หยุดประกาศ ทักทาย แล้วประกาศต่อเมื่อคนออกไป {"cancelled":true,"queued":true,"avatar":"greeting","resumedWhilePresent":1,"starts":2}
+PASS 10 คนเข้ามาขณะ AI กำลังตอบ → ไม่ตัดคำตอบ ไม่ทักแทรก {"cancel":false,"kind":"conversation"}
+PASS 11 Gesture ☝️ ส่งเข้า /api/interaction และเปิดข่าวถัดไป (ชื่อท่าป้อนจำลอง) {"interaction":1,"newsOpened":true}
+PASS 14 QR Code แสดงได้ และหน้า /m/ เปิดได้ {"open":true,"svg":true,"url":"http://192.0.2.2:8000/m/","mini":true}
+PASS R เมนูประเมินความพึงพอใจ ส่งคะแนนผ่าน /api/feedback 
+PASS L สลับภาษาอังกฤษ: หน้าจอ + คำตอบ AI เป็นอังกฤษ {"title":"Programs","sys":"System ready","lastBot":"We offer Vocational Certificate: Automotive Mechan"}
+PASS 15 Emergency Stop: สถานะหุ่น/หัวจอ/อวตารเปลี่ยนตามจริง และกลับปกติหลังรีเซ็ต {"robot":"หยุดฉุกเฉิน","sys":"หุ่นยนต์หยุดฉุกเฉิน","avatar":"error","after":"พร้อม (หุ่นจำลอง)"}
+PASS 3 กล้องหลุด → แสดงสถานะ แล้วเชื่อมต่อใหม่อัตโนมัติ (ไม่โหลดโมเดลซ้ำ) {"lost":{"cam":"lost","row":"กล้องหลุด กำลังเชื่อมต่อใหม่"},"cam":"on","gum":2}
+PASS S เจ้าหน้าที่ปิดกล้อง: หยุด track จริง จำค่าหลังรีโหลด และเปิดกลับได้ {"s":{"cam":"staff-off","stream":false,"live":false},"afterReload":{"cam":"staff-off","gum":0},"reOn":"on"}
+PASS P ซ่อนแผง (เข้าโหมดว่าง) และแตะจอเพื่อแสดงกลับได้ idle → active
+PASS A อวตารจำลองแสดงได้ครบ 8 สถานะ 
+PASS E ไม่มี JavaScript error ตลอดการทดสอบหน้า Kiosk หลัก 
+PASS 2 ไม่ได้รับสิทธิ์กล้อง → แจ้งคำแนะนำ ระบบอื่นยังใช้ได้ {"cam":"denied","toast":"กล้องยังไม่ได้รับอนุญาต: คลิกไอคอนกล้องท","row":"ไม่ได้รับอนุญาต"}
+PASS 3c ไม่พบกล้อง → แสดงสถานะ และนับถอยหลังลองใหม่ {"cam":"not-found","row":"ไม่พบกล้อง · ลองใหม่ใน 2 วิ"}

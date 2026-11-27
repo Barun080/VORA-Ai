@@ -1,0 +1,235 @@
+{
+  "date": "2026-10-31T16:27:18.251Z",
+  "pass": 38,
+  "total": 38,
+  "results": [
+    {
+      "id": "1@1366",
+      "name": "Active: Orbital Menu 6 หมวด แสดงรอบอวตาร ไม่บังใบหน้า/ตัวอวตาร ไม่ทับกัน อยู่ในเวที (1366×768)",
+      "pass": true,
+      "note": "layout=orbital faceBottom=274 minOrbTop=363 inStage=true noFace=true noBody=true noOverlap=true"
+    },
+    {
+      "id": "2@1366",
+      "name": "กล่องคำพูดยาวสุดไม่ทับปุ่มเมนู (1366×768)",
+      "pass": true,
+      "note": "bubble.b=282 orbTop=363"
+    },
+    {
+      "id": "3@1366",
+      "name": "Active: แสดง Chat, Quick Actions, Tool Icons, Voice Controls ครบ (1366×768)",
+      "pass": true,
+      "note": "{\"chat\":true,\"quick\":true,\"tools\":true,\"mic\":true,\"input\":true,\"textMenu\":true,\"menu\":true}"
+    },
+    {
+      "id": "4@1366",
+      "name": "Idle: ซ่อนแผงและเมนูทั้งหมด เหลืออวตาร + ข้อความแนะนำ (1366×768)",
+      "pass": true,
+      "note": "{\"mode\":\"idle\",\"dmode\":\"idle\",\"orbs\":true,\"panels\":true,\"hint\":true,\"avatar\":true}"
+    },
+    {
+      "id": "E@1366",
+      "name": "ไม่มี JavaScript error (1366×768)",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "1@1600",
+      "name": "Active: Orbital Menu 6 หมวด แสดงรอบอวตาร ไม่บังใบหน้า/ตัวอวตาร ไม่ทับกัน อยู่ในเวที (1600×900)",
+      "pass": true,
+      "note": "layout=orbital faceBottom=318 minOrbTop=460 inStage=true noFace=true noBody=true noOverlap=true"
+    },
+    {
+      "id": "2@1600",
+      "name": "กล่องคำพูดยาวสุดไม่ทับปุ่มเมนู (1600×900)",
+      "pass": true,
+      "note": "bubble.b=325 orbTop=460"
+    },
+    {
+      "id": "3@1600",
+      "name": "Active: แสดง Chat, Quick Actions, Tool Icons, Voice Controls ครบ (1600×900)",
+      "pass": true,
+      "note": "{\"chat\":true,\"quick\":true,\"tools\":true,\"mic\":true,\"input\":true,\"textMenu\":true,\"menu\":true}"
+    },
+    {
+      "id": "4@1600",
+      "name": "Idle: ซ่อนแผงและเมนูทั้งหมด เหลืออวตาร + ข้อความแนะนำ (1600×900)",
+      "pass": true,
+      "note": "{\"mode\":\"idle\",\"dmode\":\"idle\",\"orbs\":true,\"panels\":true,\"hint\":true,\"avatar\":true}"
+    },
+    {
+      "id": "E@1600",
+      "name": "ไม่มี JavaScript error (1600×900)",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "1@1920",
+      "name": "Active: Orbital Menu 6 หมวด แสดงรอบอวตาร ไม่บังใบหน้า/ตัวอวตาร ไม่ทับกัน อยู่ในเวที (1920×1080)",
+      "pass": true,
+      "note": "layout=orbital faceBottom=381 minOrbTop=542 inStage=true noFace=true noBody=true noOverlap=true"
+    },
+    {
+      "id": "2@1920",
+      "name": "กล่องคำพูดยาวสุดไม่ทับปุ่มเมนู (1920×1080)",
+      "pass": true,
+      "note": "bubble.b=389 orbTop=542"
+    },
+    {
+      "id": "3@1920",
+      "name": "Active: แสดง Chat, Quick Actions, Tool Icons, Voice Controls ครบ (1920×1080)",
+      "pass": true,
+      "note": "{\"chat\":true,\"quick\":true,\"tools\":true,\"mic\":true,\"input\":true,\"textMenu\":true,\"menu\":true}"
+    },
+    {
+      "id": "4@1920",
+      "name": "Idle: ซ่อนแผงและเมนูทั้งหมด เหลืออวตาร + ข้อความแนะนำ (1920×1080)",
+      "pass": true,
+      "note": "{\"mode\":\"idle\",\"dmode\":\"idle\",\"orbs\":true,\"panels\":true,\"hint\":true,\"avatar\":true}"
+    },
+    {
+      "id": "E@1920",
+      "name": "ไม่มี JavaScript error (1920×1080)",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "5@mobile",
+      "name": "จอเล็ก (390×844): เปลี่ยนเป็น Compact Menu ไม่บังใบหน้า ปุ่มแรกไม่ถูกตัด",
+      "pass": true,
+      "note": "layout=compact faceBottom=351 orbTop=624 firstL=21 scroll=518/364"
+    },
+    {
+      "id": "5b@mobile",
+      "name": "จอเล็ก: แตะเมนู → นำเสนอเต็มจอ ใช้งานได้",
+      "pass": true,
+      "note": "{\"mode\":\"presentation\",\"cards\":4,\"w\":390,\"vw\":390}"
+    },
+    {
+      "id": "E@mobile",
+      "name": "ไม่มี JavaScript error (mobile)",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "5@tablet",
+      "name": "จอเล็ก (768×1024): ใช้ Orbital ไม่บังใบหน้า ปุ่มแรกไม่ถูกตัด",
+      "pass": true,
+      "note": "layout=orbital faceBottom=350 orbTop=415 firstL=118 scroll=742/742"
+    },
+    {
+      "id": "5b@tablet",
+      "name": "จอเล็ก: แตะเมนู → นำเสนอเต็มจอ ใช้งานได้",
+      "pass": true,
+      "note": "{\"mode\":\"presentation\",\"cards\":4,\"w\":768,\"vw\":768}"
+    },
+    {
+      "id": "E@tablet",
+      "name": "ไม่มี JavaScript error (tablet)",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": 6,
+      "name": "Trigger เข้า Active: เมาส์ คลิก แตะ คีย์บอร์ด ปุ่มเสียง ท่ามือ",
+      "pass": true,
+      "note": "{\"mouse\":true,\"click\":true,\"touch\":true,\"keyboard\":true,\"voice\":true,\"gesture\":true}"
+    },
+    {
+      "id": "6b",
+      "name": "Visitor Detection: ค่าเริ่มต้นไม่ปลุกหน้าจอ (ทักใน Idle) · เปิด wakeOnVisitor แล้วเข้า Active",
+      "pass": true,
+      "note": "default=idle wakeOnVisitor=true"
+    },
+    {
+      "id": 7,
+      "name": "Presentation: 4 หมวดแสดงข้อมูลตรงกับ API จริง (สาขา/ข่าว/รับสมัคร/วิทยาลัย) ซ่อนแผงซ้าย-ขวา",
+      "pass": true,
+      "note": "{\"api\":{\"programs\":7,\"news\":4,\"admission\":1,\"about\":7},\"sec\":{\"departments\":[7,0],\"news\":[4,0],\"admission\":[1,4],\"college\":[0,7]}}"
+    },
+    {
+      "id": "7b",
+      "name": "ปุ่มปิด: กลับสู่ Active และแผงซ้าย-ขวากลับมา",
+      "pass": true,
+      "note": "{\"mode\":\"active\",\"left\":\"flex\",\"hidden\":true}"
+    },
+    {
+      "id": 8,
+      "name": "รายละเอียดสาขา: อวตารบรรยายด้วยเสียงจริง, ปุ่มกลับ, Esc ปิดการนำเสนอ",
+      "pass": true,
+      "note": "{\"title\":\"ช่างยนต์\",\"back\":true,\"spoke\":[\"สวัสดีค่ะ หนูชื่อวอร\",\"สวัสดีค่ะ หนูชื่อวอร\",\"สาขาช่างยนต์ ระดับ ป\"],\"avatar\":\"speaking\",\"cardsAfterBack\":7,\"esc\":\"active\"}"
+    },
+    {
+      "id": 9,
+      "name": "Presentation → Idle เมื่อไม่มีการใช้งานและไม่มีงานค้าง (มีงานค้าง = ยังไม่ปิด)",
+      "pass": true,
+      "note": "whileBusy=presentation thenIdle=true active->presentation(open:news:orbit) presentation->active(close:timeout) active->idle(ui-idle)"
+    },
+    {
+      "id": 10,
+      "name": "ระหว่างนำเสนอ Idle Timer ของ UIController ไม่ซ่อนหน้าจอ",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": 11,
+      "name": "Keyboard Navigation: ลูกศร/Home/End เลื่อนโฟกัสตามวง, Enter เปิด, Esc ปิด, โฟกัสย้ายเข้าพื้นที่นำเสนอ",
+      "pass": true,
+      "note": "order=departments,news,feedback,assistant,departments,feedback,college open={\"mode\":\"presentation\",\"section\":\"departments\",\"focus\":\"present-title\"}"
+    },
+    {
+      "id": 12,
+      "name": "เมนูตัวอักษรใหญ่: 6 หมวด ตัวอักษร ≥ 24px ปุ่มสูง ≥ 72px และเปิดหมวดได้",
+      "pass": true,
+      "note": "{\"open\":true,\"n\":6,\"font\":34.6,\"h\":102.3125,\"mode\":\"presentation\",\"section\":\"admission\",\"dialog\":false}"
+    },
+    {
+      "id": 13,
+      "name": "สลับภาษาอังกฤษ: เมนูรอบตัวและหน้าการนำเสนอเปลี่ยนภาษา",
+      "pass": true,
+      "note": "{\"orb\":\"Departments\",\"title\":\"Departments\",\"close\":\"Close\"}"
+    },
+    {
+      "id": 14,
+      "name": "กล้องไม่หยุด/ไม่เปิดซ้ำ ระหว่าง Idle ⇄ Active ⇄ Presentation (5 รอบ)",
+      "pass": true,
+      "note": "gum 1→1 track=live videoTime 96.5→121.7"
+    },
+    {
+      "id": 15,
+      "name": "WebSocket ไม่หลุด/ไม่เชื่อมต่อซ้ำ ระหว่างสลับโหมด",
+      "pass": true,
+      "note": "ws 1→1 open=1"
+    },
+    {
+      "id": 16,
+      "name": "อวตารไม่ถูกสร้างใหม่ (SVG เดิม ตัวเดียว) ระหว่างสลับโหมด",
+      "pass": true,
+      "note": "{\"svgCount\":1,\"same\":true}"
+    },
+    {
+      "id": 17,
+      "name": "สลับโหมดรัว 30 ครั้ง: จบสถานะถูกต้อง ไม่มีพื้นที่ค้าง Listener ไม่เพิ่ม",
+      "pass": true,
+      "note": "{\"mode\":\"active\",\"presentHidden\":true,\"cls\":false,\"listeners\":30,\"timers\":0,\"l0\":30}"
+    },
+    {
+      "id": 18,
+      "name": "ระบบเดิม: ถาม-ตอบ AI, เมนูซ้าย (ลิ้นชักข้อมูล), ปุ่มหยุด → /api/robot/stop ยังทำงาน",
+      "pass": true,
+      "note": "{\"bots\":3,\"drawer\":4,\"stop\":true}"
+    },
+    {
+      "id": "E",
+      "name": "ไม่มี JavaScript error ตลอดการทดสอบหลัก",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": 19,
+      "name": "Reduced Motion: ปิด Animation ลอย/เคลื่อนของเมนู",
+      "pass": true,
+      "note": "{\"anim\":\"none\",\"tr\":\"0.01s\"}"
+    }
+  ]
+}
