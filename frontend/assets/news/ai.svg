@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#183e7a"/><stop offset="1" stop-color="#081a30"/></linearGradient>
+<pattern id="p" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#fff" stroke-opacity=".12"/></pattern></defs>
+<rect width="640" height="400" fill="url(#g)"/><rect width="640" height="400" fill="url(#p)"/>
+<g fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><circle cx="320" cy="190" r="110"/><circle cx="280" cy="170" r="16" fill="#3cc8f5" stroke="#3cc8f5"/><circle cx="360" cy="170" r="16" fill="#3cc8f5" stroke="#3cc8f5"/><path d="M280 230 Q320 260 360 230"/><path d="M320 80 V50"/><circle cx="320" cy="44" r="10" fill="#ffc93c" stroke="#ffc93c"/></g>
+<rect x="0" y="372" width="640" height="28" fill="#ffc93c"/>
+<text x="32" y="352" font-family="Mitr, Leelawadee UI, sans-serif" font-size="34" fill="#fff" fill-opacity=".9">อบรม AI · AI Workshop</text>
+</svg>
