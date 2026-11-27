@@ -1,0 +1,50 @@
+--- _backups/greeting-context-20261116/public.py	2026-11-12 11:01:22.000000000 +0000
++++ backend/app/routers/public.py	2026-11-16 12:38:10.477187500 +0000
+@@ -17,7 +17,7 @@
+ from sqlalchemy import text
+ from sqlalchemy.orm import Session
+ 
+-from .. import tts
++from .. import greetings, tts
+ from ..ai.engine import (ERROR_CONTRACT, _ctx, _news_card, _program_card, active_news, answer, answer_vision, apply_online,
+                          get_or_create_session, school_website)
+ from ..ai.intent import intent_classifier
+@@ -110,6 +110,8 @@
+     lang: str = "th"
+     trigger: str = "face"          # face | gesture | touch | patrol
+     people: int = 1
++    context: Optional[str] = None  # 16 พ.ย. 2569: หน้านำเสนอที่เปิดอยู่ / ชื่อบริบท (ไม่ส่ง = เซิร์ฟเวอร์ตัดสินเอง) — ดู app/greetings.py
++    emoji: bool = False            # ผู้เรียกตัด Emoji ก่อนส่งเสียงพูดแล้ว → ส่งข้อความที่มี Emoji ได้ (หน้าจอรุ่นเก่าไม่ส่ง = ไม่มี Emoji)
+ 
+ 
+ class FeedbackIn(BaseModel):
+@@ -238,6 +240,18 @@
+     return {"available": True, **m, "names": names}
+ 
+ 
++def _greeting_th(db: Session, body: GreetIn, cfg: dict) -> str:
++    """16 พ.ย. 2569: คำทักทายไทยตามบริบท + กันซ้ำ (app/greetings.py · แม่แบบคงที่ ไม่ใช้ LLM)
++    เลือกไม่ได้ด้วยเหตุใดก็ตาม → ใช้คำทักทายเดิมจากหลังบ้าน (คำขอไม่ล้มเหลวเพราะการเลือกคำทักทาย)"""
++    try:
++        from ..timeline import build_timeline
++        period = bool(build_timeline(db)["important"])     # ช่วงรับสมัคร = มีข่าวรับสมัครที่มีวันจริงภายใน 60 วัน (กติกาเดียวกับ Time Portal)
++        return greetings.choose(body.context, trigger=body.trigger, admission_period=period).display(body.people, emoji=body.emoji)
++    except Exception:  # noqa: BLE001
++        text = cfg["greeting_th"]
++        return "สวัสดีค่ะทุกคน " + text.replace("สวัสดีค่ะ ", "") if body.people > 1 else text
++
++
+ @router.post("/greet")
+ async def greet(body: GreetIn, request: Request, db: Session = Depends(get_db)):
+     """ทักทายเชิงรุก (Auto Greeting) เมื่อกล้องตรวจพบผู้ใช้ — เริ่มบทสนทนาโดยไม่ต้องรอคำสั่ง"""
+@@ -252,9 +266,7 @@
+         if body.people > 1:
+             text = "Hello everyone! " + cfg["greeting_en"]
+     else:
+-        text = cfg["greeting_th"]
+-        if body.people > 1:
+-            text = "สวัสดีค่ะทุกคน " + text.replace("สวัสดีค่ะ ", "")
++        text = _greeting_th(db, body, cfg)
+     top = active_news(db, limit=1)
+     cards = [_news_card(top[0], lang)] if top else []
+     db.add(Message(session_id=sess.id, role="bot", text=text, input_mode="auto", lang=lang, intent="auto_greeting",

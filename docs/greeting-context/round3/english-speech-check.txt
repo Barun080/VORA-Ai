@@ -1,0 +1,7 @@
+display: Good morning! 😊 Since you're here, come and chat with VORA. Ask me anything about the college.
+spoken : Good morning Since you're here, come and chat with VORA. Ask me anything about the college.
+display: Good evening! 😊 Since you're here, come and chat with VORA. Ask me anything about the college.
+spoken : Good evening Since you're here, come and chat with VORA. Ask me anything about the college.
+display: Good morning, everyone! 😊 Since you're here, come and chat with VORA. Ask me anything about the college.
+spoken : Good morning, everyone Since you're here, come and chat with VORA. Ask me anything about the college.
+english rows=84 spokenWithEmoji=0 spokenWithLatinVORA=84 spokenWithโวร่า=0

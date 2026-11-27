@@ -1,0 +1,27 @@
+Round 3 — English greetings (12 translations) — 2026-11-16 ~20:35-21:00 local (approved by owner 20:31: "use the current time", no wording changes)
+
+files
+  MOD backend/app/greetings.py        + GREETINGS_EN (12 translations, same numbers), FORMAL_IDS, salutation_en(hour);
+                                      Greeting.display()/tts_text() take lang and hour. Pools, emoji, context order, anti-repetition: shared with Thai, unchanged.
+  MOD backend/app/routers/public.py   _greeting_th() -> _greeting_text(db, body, cfg, lang, hour): both languages go through the selector;
+                                      if selection raises, the old back-office greeting of that language is used (old English logic kept there).
+  MOD backend/tests/test_greeting.py  test "english greeting unchanged" (no longer the requirement) replaced by 9 English tests -> 44 tests
+  no frontend change (the kiosk already sends lang). backups + SHA256SUMS: _backups/greeting-english-20261116/
+
+behaviour (English)
+  "Good morning" before 12:00, "Good afternoon" before 17:00, otherwise "Good evening" (server clock; same thresholds as before) replaces "Hello";
+  casual/semi-formal: "Good morning! <emoji> ..."   formal (#10-12): "Good morning. ..."   several people: "Good morning, everyone! ..."
+  the same sentence in Thai and in English counts as the same greeting for anti-repetition. Thai output is byte-identical to round 1.
+
+tests
+  test_greeting.py 44/44; full regression 999 passed / 1 failed / 0 skipped / 1000 (round 2: 991/1/992) -> +8 net new tests, no other test changed status;
+  the failure is the known tests/test_system.py::test_reports_overview_and_csv. Mutation check (scratch): salutation ignoring the hour -> 1 test fails.
+  English texts through the kiosk's normalizeForSpeech (english-speech-check.txt): 84 texts, 0 with emoji after preparation.
+  netguard: only LAN test addresses blocked.
+
+NOT verified / known limits
+  - "VORA" inside English sentences is still sent to TTS as the Latin word (the โวร่า rule applies to Thai sentences only, as approved). English is read by
+    the Thai Google voice, so it may again be spelled out letter by letter. Not changed; owner to listen and decide.
+  - the kiosk's text preparation removes "!" (existing rule for all speech), so there is no pause mark after "Good morning" in the spoken text.
+  - real kiosk / real TTS / browser scenarios not run (same reason as before). PostgreSQL not used for the regression.
+status: backend files changed on disk -> start.bat restart needed.   rollback: copy the 3 files back from _backups/greeting-english-20261116/ and restart.

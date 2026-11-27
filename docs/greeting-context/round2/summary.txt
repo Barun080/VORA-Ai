@@ -1,0 +1,36 @@
+Round 2 — "VORA" spoken as โวร่า + greet a new visitor after ~8 s of absence — 2026-11-16 ~20:20-20:40 local (approved by owner 20:15)
+
+1) VORA -> โวร่า (speech only)
+  MOD frontend/kiosk/voice/speech-text.js   normalizeForSpeech(): in text containing Thai characters, the standalone word VORA (any case)
+      becomes "โวร่า". URL / e-mail (protected earlier), English-only text, VORA_TTS_RATE / VORA2 / myVORA are not touched. Screen text unchanged.
+  applies to everything the main kiosk speaks (greetings, answers, announcements) via speechChunks(); also the browser-voice fallback.
+  side effects: sentences containing VORA get new TTS cache files (old ones are not deleted, just not read); precached lookup keys stay consistent
+      (same function on both sides). Old designs (/pastel, /classic) have their own voice code -> unchanged. tts.py, provider, EQ, rate, .env untouched.
+
+2) new visitor after ~8 s of absence -> greet immediately
+  NEW frontend/kiosk/interaction/greet-policy.js   pure decision function (greetDecision) + returnWindowMs()
+  MOD frontend/kiosk/kiosk-config.js   visitor.returnWindowMs: 8000 (counted after the session ended = 14 s total) replaced by visitor.absenceGreetMs: 8000
+  MOD frontend/kiosk/app.js            greet(): decisions come from greetDecision (old rules kept); VISITOR_DETECTED greets with { arrival: true, quietMs };
+                                       startCamera(): "same person returned" window = absenceGreetMs - leaveMs (8 s - 6 s = 2 s after the session ended)
+  behaviour: nobody seen for 8 s, then someone arrives (seen 0.8 s) -> greeted at once, without waiting for the 25 s greeting cooldown;
+             if the previous person's conversation is still on screen and nobody touched/spoke to the screen for 8 s -> conversation cleared (resetSession), then greeted
+  unchanged: no greeting while VORA is listening / thinking / answering; absence shorter than 8 s = same person, no second greeting;
+             cooldown still applies to non-arrival greetings (open-palm gesture, deferred/pending greeting); camera, tracker, server untouched.
+  trade-off (told to owner): a person who stays but whose face is not detected for > 8 s is greeted again (the 25 s cooldown used to mask this).
+
+tests
+  node: voice-core 22/22 (19 old + 3 new), voice-integration 23/23, greet-policy 7/7 (new; includes exhaustive comparison of non-arrival decisions
+        with the old rule: 2688 combinations identical)
+  mutation checks (scratch copy): arrival no longer bypasses cooldown -> 2 fail; arrival uses the old 20 s stale rule -> 1 fail; replace VORA in English too -> 1 fail
+  greetings through the kiosk's real text preparation (vora-speech-check.txt): 42 texts, 0 with emoji, 0 with Latin "VORA", 42 with โวร่า; display text keeps "VORA"
+  python regression (same method as before): 991 passed / 1 failed / 0 skipped / 992 -> identical to round 1; the failure is the known test_reports_overview_and_csv
+  netguard: only LAN test addresses blocked; no TTS/LLM host contacted
+
+NOT verified
+  how Google TTS actually pronounces "โวร่า" (no real TTS request made) — owner listens after restart
+  the behaviour in a real browser with a real camera; browser scenario scripts were not run (Chromium not downloadable in the VM)
+  docs/kiosk-fixes-20261110/fix-scenarios.js F6 and docs/kiosk-redesign/browser-scenarios.js 7b encode the old cooldown rule and will no longer match; not edited
+
+status: files changed on disk. Only frontend files changed in this round -> reload the kiosk page (Ctrl+F5); start.bat restart is still needed for round 1.
+rollback: copy speech-text.js, kiosk-config.js, app.js, voice-core.test.mjs back from _backups/greeting-absence-voice-20261116/ (sha256 in SHA256SUMS.txt);
+          greet-policy.js and greet-policy.test.mjs can then be ignored or removed.

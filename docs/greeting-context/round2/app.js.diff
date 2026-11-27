@@ -1,0 +1,67 @@
+--- _backups/greeting-absence-voice-20261116/app.js	2026-11-16 12:38:11.000000000 +0000
++++ frontend/kiosk/app.js	2026-11-16 13:17:53.810655100 +0000
+@@ -13,6 +13,7 @@
+ import { bus, EV } from "./core/event-bus.js";
+ import { UIController } from "./idle-ui.js";
+ import { InteractionManager } from "./interaction/InteractionManager.js";
++import { greetDecision, returnWindowMs } from "./interaction/greet-policy.js";   // 16 พ.ย. 2569: ผู้เข้าชมใหม่หลังไม่เห็นใคร 8 วิ → ทักทันที
+ import { KIOSK_CONFIG } from "./kiosk-config.js";
+ import { Listener, Speaker } from "./voice.js";
+ import { parseVoiceCommand } from "./voice/commands.js";   // Phase 4: คำสั่งเสียง "หยุดพูด" เท่านั้น
+@@ -443,22 +444,24 @@
+ }
+ 
+ // ====================================================================== ทักทายผู้เข้าชม
+-async function greet(people = 1, { force = false } = {}) {
++async function greet(people = 1, { force = false, arrival = false, quietMs = null } = {}) {
+   if (!S.cfg) return;
+   clearTimeout(S.greetTimer);
+-  // 10 พ.ย. 2569: บทสนทนาของคนก่อนค้างอยู่ (ไม่มีใครแตะ 20 วิ และ VORA ว่าง) ไม่ควรขวางการทักคนใหม่
+-  const staleConvo = S.phase === "convo" && S.state === "idle" && Date.now() - S.lastActivity > 20000;
+-  if (!force && (!S.cfg.auto_greeting || (S.phase !== "attract" && !staleConvo))) { S.greetPending = 0; return; }
+-  // กำลังฟัง/คิด หรือกำลังตอบผู้ใช้: ไม่ตัดบท รอทักทายเมื่อว่าง (ถ้าผู้เข้าชมยังอยู่)
+-  if (S.state === "listening" || S.state === "thinking" || (S.state === "speaking" && im.kind === "conversation")) { S.greetPending = people; return; }
++  // 16 พ.ย. 2569: การตัดสินใจย้ายไป interaction/greet-policy.js (กติกาเดิมครบ + arrival = ผู้เข้าชมใหม่หลังไม่เห็นใครครบ absenceGreetMs)
+   const cooldown = (KIOSK_CONFIG.visitor.greetCooldownS ?? S.cfg.greeting_cooldown_s ?? 25) * 1000;
+-  if (!force && Date.now() - S.lastGreetAt < cooldown) {
+-    // ยังอยู่ในคูลดาวน์ (เพิ่งทักคนก่อน): ไม่ทิ้ง — ถ้าผู้เข้าชมคนนี้ยังยืนอยู่และยังไม่ถูกทักเมื่อพ้นคูลดาวน์ ค่อยทัก
++  const decision = greetDecision({ force, arrival, autoGreeting: !!S.cfg.auto_greeting, phase: S.phase, state: S.state, speakingKind: im.kind,
++    quietMs: quietMs ?? Date.now() - S.lastActivity, sinceGreetMs: Date.now() - S.lastGreetAt, cooldownMs: cooldown,
++    absenceGreetMs: KIOSK_CONFIG.visitor.absenceGreetMs ?? 8000 });
++  if (decision === "skip") { S.greetPending = 0; return; }
++  if (decision === "wait") { S.greetPending = people; return; }   // กำลังฟัง/คิด หรือกำลังตอบผู้ใช้: ไม่ตัดบท รอทักทายเมื่อว่าง (ถ้าผู้เข้าชมยังอยู่)
++  if (decision === "cooldown") {
++    // ยังอยู่ในคูลดาวน์ (เพิ่งทักคนก่อน): ไม่ทิ้ง — ถ้าผู้เข้าชมคนนี้ยังยืนอยู่และยังไม่ถูกทัก จะทักเมื่อพ้นคูลดาวน์
+     S.greetPending = 0;
+     const session = S.visitor;
+     if (session && !session.greeted) S.greetTimer = setTimeout(() => { if (S.visitor === session && !session.greeted) greet(session.people); }, cooldown - (Date.now() - S.lastGreetAt) + 300);
+     return;
+   }
++  if (decision === "greet-reset") { S.greetPending = 0; resetSession(); }   // บทสนทนาของคนก่อนค้างอยู่: ล้างก่อนทักผู้เข้าชมใหม่ (แบบเดียวกับปุ่มทดสอบการทักทาย)
+   const tok = im.begin("greeting");          // แทรกการประกาศข่าวได้ (ข่าวจะกลับเข้าคิว)
+   if (!tok) { S.greetPending = people; return; }
+   S.greetPending = 0;
+@@ -692,10 +695,11 @@
+   bus.on(EV.VISITOR_DETECTED, ({ session }) => {
+     S.visitor = session;
+     $("app").dataset.person = "1";
++    const quietMs = Date.now() - S.lastActivity;   // 16 พ.ย. 2569: หน้าจอเงียบมานานเท่าไร "ก่อน" นับการมาถึงนี้เป็นการใช้งาน
+     touch();
+     if (KIOSK_CONFIG.experience && KIOSK_CONFIG.experience.wakeOnVisitor) bus.emit(EV.UI_ACTIVITY, { source: "visitor" });
+     socket && socket.send({ type: "event", data: { kind: "visitor", name: "arrive", people: session.people } });
+-    greet(session.people);
++    greet(session.people, { arrival: true, quietMs });   // VISITOR_DETECTED = ไม่เห็นใครครบ absenceGreetMs แล้ว (หรือคนแรก) → ทักทันที
+   });
+   bus.on(EV.VISITOR_RETURNED, ({ session }) => {
+     // คนเดิมเดินกลับมาในช่วงคูลดาวน์: นับว่ายังอยู่ (พักประกาศ) แต่ไม่ทักซ้ำ
+@@ -893,8 +897,8 @@
+ function startCamera() {
+   cam = new CameraVisitorController(bus, $("camVideo"), {
+     visitor: KIOSK_CONFIG.visitor, camera: KIOSK_CONFIG.camera,
+-    // "คนเดิมกลับมา" = กลับมาภายใน min(คูลดาวน์ทักทาย, returnWindowMs) — เดิมใช้คูลดาวน์อย่างเดียว (25 วิ) ทำให้คนใหม่ที่ตามมาเร็วไม่ถูกทัก
+-    returnWindowMs: () => Math.min((KIOSK_CONFIG.visitor.greetCooldownS ?? (S.cfg && S.cfg.greeting_cooldown_s) ?? 25) * 1000, KIOSK_CONFIG.visitor.returnWindowMs ?? 8000),
++    // "คนเดิมกลับมา" = ไม่เห็นใครสั้นกว่า absenceGreetMs แล้วกลับมา (ไม่ใช้การจดจำใบหน้า ใช้ช่วงเวลาเท่านั้น)
++    returnWindowMs: () => returnWindowMs({ absenceGreetMs: KIOSK_CONFIG.visitor.absenceGreetMs ?? 8000, leaveMs: KIOSK_CONFIG.visitor.leaveMs }),   // 16 พ.ย. 2569: ไม่เห็นใครครบ 8 วิ = คนใหม่ (เดิม min(คูลดาวน์, 8 วิ) นับหลัง Session จบ)
+   });
+   wireCameraEvents();
+   cam.start();

@@ -1,0 +1,59 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-9.2.0, pluggy-1.7.0 -- /sessions/rcw-011reshmanu9em7gneshwhsm/vt312/bin/python
+VORA test database: sqlite:////sessions/rcw-011reshmanu9em7gneshwhsm/tmp/vora-test-jil7l51w/vora.db
+rootdir: /sessions/rcw-011reshmanu9em7gneshwhsm/mnt/VORA_Robot/backend
+plugins: anyio-4.16.0
+collecting ... collected 44 items
+
+tests/test_greeting.py::test_twelve_templates_unique_and_on_persona PASSED [  2%]
+tests/test_greeting.py::test_pools_match_approved_mapping PASSED         [  4%]
+tests/test_greeting.py::test_each_context_picks_only_from_its_pool[activity] PASSED [  6%]
+tests/test_greeting.py::test_each_context_picks_only_from_its_pool[admission] PASSED [  9%]
+tests/test_greeting.py::test_each_context_picks_only_from_its_pool[general] PASSED [ 11%]
+tests/test_greeting.py::test_each_context_picks_only_from_its_pool[kiosk] PASSED [ 13%]
+tests/test_greeting.py::test_each_context_picks_only_from_its_pool[parent] PASSED [ 15%]
+tests/test_greeting.py::test_each_context_picks_only_from_its_pool[program] PASSED [ 18%]
+tests/test_greeting.py::test_each_context_picks_only_from_its_pool[student] PASSED [ 20%]
+tests/test_greeting.py::test_resolve_context_order PASSED                [ 22%]
+tests/test_greeting.py::test_unknown_context_falls_back_to_general PASSED [ 25%]
+tests/test_greeting.py::test_admission_period_does_not_override_kiosk_every_time PASSED [ 27%]
+tests/test_greeting.py::test_never_repeats_consecutively_even_across_contexts PASSED [ 29%]
+tests/test_greeting.py::test_recent_history_is_avoided_when_alternatives_exist PASSED [ 31%]
+tests/test_greeting.py::test_recent_only_chosen_when_pool_exhausted PASSED [ 34%]
+tests/test_greeting.py::test_history_resets_when_pool_fully_used PASSED  [ 36%]
+tests/test_greeting.py::test_reset_touches_only_that_context PASSED      [ 38%]
+tests/test_greeting.py::test_no_cross_pool_to_avoid_repetition PASSED    [ 40%]
+tests/test_greeting.py::test_pool_with_single_greeting_still_works PASSED [ 43%]
+tests/test_greeting.py::test_emoji_variants_count_as_the_same_greeting PASSED [ 45%]
+tests/test_greeting.py::test_general_fallback_uses_anti_repetition PASSED [ 47%]
+tests/test_greeting.py::test_display_and_tts_text_are_separated PASSED   [ 50%]
+tests/test_greeting.py::test_api_default_request_gets_kiosk_pool_without_emoji PASSED [ 52%]
+tests/test_greeting.py::test_api_context_selects_its_pool[departments-program] PASSED [ 54%]
+tests/test_greeting.py::test_api_context_selects_its_pool[admission-admission] PASSED [ 56%]
+tests/test_greeting.py::test_api_context_selects_its_pool[news-activity] PASSED [ 59%]
+tests/test_greeting.py::test_api_context_selects_its_pool[college-general] PASSED [ 61%]
+tests/test_greeting.py::test_api_context_selects_its_pool[parent-parent] PASSED [ 63%]
+tests/test_greeting.py::test_api_context_selects_its_pool[student-student] PASSED [ 65%]
+tests/test_greeting.py::test_api_context_selects_its_pool[kiosk-kiosk] PASSED [ 68%]
+tests/test_greeting.py::test_api_unknown_context_falls_back PASSED       [ 70%]
+tests/test_greeting.py::test_api_admission_period_mixes_with_kiosk PASSED [ 72%]
+tests/test_greeting.py::test_api_no_consecutive_repeat_and_group_prefix PASSED [ 75%]
+tests/test_greeting.py::test_english_translations_cover_all_twelve PASSED [ 77%]
+tests/test_greeting.py::test_english_salutation_follows_current_time PASSED [ 79%]
+tests/test_greeting.py::test_api_english_uses_context_pools[departments-program] PASSED [ 81%]
+tests/test_greeting.py::test_api_english_uses_context_pools[admission-admission] PASSED [ 84%]
+tests/test_greeting.py::test_api_english_uses_context_pools[news-activity] PASSED [ 86%]
+tests/test_greeting.py::test_api_english_uses_context_pools[college-general] PASSED [ 88%]
+tests/test_greeting.py::test_api_english_uses_context_pools[None-kiosk] PASSED [ 90%]
+tests/test_greeting.py::test_api_english_group_old_client_and_no_repeat PASSED [ 93%]
+tests/test_greeting.py::test_api_english_selection_failure_uses_old_greeting PASSED [ 95%]
+tests/test_greeting.py::test_api_selection_failure_never_fails_request PASSED [ 97%]
+tests/test_greeting.py::test_no_legacy_or_banned_greeting_in_new_module PASSED [100%]
+
+=============================== warnings summary ===============================
+../../../vt312/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /sessions/rcw-011reshmanu9em7gneshwhsm/vt312/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 44 passed, 1 warning in 5.13s =========================

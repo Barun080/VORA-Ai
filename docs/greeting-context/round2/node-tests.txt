@@ -1,0 +1,64 @@
+== frontend/tests/voice/voice-core.test.mjs
+ok 1 - time range 08:00-16:30 is preserved
+ok 2 - dates 12/11/2569 and 2026-11-12 are preserved
+ok 3 - numbers: phone, decimals, thousands, percent, signs
+ok 4 - URL and email are preserved exactly
+ok 5 - meaningful marks kept: parentheses content, e-mail, COVID-19, snake_case, Thai ๆ ฯ
+ok 6 - markdown / emoji / ? ! ~ … removed without losing words
+ok 7 - normalization is idempotent
+ok 8 - name "VORA" is spoken as โวร่า in Thai sentences
+ok 9 - VORA replacement leaves English sentences, URLs, e-mail and longer identifiers alone
+ok 10 - VORA replacement is idempotent and keeps lookup keys consistent on both sides
+ok 11 - profile: VORA is EQ-only, speed 1.0, pitch 0
+ok 12 - character → voice is deterministic; unknown character → VORA (no random)
+ok 13 - no random / no pitch-by-playbackRate in voice core sources
+ok 14 - fallback order is fixed
+ok 15 - browser voice: female only, stable priority, never male
+ok 16 - precached lookup finds all 10 phrases (with or without ? ! ~)
+ok 17 - precached lookup: other text / other provider / English → null
+ok 18 - every precached URL points to an existing asset file
+ok 19 - EQ bands match the specified chain
+ok 20 - EQ chain (Phase 4 order): source → analyser → bass → clarity → treble → lowpass → gain → destination
+ok 21 - EQ live update and safe clamping
+ok 22 - one shared EQ per destination (no duplicate pipelines)
+# tests 22
+# pass 22
+# fail 0
+== frontend/tests/voice/voice-integration.test.mjs
+ok 1 - provider lock: whole response uses the locked provider (session carries provider)
+ok 2 - stream broken midway → rest of the same response stays on the same provider (never another server voice)
+ok 3 - edge fails mid-response and its sentences fail → remaining goes to browser female voice, NOT google
+ok 4 - primary gives no audio at all → fallback provider locked from the START of the response, no return to primary
+ok 5 - old server config (no order) → no provider param sent (legacy behaviour)
+ok 6 - no random switching: 10 responses in a row use one provider and one browser voice
+ok 7 - precached MP3: exact text + matching provider → asset played, no server TTS call
+ok 8 - precached MP3 not used for non-matching text, other provider, or when the asset fails
+ok 9 - Speaker sends normalized text; time/date/phone/URL/decimal/percent preserved
+ok 10 - emoji/markdown-only text → nothing spoken, no TTS call
+ok 11 - prefetch uses the same normalized text as speaking (cache keys match)
+ok 12 - pipeline: source → analyser → EQ (lowshelf, peaking, highshelf, lowpass) → gain 0.9 → destination
+ok 13 - no audio-graph leak: one AudioContext, one analyser, one EQ across many responses; every source released
+ok 14 - mouth level comes from the analyser (before EQ)
+ok 15 - no pitch manipulation: preservesPitch stays true, playbackRate = speed setting (1.0), no detune
+ok 16 - browser fallback: deterministic female voice; male-only machine → silent, never male
+ok 17 - stop(): halts playing audio and browser speech, resets state, next speak works
+ok 18 - voice command: only "หยุดพูด" (with polite endings) → STOP_SPEAKING
+ok 19 - app.js: "หยุดพูด" is handled before ask() and does not stop the robot
+ok 20 - wake word OFF: no always-on recognition anywhere in the kiosk; only voice.js creates SpeechRecognition
+ok 21 - Listener unchanged: one recognizer per start, continuous=false, interim results on
+ok 22 - Speaker public API kept
+ok 23 - no random voice selection in voice.js (Math.random only drives browser mouth level)
+# tests 23
+# pass 23
+# fail 0
+== frontend/tests/kiosk/greet-policy.test.mjs
+ok 1 - absence window: 8 s without anyone = new visitor (session ends after leaveMs, then the rest)
+ok 2 - new visitor is greeted immediately, even inside the greeting cooldown
+ok 3 - previous conversation left on screen: greet after 8 s of no interaction, and clear it first
+ok 4 - never interrupts listening / thinking / answering a user
+ok 5 - auto greeting off → never; forced test greeting → always, without reset by policy
+ok 6 - non-arrival greetings behave exactly as before (exhaustive comparison with the old rule)
+ok 7 - app.js wiring: new-visitor event greets as arrival; policy and absence window are used
+# tests 7
+# pass 7
+# fail 0

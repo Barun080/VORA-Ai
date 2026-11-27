@@ -1,0 +1,21 @@
+[general   # 1] Good morning! 😊 Curious about vocational education? Just ask VORA.
+[general   # 3] Good morning! 👋 Have a question about the college or vocational education? Ask VORA anytime.
+[general   # 6] Good morning! Since you're here, come and chat with VORA. Ask me anything about the college.
+[general   # 8] Good morning! ✨ What would you like VORA to show you about the college today?
+[program   # 2] Good morning! VORA is ready to help. Ask me about our programs, studying here, or college activities.
+[program   # 4] Good morning! 🎓 Want to explore a program, or see what's interesting here? Just ask VORA.
+[program   # 5] Good morning! 📚 VORA can show you our programs and stories from around the college. Where would you like to start?
+[admission #10] Good morning. 📝 If you need information about our curricula, programs, or admission, VORA is ready to assist you.
+[admission #12] Good morning. If you are looking for a path in vocational education, VORA can help you find the information that suits you.
+[activity  # 2] Good morning! ✨ VORA is ready to help. Ask me about our programs, studying here, or college activities.
+[activity  # 9] Good morning! 🏆 Programs, activities, or student projects, just ask VORA about any of them.
+[activity  #11] Good morning. VORA can provide information about education and life at the college. What would you like to know?
+[parent    #10] Good morning. If you need information about our curricula, programs, or admission, VORA is ready to assist you.
+[parent    #11] Good morning. VORA can provide information about education and life at the college. What would you like to know?
+[parent    #12] Good morning. If you are looking for a path in vocational education, VORA can help you find the information that suits you.
+[student   # 1] Good morning! 😊 Curious about vocational education? Just ask VORA.
+[student   # 7] Good morning! 👋 Thinking about vocational education? VORA can point you in the right direction.
+[student   # 8] Good morning! What would you like VORA to show you about the college today?
+[kiosk     # 6] Good morning! 😊 Since you're here, come and chat with VORA. Ask me anything about the college.
+[kiosk     # 7] Good morning! 👋 Thinking about vocational education? VORA can point you in the right direction.
+[kiosk     # 9] Good morning! ✨ Programs, activities, or student projects, just ask VORA about any of them.

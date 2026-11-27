@@ -1,0 +1,32 @@
+--- _backups/greeting-absence-voice-20261116/voice-core.test.mjs	2026-11-12 11:01:27.000000000 +0000
++++ frontend/tests/voice/voice-core.test.mjs	2026-11-16 13:17:53.903440000 +0000
+@@ -57,6 +57,29 @@
+   }
+ });
+ 
++// ------------------------------------------------------------ 16 พ.ย. 2569: ชื่อ VORA → พูดว่า "โวร่า" (เฉพาะเสียงพูด ประโยคไทย)
++test('name "VORA" is spoken as โวร่า in Thai sentences', () => {
++  assert.equal(n("สวัสดีค่ะ 😊 ลองถาม VORA ได้เลยนะคะ"), "สวัสดีค่ะ ลองถาม โวร่า ได้เลยนะคะ");
++  assert.equal(n("VORA พร้อมช่วยแล้วนะคะ"), "โวร่า พร้อมช่วยแล้วนะคะ");
++  assert.equal(n("หนูชื่อ Vora ค่ะ และ vora ยินดีช่วย (VORA)"), "หนูชื่อ โวร่า ค่ะ และ โวร่า ยินดีช่วย (โวร่า)");
++  assert.equal(n("**VORA** คือหุ่นยนต์ประชาสัมพันธ์"), "โวร่า คือหุ่นยนต์ประชาสัมพันธ์");
++});
++
++test("VORA replacement leaves English sentences, URLs, e-mail and longer identifiers alone", () => {
++  assert.equal(n("Hello! I'm VORA, the college's PR robot."), "Hello I'm VORA, the college's PR robot.");
++  const t = n("ดูเว็บ https://vora.example.com/VORA หรืออีเมล vora@example.com ค่ะ");
++  assert.ok(t.includes("https://vora.example.com/VORA") && t.includes("vora@example.com") && !t.includes("โวร่า"), t);
++  assert.equal(n("ตั้งค่า VORA_TTS_RATE และรุ่น VORA2 กับ myVORA ค่ะ"), "ตั้งค่า VORA_TTS_RATE และรุ่น VORA2 กับ myVORA ค่ะ");
++  assert.equal(n("โวร่า พร้อมช่วยค่ะ"), "โวร่า พร้อมช่วยค่ะ");
++});
++
++test("VORA replacement is idempotent and keeps lookup keys consistent on both sides", () => {
++  const t = "สวัสดีค่ะ ✨ VORA พร้อมพาไปรู้จักสาขาวิชาค่ะ อยากเริ่มจากเรื่องไหนดีคะ?";
++  assert.equal(n(n(t)), n(t));
++  assert.ok(!/VORA/i.test(n(t)));
++  assert.equal(lookupKey("ถาม VORA ได้เลยค่ะ!"), lookupKey("ถาม vora ได้เลยค่ะ"));
++});
++
+ // ------------------------------------------------------------ voice profile / character → voice
+ test("profile: VORA is EQ-only, speed 1.0, pitch 0", () => {
+   const p = profileFor("vora");

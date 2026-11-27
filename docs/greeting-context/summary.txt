@@ -1,0 +1,49 @@
+Context-aware Greeting + Anti-Repetition — 2026-11-16 ~19:40-20:00 local (approved by owner 19:33)
+
+scope: Thai auto-greeting only (POST /api/greet). English greeting, chat reply to "สวัสดี" (engine.py), welcome bubble, mobile page: unchanged (owner decision).
+
+files
+  NEW  backend/app/greetings.py        12 approved templates, 7 context pools, per-context emoji, context resolver, anti-repetition selector (no LLM)
+  MOD  backend/app/routers/public.py   GreetIn: + optional `context`, + optional `emoji` (default false); Thai branch of greet() calls _greeting_th()
+                                       (falls back to the old back-office greeting if selection raises -> request never fails because of selection)
+  MOD  frontend/kiosk/app.js           greet(): request body also sends context = open presentation section (or null) and emoji: true  (1 statement)
+  NEW  backend/tests/test_greeting.py  36 tests
+  backups + SHA256SUMS: _backups/greeting-context-20261116/   diffs: public.py.diff, app.js.diff   hashes: checksums-before.txt / checksums-after.txt
+not touched (sha256 verified against checksums-before.txt): engine.py, tts.py, services.py, voice.js, voice/speech-text.js, mobile/index.html, .env.example
+not touched: .env, DB schema, router/guard/RAG/LLM, TTS provider, avatar, auth, cache files, old designs (/pastel, /classic), admin UI.
+
+context selection (first match wins)
+  1 open presentation page sent by the kiosk: departments->program, admission->admission, news->activity, college->general (also accepts context names)
+  2 admission period (a published admission news item with a real event date within 60 days = Time Portal "important") -> admission,
+    but at most 1 greeting in every 3 (not if either of the previous 2 greetings was admission) so it does not override kiosk every time
+  3 trigger face/gesture/touch/patrol -> kiosk
+  4 otherwise / unknown -> general
+  parent / student pools exist but nothing in the system can detect them; used only if a caller sends context=parent|student.
+
+anti-repetition (after the context is chosen; in memory; reset on server restart)
+  candidates = pool minus (spoken in the last 5 greetings, any context) minus (already used in this context's current round); random among candidates
+  none left -> clear this context's round only, then pick from pool minus the last spoken greeting (prefer ones not in the last 5)
+  repetition key = spoken text without emoji (same sentence with a different emoji = same greeting). No retry loop.
+
+emoji: display text may carry one emoji (per context; some sentences deliberately have none). Sent only when the caller declares emoji:true
+  (new kiosk; it strips emoji in speechChunks/normalizeForSpeech before TTS — existing behaviour, not duplicated). Old designs do not send it -> no emoji.
+
+tests (Linux VM, Python 3.12.16, pytest 9.2.0, SQLite temp DB, netguard, one pytest process per file — same method as earlier phases)
+  test_greeting.py: 36/36 passed
+  full regression: 991 passed / 1 failed / 0 skipped / 992 (before: 955 / 1 / 956) -> +36 new tests, no existing test changed status;
+                   the 1 failure is the known order-dependent tests/test_system.py::test_reports_overview_and_csv
+  mutation checks (scratch copy outside the project): no recent filter -> 3 fail; no last-exclusion on reset -> 4 fail; cross-pool -> 21 fail;
+                   admission always overrides -> 2 fail; emoji always sent -> 1 fail; original -> 36 pass
+  node: frontend/tests/voice voice-core 19/19, voice-integration 23/23
+  emoji vs the kiosk's real normalizeForSpeech (emoji-speech-check.txt): 42 display texts, 26 with emoji, 0 spoken texts with emoji
+  live HTTP smoke test (uvicorn in the VM, temp SQLite, network blocked): /api/greet returned pool-correct texts for kiosk/departments/admission/news,
+                   group prefix, old-client request without emoji, English unchanged; served app.js contains the change
+  netguard: only LAN test addresses blocked (same as before); no TTS/LLM host contacted
+
+NOT verified
+  browser/UI scenario scripts (docs/*/…-scenarios.js): Chromium could not be downloaded in the VM -> not run
+  the real kiosk after restart: emoji on screen, section context actually sent, how Google TTS pronounces "VORA", first-time latency of new sentences (no cache yet)
+  PostgreSQL run (regression used SQLite)
+
+status: code changed on disk; the running server still has the old code until start.bat is restarted by the owner, and the kiosk page reloaded.
+rollback: copy public.py and app.js back from _backups/greeting-context-20261116/ (sha256 in SHA256SUMS.txt), delete or ignore greetings.py and test_greeting.py, restart.

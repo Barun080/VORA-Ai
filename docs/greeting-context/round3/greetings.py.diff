@@ -1,0 +1,72 @@
+--- _backups/greeting-english-20261116/greetings.py	2026-11-16 12:38:10.000000000 +0000
++++ backend/app/greetings.py	2026-11-16 13:33:01.304174400 +0000
+@@ -1,6 +1,8 @@
+ """คำทักทายตามบริบทของ VORA (Context-aware Greeting) — 16 พ.ย. 2569
+ 
+-ใช้กับการทักทายอัตโนมัติภาษาไทย (POST /api/greet) เท่านั้น · ไม่ใช้ LLM · ข้อความทั้งหมดเป็นแม่แบบคงที่ที่ทีมอนุมัติ
++ใช้กับการทักทายอัตโนมัติ (POST /api/greet) ทั้งไทยและอังกฤษ · ไม่ใช้ LLM · ข้อความทั้งหมดเป็นแม่แบบคงที่ที่ทีมอนุมัติ
++อังกฤษ (เพิ่ม 16 พ.ย. 2569 รอบ 3): คำแปลของ 12 ประโยคเดียวกัน ใช้ pool / Emoji / กันซ้ำชุดเดียวกับไทย
++  ขึ้นต้นด้วย Good morning / Good afternoon / Good evening ตามเวลาปัจจุบัน (แทน Hello) · หลายคน = "..., everyone"
+ 
+ ลำดับการทำงาน:
+   1) ระบุบริบท (resolve_context):
+@@ -52,6 +54,29 @@
+     12: "หากกำลังมองหาเส้นทางการศึกษาสายอาชีพ VORA พร้อมช่วยค้นหาข้อมูลที่เหมาะกับคุณค่ะ",
+ }
+ 
++# คำแปลอังกฤษของประโยคเดียวกัน (เลขตรงกัน) — ข้อความหลังคำทักตามเวลา (Good morning ฯลฯ)
++GREETINGS_EN: dict[int, str] = {
++    1: "Curious about vocational education? Just ask VORA.",
++    2: "VORA is ready to help. Ask me about our programs, studying here, or college activities.",
++    3: "Have a question about the college or vocational education? Ask VORA anytime.",
++    4: "Want to explore a program, or see what's interesting here? Just ask VORA.",
++    5: "VORA can show you our programs and stories from around the college. Where would you like to start?",
++    6: "Since you're here, come and chat with VORA. Ask me anything about the college.",
++    7: "Thinking about vocational education? VORA can point you in the right direction.",
++    8: "What would you like VORA to show you about the college today?",
++    9: "Programs, activities, or student projects, just ask VORA about any of them.",
++    10: "If you need information about our curricula, programs, or admission, VORA is ready to assist you.",
++    11: "VORA can provide information about education and life at the college. What would you like to know?",
++    12: "If you are looking for a path in vocational education, VORA can help you find the information that suits you.",
++}
++FORMAL_IDS = frozenset({10, 11, 12})     # กลุ่มทางการ: อังกฤษลงท้ายคำทักด้วย "." (กลุ่มอื่น "!")
++
++
++def salutation_en(hour: int) -> str:
++    """คำทักตามเวลา — เกณฑ์เดียวกับ /api/greet เดิม: ก่อน 12 น. / ก่อน 17 น. / หลังจากนั้น"""
++    return "Good morning" if hour < 12 else "Good afternoon" if hour < 17 else "Good evening"
++
++
+ # บริบท → (เลขประโยค, Emoji ตามบริบท) · "" = ไม่มี Emoji (ตั้งใจให้บางประโยคไม่มี)
+ POOL_SPEC: dict[str, tuple[tuple[int, str], ...]] = {
+     "general":   ((1, "😊"), (3, "👋"), (6, ""), (8, "✨")),
+@@ -88,19 +113,23 @@
+     emoji: str
+     body: str
+ 
+-    def display(self, people: int = 1, emoji: bool = True) -> str:
+-        """display_text — ข้อความบนหน้าจอ (มี Emoji ได้) · emoji=False สำหรับผู้เรียกที่ไม่ได้ตัด Emoji ก่อนส่งเสียงพูด"""
+-        head = HELLO_ALL if people > 1 else HELLO
++    def display(self, people: int = 1, emoji: bool = True, lang: str = "th", hour: int = 12) -> str:
++        """display_text — ข้อความบนหน้าจอ (มี Emoji ได้) · emoji=False สำหรับผู้เรียกที่ไม่ได้ตัด Emoji ก่อนส่งเสียงพูด
++        lang="en": คำแปลอังกฤษ ขึ้นต้นด้วยคำทักตามเวลา (hour = ชั่วโมงปัจจุบัน 0–23)"""
+         mark = f" {self.emoji}" if emoji and self.emoji else ""
++        if lang == "en":
++            head = salutation_en(hour) + (", everyone" if people > 1 else "")
++            return f"{head}{'.' if self.id in FORMAL_IDS else '!'}{mark} {GREETINGS_EN[self.id]}"
++        head = HELLO_ALL if people > 1 else HELLO
+         return f"{head}{mark} {self.body}"
+ 
+-    def tts_text(self, people: int = 1) -> str:
++    def tts_text(self, people: int = 1, lang: str = "th", hour: int = 12) -> str:
+         """tts_text — ข้อความที่พูด (ไม่มี Emoji)"""
+-        return strip_emoji(self.display(people, emoji=False))
++        return strip_emoji(self.display(people, emoji=False, lang=lang, hour=hour))
+ 
+     @property
+     def key(self) -> str:
+-        """คีย์กันซ้ำ = ข้อความที่พูด (Emoji ต่างกันแต่พูดเหมือนกัน = คีย์เดียวกัน)"""
++        """คีย์กันซ้ำ = ข้อความที่พูด (Emoji ต่างกันแต่พูดเหมือนกัน = คีย์เดียวกัน) · ไทย/อังกฤษของประโยคเดียวกันใช้คีย์เดียวกัน"""
+         return strip_emoji(self.body)
+ 
+ 

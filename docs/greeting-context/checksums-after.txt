@@ -1,0 +1,4 @@
+993fa84a0773f1ded8c57113601da0a319cd4bd0be2e6a62ab9a1359009d9c85  backend/app/greetings.py
+f0c348068ed6302316604a103a11c93d0ae1d7eb6ada61c1bc532dbaa8628dbc  backend/app/routers/public.py
+c0faec73d1684bb6386e7ecb04223ebde8f29d041b394c2603a41ade3d32c027  frontend/kiosk/app.js
+3e6af90e7e59de67fb558f662a010d35b6a813399b41e566dea7312d5982840d  backend/tests/test_greeting.py

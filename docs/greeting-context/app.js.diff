@@ -1,0 +1,12 @@
+--- _backups/greeting-context-20261116/app.js	2026-11-12 11:01:24.000000000 +0000
++++ frontend/kiosk/app.js	2026-11-16 12:38:11.559980700 +0000
+@@ -465,7 +465,8 @@
+   S.lastGreetAt = Date.now();
+   if (S.visitor) S.visitor.greeted = true;
+   try {
+-    const res = await api("/api/greet", { method: "POST", body: { session_id: S.sessionId, lang: S.lang, trigger: "face", people } });
++    const res = await api("/api/greet", { method: "POST", body: { session_id: S.sessionId, lang: S.lang, trigger: "face", people,
++      context: (orch && orch.section) || null, emoji: true } });   // 16 พ.ย. 2569: คำทักทายตามบริบท (หน้านำเสนอที่เปิดอยู่) · emoji: หน้าจอนี้ตัด Emoji ก่อนส่งเสียงพูด (speechChunks)
+     if (!im.holds(tok)) return;
+     bus.emit(EV.GREETING_STARTED, { people });
+     await respond({ ...res, answered: true, message_id: null }, { token: tok, kind: "greeting" });

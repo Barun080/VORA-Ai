@@ -1,0 +1,80 @@
+--- _backups/greeting-english-20261116/test_greeting.py	2026-11-16 12:39:21.000000000 +0000
++++ backend/tests/test_greeting.py	2026-11-16 13:33:22.768079000 +0000
+@@ -261,12 +261,71 @@
+         prev = spoken
+ 
+ 
+-def test_api_english_greeting_unchanged(client, no_admission):
+-    r = client.post("/api/greet", json={"lang": "en", "context": "departments", "emoji": True}).json()
+-    assert r["text"].split("! ", 1)[0] in ("Good morning", "Good afternoon", "Good evening")
+-    assert r["text"].endswith("Ask me about programs, admission or activities!") and not EMOJI.search(r["text"])
+-    r2 = client.post("/api/greet", json={"lang": "en", "people": 3}).json()
+-    assert r2["text"].startswith("Hello everyone! ")
++# ------------------------------------------------------------------ ภาษาอังกฤษ (16 พ.ย. 2569 รอบ 3)
++SALUTATIONS = ("Good morning", "Good afternoon", "Good evening")
++
++
++def _texts_en(ctx, emoji=True, people=1):
++    return {g.display(people, emoji=emoji, lang="en", hour=h) for g in POOLS[ctx] for h in (9, 14, 20)}
++
++
++def test_english_translations_cover_all_twelve():
++    assert sorted(G.GREETINGS_EN) == list(range(1, 13)) and len(set(G.GREETINGS_EN.values())) == 12
++    for gid, body in G.GREETINGS_EN.items():
++        assert "VORA" in body and not EMOJI.search(body) and body[-1] in ".?" and body.isascii(), gid
++        assert not body.startswith(("Hello", "Good "))          # คำทักตามเวลาเติมตอนแสดงผล ไม่ฝังในประโยค
++    assert G.FORMAL_IDS == {10, 11, 12}
++
++
++def test_english_salutation_follows_current_time():
++    for hour, want in [(0, "Good morning"), (11, "Good morning"), (12, "Good afternoon"), (16, "Good afternoon"),
++                       (17, "Good evening"), (23, "Good evening")]:
++        assert G.salutation_en(hour) == want
++    casual = next(g for g in POOLS["general"] if g.id == 1)      # 😊
++    formal = next(g for g in POOLS["admission"] if g.id == 10)   # 📝
++    assert casual.display(lang="en", hour=9) == "Good morning! 😊 Curious about vocational education? Just ask VORA."
++    assert casual.display(2, lang="en", hour=14) == "Good afternoon, everyone! 😊 Curious about vocational education? Just ask VORA."
++    assert casual.tts_text(lang="en", hour=20) == "Good evening! Curious about vocational education? Just ask VORA."
++    assert formal.display(lang="en", hour=20, emoji=False).startswith("Good evening. If you need information")
++    assert formal.display(3, lang="en", hour=9).startswith("Good morning, everyone. 📝 If you need")
++    for pool in POOLS.values():
++        for g in pool:
++            for h in (9, 14, 20):
++                d = g.display(lang="en", hour=h)
++                assert "Hello" not in d and "สวัสดี" not in d and not EMOJI.search(g.tts_text(lang="en", hour=h))
++                assert len(EMOJI.findall(d)) == (1 if g.emoji else 0)
++            assert g.display() == g.display(lang="th", hour=3)   # ไทยไม่ขึ้นกับเวลา (เหมือนเดิม)
++
++
++@pytest.mark.parametrize("section,ctx", [("departments", "program"), ("admission", "admission"), ("news", "activity"),
++                                         ("college", "general"), (None, "kiosk")])
++def test_api_english_uses_context_pools(client, no_admission, section, ctx):
++    for _ in range(6):
++        r = client.post("/api/greet", json={"lang": "en", "context": section, "emoji": True}).json()
++        assert r["text"] in _texts_en(ctx) and r["text"].startswith(SALUTATIONS) and r["lang"] == "en" and r["gesture"] == "wave"
++        assert "PR robot" not in r["text"]                       # ไม่ใช่ประโยคอังกฤษเดิมแล้ว
++
++
++def test_api_english_group_old_client_and_no_repeat(client, no_admission):
++    r = client.post("/api/greet", json={"lang": "en", "people": 3}).json()            # หน้าจอรุ่นเก่า: ไม่มี Emoji
++    assert r["text"] in _texts_en("kiosk", emoji=False, people=3) and ", everyone" in r["text"] and not EMOJI.search(r["text"])
++    prev = None
++    for i in range(24):                                                               # สลับไทย/อังกฤษ: ประโยคเดียวกันคนละภาษา = ซ้ำ
++        lang = "en" if i % 2 else "th"
++        t = client.post("/api/greet", json={"lang": lang, "context": "kiosk", "emoji": True}).json()["text"]
++        gid = next(g.id for g in POOLS["kiosk"] if t in {g.display(lang="th"), *(g.display(lang="en", hour=h) for h in (9, 14, 20))})
++        assert gid != prev
++        prev = gid
++
++
++def test_api_english_selection_failure_uses_old_greeting(client, monkeypatch):
++    def boom(*a, **k):
++        raise RuntimeError("selector broken")
++    monkeypatch.setattr(G, "choose", boom)
++    r = client.post("/api/greet", json={"lang": "en", "emoji": True})
++    assert r.status_code == 200
++    assert r.json()["text"].startswith(tuple(s + "! Hello! I'm VORA" for s in SALUTATIONS))
++    assert client.post("/api/greet", json={"lang": "en", "people": 2}).json()["text"].startswith("Hello everyone! ")
+ 
+ 
+ def test_api_selection_failure_never_fails_request(client, monkeypatch):

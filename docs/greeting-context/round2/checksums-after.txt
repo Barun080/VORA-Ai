@@ -1,0 +1,6 @@
+43d17aa298bec64add2cafcbcfe66633901af632ce06ad2523b44770a9396b17  frontend/kiosk/voice/speech-text.js
+f8b4fad23ed64c95e04723c731403e3b8d6799ba3ab7e6dcb08ccdf9661db5d2  frontend/kiosk/kiosk-config.js
+17356e8b1b2009a5bd384978a21c1464c5a443ac0f50c2ed322d37e59ca625a9  frontend/kiosk/app.js
+e7331daeaefa58120a7eea8fe7e93c977bb0788945184393f2a38161126af48b  frontend/kiosk/interaction/greet-policy.js
+d6ee55ad0f19dcdc15942b51f096686633b654d442fe6be494f3f146c3feb1b7  frontend/tests/voice/voice-core.test.mjs
+82bc400b292e17acd0d396adbc8d0aafc28cb6c575830cfcb5a3d97b6c165e20  frontend/tests/kiosk/greet-policy.test.mjs
