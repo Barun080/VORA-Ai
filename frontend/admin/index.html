@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VORA หลังบ้าน</title>
+  <link rel="icon" href="/assets/icon.svg">
+  <link rel="stylesheet" href="/shared/base.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <section class="login" id="login" hidden>
+    <form class="login-card" id="loginForm">
+      <img src="/assets/icon.svg" alt="" width="56" height="56">
+      <h1>หลังบ้าน VORA</h1>
+      <p>สำหรับเจ้าหน้าที่ดูแลข้อมูลประชาสัมพันธ์และหุ่นยนต์</p>
+      <label>ชื่อผู้ใช้<input id="lUser" autocomplete="username" required></label>
+      <label>รหัสผ่าน<input id="lPass" type="password" autocomplete="current-password" required></label>
+      <button class="btn primary" type="submit">เข้าสู่ระบบ</button>
+      <p class="error" id="lErr" role="alert"></p>
+    </form>
+  </section>
+
+  <div class="shell" id="shell" hidden>
+    <aside class="side">
+      <div class="side-brand"><img src="/assets/icon.svg" alt="" width="34" height="34"><div><b>VORA</b><small>หลังบ้าน</small></div></div>
+      <nav id="nav"></nav>
+      <div class="side-foot">
+        <div id="whoami"></div>
+        <a href="/" target="_blank" rel="noopener">เปิดหน้าจอหุ่นยนต์</a>
+        <button class="link" id="logout">ออกจากระบบ</button>
+      </div>
+    </aside>
+    <main class="content">
+      <header class="bar">
+        <button class="menu-btn" id="menuBtn" aria-label="เมนู">☰</button>
+        <h1 id="viewTitle">ภาพรวม</h1>
+        <div class="bar-right">
+          <span class="live" id="liveDot" title="การเชื่อมต่อแบบเรียลไทม์"></span>
+          <button class="btn danger" id="stopRobot" title="หยุดหุ่นยนต์ทันที">หยุดหุ่นยนต์</button>
+        </div>
+      </header>
+      <div class="view" id="view"></div>
+    </main>
+  </div>
+
+  <dialog class="modal" id="modal"><form method="dialog" id="modalForm"></form></dialog>
+  <div class="toast" id="toast" role="status" hidden></div>
+
+  <script src="/assets/vendor/chart.umd.js"></script>
+  <script type="module" src="admin.js"></script>
+</body>
+</html>
