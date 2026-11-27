@@ -1,0 +1,72 @@
+{
+ "batch": "kbfix-20261127-college-facts",
+ "note": "27 พ.ย. 2569: เติมความรู้ที่เคยตอบว่า 'ยังไม่พบข้อมูล' จากเว็บไซต์/เอกสารทางการของวิทยาลัยเทคนิคน่าน (ตรวจผ่านเบราว์เซอร์ 27 พ.ย. 2569) · ข้อที่หาแหล่งไม่ได้ (หอพัก รถรับส่ง เวลาทำการ ชมรม ห้องน้ำ ที่จอดรถ งานทะเบียน อายุผู้สมัคร ผู้หญิงเรียนช่าง เทียบโอน) ไม่ได้แก้ — คงคำตอบเดิม",
+ "fixes": [
+  {
+   "match_question": "ค่าเทอมวิทยาลัยเทคนิคน่านเท่าไหร่",
+   "answer_th": "ข้อมูลล่าสุดที่วิทยาลัยเผยแพร่บนเว็บไซต์คือเอกสาร 'รายละเอียดสำหรับการมอบตัว' ปีการศึกษา 2565 ค่ะ ค่าบำรุงการศึกษาที่ชำระในวันมอบตัว ระดับ ปวช. รวม 2,300 บาท และระดับ ปวส. รวม 2,650 บาท (เช่น ค่าพัฒนาคุณภาพการศึกษา 1,000 บาท ค่าสวัสดิการและประกันอุบัติเหตุ 500 บาท ค่าบำรุงสมาคมผู้ปกครองและครู 300 บาทต่อปี) ยังไม่รวมค่าชุดนักศึกษา อัตราปีปัจจุบันอาจเปลี่ยนแปลง ตรวจสอบกับงานการเงินหรืองานทะเบียน โทร 054-719552 ต่อ 103 ก่อนมอบตัวนะคะ",
+   "answer_en": "The latest figures the college has published are in its 2022 (B.E. 2565) enrollment details: fees paid on enrollment day totalled 2,300 baht for the Certificate (Por Wor Chor) level and 2,650 baht for the Diploma (Por Wor Sor) level, not including uniforms. Current rates may differ, so please confirm with the registration office at 054-719552 ext. 103.",
+   "sources": [{"title": "วิทยาลัยเทคนิคน่าน: รายละเอียดสำหรับการมอบตัว (มอบตัว 12 มี.ค. 2565) เผยแพร่ 11 มี.ค. 2565", "url": "http://technicnan.ac.th/data/175.pdf"}]
+  },
+  {
+   "match_question": "ค่าเทอมเท่าไหร่?",
+   "answer_th": "ข้อมูลล่าสุดที่วิทยาลัยเผยแพร่บนเว็บไซต์คือเอกสาร 'รายละเอียดสำหรับการมอบตัว' ปีการศึกษา 2565 ค่ะ ค่าบำรุงการศึกษาที่ชำระในวันมอบตัว ระดับ ปวช. รวม 2,300 บาท และระดับ ปวส. รวม 2,650 บาท ยังไม่รวมค่าชุดนักศึกษา อัตราปีปัจจุบันอาจเปลี่ยนแปลง ตรวจสอบกับงานการเงินหรืองานทะเบียน โทร 054-719552 ต่อ 103 นะคะ",
+   "answer_en": "Per the college's 2022 (B.E. 2565) enrollment details, enrollment-day fees totalled 2,300 baht (Certificate level) and 2,650 baht (Diploma level), excluding uniforms. Current rates may differ; please confirm at 054-719552 ext. 103.",
+   "sources": [{"title": "วิทยาลัยเทคนิคน่าน: รายละเอียดสำหรับการมอบตัว ปีการศึกษา 2565", "url": "http://technicnan.ac.th/data/175.pdf"}]
+  },
+  {
+   "match_question": "ค่าเทอมเท่าไหร่",
+   "answer_th": "ข้อมูลล่าสุดที่วิทยาลัยเผยแพร่บนเว็บไซต์คือเอกสาร 'รายละเอียดสำหรับการมอบตัว' ปีการศึกษา 2565 ค่ะ ค่าบำรุงการศึกษาที่ชำระในวันมอบตัว ระดับ ปวช. รวม 2,300 บาท และระดับ ปวส. รวม 2,650 บาท ยังไม่รวมค่าชุดนักศึกษา อัตราปีปัจจุบันอาจเปลี่ยนแปลง ตรวจสอบกับงานการเงินหรืองานทะเบียน โทร 054-719552 ต่อ 103 นะคะ",
+   "answer_en": "Per the college's 2022 (B.E. 2565) enrollment details, enrollment-day fees totalled 2,300 baht (Certificate level) and 2,650 baht (Diploma level), excluding uniforms. Current rates may differ; please confirm at 054-719552 ext. 103.",
+   "sources": [{"title": "วิทยาลัยเทคนิคน่าน: รายละเอียดสำหรับการมอบตัว ปีการศึกษา 2565", "url": "http://technicnan.ac.th/data/175.pdf"}]
+  },
+  {
+   "match_question": "ค่ามอบตัวหรือค่าธรรมเนียมแรกเข้าเท่าไหร่",
+   "category": "tuition",
+   "alt_questions": "ค่ามอบตัวเท่าไหร่\nค่าธรรมเนียมแรกเข้า\nวันมอบตัวต้องจ่ายเงินเท่าไหร่\nค่าบำรุงการศึกษาเท่าไหร่",
+   "answer_th": "ตามเอกสารรายละเอียดสำหรับการมอบตัว ปีการศึกษา 2565 ของวิทยาลัยค่ะ ระดับ ปวช. ชำระ 2,300 บาท ได้แก่ ค่าบัตรประจำตัว 100 ค่าพัฒนาคุณภาพการศึกษา 1,000 ค่าสวัสดิการและประกันอุบัติเหตุ 500 ค่าบำรุงสมาคมผู้ปกครองและครู 300 ค่าปฐมนิเทศ 200 และค่าสาธารณูปโภค 200 บาท ส่วนระดับ ปวส. ชำระ 2,650 บาท (เพิ่มค่าสมัคร 50 ค่าขึ้นทะเบียน 100 ค่าบำรุงห้องพยาบาลและห้องสมุดภาคเรียนละ 100 บาท) อัตราปีปัจจุบันอาจเปลี่ยน สอบถามโทร 054-719552 ต่อ 103 ค่ะ",
+   "answer_en": "Per the college's 2022 (B.E. 2565) enrollment details: Certificate level 2,300 baht and Diploma level 2,650 baht, paid on enrollment day. Current rates may differ; please call 054-719552 ext. 103.",
+   "sources": [{"title": "วิทยาลัยเทคนิคน่าน: รายละเอียดสำหรับการมอบตัว ปีการศึกษา 2565", "url": "http://technicnan.ac.th/data/175.pdf"}]
+  },
+  {
+   "match_question": "ชุดนักศึกษาและเครื่องแบบนักศึกษา",
+   "answer_th": "ตามเอกสารรายละเอียดสำหรับการมอบตัว ปีการศึกษา 2565 ค่าเสื้อผ้าชุดนักศึกษาที่ซื้อในวันมอบตัวเป็นดังนี้ค่ะ ระดับ ปวช. ประเภทอุตสาหกรรม ชาย 2,190 บาท หญิง 2,120 บาท ประเภทพาณิชยกรรม/คหกรรม ชาย 1,820 บาท หญิง 1,800 บาท ระดับ ปวส. ประเภทอุตสาหกรรม ชาย 2,880 บาท ประเภทบริหารธุรกิจ/คหกรรม ชาย 1,610 บาท หญิง 1,550 บาท แต่ละชุดมีเสื้อนักศึกษา กางเกงหรือกระโปรง รองเท้า ถุงเท้า เข็มขัด ชุดพละ และชุดพื้นเมือง ราคาปีปัจจุบันอาจเปลี่ยน สอบถามวิทยาลัยได้ที่ 054-719552 ค่ะ",
+   "answer_en": "Per the college's 2022 (B.E. 2565) enrollment details, uniform sets bought on enrollment day cost: Certificate level, industrial track 2,190 baht (male) / 2,120 baht (female); commerce/home economics 1,820 / 1,800 baht. Diploma level, industrial (male) 2,880 baht; business/home economics 1,610 / 1,550 baht. Current prices may differ.",
+   "sources": [{"title": "วิทยาลัยเทคนิคน่าน: รายละเอียดสำหรับการมอบตัว ปีการศึกษา 2565 (ราคาชุด ปวส. อุตสาหกรรมหญิงอ่านไม่ชัดในเอกสาร จึงไม่ใส่)", "url": "http://technicnan.ac.th/data/175.pdf"}]
+  },
+  {
+   "match_question": "วิทยาลัยเทคนิคน่านมีนักเรียนกี่คน",
+   "answer_th": "ตามข้อมูลนักเรียนนักศึกษาบนเว็บไซต์วิทยาลัย ปีการศึกษา 2568 มีนักเรียนนักศึกษารวมทั้งสิ้น 2,027 คนค่ะ แบ่งเป็นระดับ ปวช. 1,102 คน และระดับ ปวส. 925 คน",
+   "answer_en": "According to the college website, in academic year 2025 (B.E. 2568) the college had 2,027 students in total: 1,102 at Certificate (Por Wor Chor) level and 925 at Diploma (Por Wor Sor) level.",
+   "sources": [{"title": "วิทยาลัยเทคนิคน่าน: ข้อมูลนักเรียน นักศึกษา ประจำปีการศึกษา 2568", "url": "http://technicnan.ac.th/IS_student.php"}]
+  },
+  {
+   "match_question": "อาคารเรียนและห้องเรียนอยู่ที่ไหน",
+   "answer_th": "ตามข้อมูลอาคารในแผนปฏิบัติราชการปี 2564 วิทยาลัยมีเนื้อที่ 31 ไร่ 2 งาน 69 ตารางวา มีอาคาร 18 หลัง รวม 277 ห้องค่ะ เช่น อาคาร 1 อาคารอำนวยการ อาคาร 2 อาคารวิทยาศาสตร์ อาคาร 3 แผนกช่างไฟฟ้า อาคาร 5 แผนกบริหารธุรกิจ อาคาร 6 แผนกสามัญสัมพันธ์ อาคาร 8 แผนกช่างกลโรงงาน อาคาร 9 แผนกช่างอิเล็กทรอนิกส์ อาคาร 10 โรงฝึกงานช่างยนต์และช่างก่อสร้าง อาคาร 11 โรงฝึกงานช่างเชื่อม รวมถึงหอประชุมวิษณุรักษ์ อาคารกีฬาเอนกประสงค์ภักดีนวมินทร์ และอาคารวิทยบริการและห้องสมุด ถ้าหาห้องไม่เจอ สอบถามเจ้าหน้าที่ใกล้ ๆ ได้เลยค่ะ",
+   "answer_en": "According to the college's 2021 building data, the campus covers about 31 rai and has 18 buildings with 277 rooms, e.g. Building 1 (Administration), Building 2 (Science), Building 3 (Electrical), Building 5 (Business), Building 8 (Machine Shop), Building 9 (Electronics), workshops for Automotive, Construction and Welding, the Witsanurak auditorium, the Phakdee Nawamin multi-purpose sports hall, and the Learning Resources and Library building.",
+   "sources": [{"title": "วิทยาลัยเทคนิคน่าน: ข้อมูลอาคาร (แผนปฏิบัติราชการ ประจำปีงบประมาณ พ.ศ. 2564)", "url": "http://technicnan.ac.th/data/t10.pdf"}]
+  },
+  {
+   "match_question": "ห้องสมุดอยู่ที่ไหน",
+   "answer_th": "ห้องสมุดอยู่ใน 'อาคารวิทยบริการและห้องสมุด' ของวิทยาลัยค่ะ (ตามข้อมูลอาคารปี 2564) และยังมีห้องสมุดออนไลน์ e-Library ที่ nan.vlcloud.net ซึ่งลิงก์จากหน้าเว็บไซต์วิทยาลัย ส่วนตำแหน่งอาคารในวิทยาลัย สอบถามเจ้าหน้าที่ได้เลยค่ะ",
+   "answer_en": "The library is in the college's Learning Resources and Library building (per 2021 building data). There is also an e-Library at nan.vlcloud.net, linked from the college website.",
+   "sources": [{"title": "วิทยาลัยเทคนิคน่าน: ข้อมูลอาคาร 2564", "url": "http://technicnan.ac.th/data/t10.pdf"}, {"title": "เว็บไซต์วิทยาลัยเทคนิคน่าน (ลิงก์ e-Library)", "url": "http://technicnan.ac.th/"}]
+  },
+  {
+   "match_question": "วิทยาลัยมีนักศึกษาวิชาทหาร (รด.) ไหม",
+   "category": "activity",
+   "alt_questions": "เรียน รด. ได้ไหม\nสมัคร รด. ที่ไหน\nมีนักศึกษาวิชาทหารไหม\nเรียนรักษาดินแดนได้ไหม",
+   "answer_th": "มีค่ะ วิทยาลัยเคยประกาศรับสมัครนักศึกษาวิชาทหาร (รด.) ปีที่ 1 และปีที่ 4 ปีการศึกษา 2566 โดยให้สมัครที่ห้องกิจกรรม (ประกาศ 25 พ.ค. 2566) ส่วนกำหนดการรับสมัครปีนี้ สอบถามงานกิจกรรมนักเรียน นักศึกษา โทร 054-719552 ค่ะ",
+   "answer_en": "Yes. The college announced Territorial Defence Student (Ror Dor) enrolment for years 1 and 4 in academic year 2023, applying at the Student Activities room. For this year's dates, contact the Student Activities office at 054-719552.",
+   "sources": [{"title": "วิทยาลัยเทคนิคน่าน: รับสมัครนักศึกษาวิชาทหาร (รด.) ปีที่ 1 และปีที่ 4 ปีการศึกษา 2566 (25 พ.ค. 2566)", "url": "http://technicnan.ac.th/total_new.php?view=375"}]
+  },
+  {
+   "match_question": "วิทยาลัยมีหลักสูตรทวิศึกษาไหม",
+   "category": "admission",
+   "alt_questions": "ทวิศึกษาคืออะไร\nเรียน ม.ปลายพร้อม ปวช. ได้ไหม\nเรียนสองวุฒิได้ไหม",
+   "answer_th": "ทวิศึกษาคือการเรียนหลักสูตรอาชีวศึกษา (ปวช.) ควบคู่กับมัธยมศึกษาตอนปลาย ตามงานวิจัยของมหาวิทยาลัยราชภัฏเชียงราย วิทยาลัยเทคนิคน่านเริ่มใช้หลักสูตรนี้ตั้งแต่ปีการศึกษา 2559 ค่ะ ส่วนปีนี้เปิดร่วมกับโรงเรียนใดและสาขาใด หนูยังไม่มีข้อมูลที่ยืนยันได้ สอบถามงานทะเบียน โทร 054-719552 ต่อ 103 ค่ะ",
+   "answer_en": "Dual education (Thawi Suksa) means studying a vocational certificate together with upper-secondary school. According to a Chiang Rai Rajabhat University study, Nan Technical College began this programme in academic year 2016. Current partner schools and programmes are not confirmed; please contact the registration office at 054-719552 ext. 103.",
+   "sources": [{"title": "ณัฐพล ไชยยงค์: แนวทางการบริหารหลักสูตรทวิศึกษา วิทยาลัยเทคนิคน่าน (วารสาร มรภ.เชียงราย, TCI)", "url": "https://so05.tci-thaijo.org/index.php/jeducrru/article/download/252969/171376/905617"}]
+  }
+ ]
+}

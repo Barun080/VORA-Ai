@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+data/
+frontend/assets/models/*.tflite
+frontend/assets/models/*.task
+.pytest_cache/
+.env.bak-*
+_backups/
+exports/

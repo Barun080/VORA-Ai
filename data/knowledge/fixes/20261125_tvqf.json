@@ -1,0 +1,19 @@
+{
+  "batch": "kbfix-20261125-tvqf",
+  "note": "แก้คำตอบ 'กรอบคุณวุฒิอาชีวศึกษาแห่งชาติคืออะไร' — ฉบับเดิมอ้าง พ.ศ. 2562 ซึ่งถูกยกเลิกแล้ว ระบุผู้ออกประกาศผิด (ฉบับ 2562 เป็นประกาศกระทรวงศึกษาธิการ ไม่ใช่ประกาศคณะกรรมการการอาชีวศึกษา) และไม่บอกว่ากรอบนี้คืออะไร",
+  "fixes": [
+    {
+      "match_question": "กรอบคุณวุฒิอาชีวศึกษาแห่งชาติคืออะไร",
+      "category": "general",
+      "question": "กรอบคุณวุฒิอาชีวศึกษาแห่งชาติคืออะไร",
+      "alt_questions": "มาตรฐานคุณวุฒิอาชีวศึกษา\nกรอบคุณวุฒิอาชีวะคืออะไร\nTVQF คืออะไร\nกรอบคุณวุฒิอาชีวศึกษาแห่งชาติ พ.ศ. 2567\nปวช. ปวส. ต้องมีผลลัพธ์การเรียนรู้กี่ด้าน",
+      "answer_th": "กรอบคุณวุฒิอาชีวศึกษาแห่งชาติ คือกรอบที่กำหนดมาตรฐานคุณภาพของผู้สำเร็จการศึกษาอาชีวศึกษาทุกระดับและทุกสาขาวิชา ใช้เป็นหลักในการกำหนดเกณฑ์มาตรฐานคุณวุฒิแต่ละระดับ การพัฒนาหรือปรับปรุงหลักสูตรฐานสมรรถนะ การพัฒนาคุณภาพการจัดการอาชีวศึกษา และการรับรองหลักสูตรและคุณวุฒิของผู้สำเร็จการศึกษาค่ะ ฉบับที่ใช้อยู่ปัจจุบันคือประกาศกระทรวงศึกษาธิการ เรื่อง กรอบคุณวุฒิอาชีวศึกษาแห่งชาติ พ.ศ. 2567 ประกาศในราชกิจจานุเบกษาเมื่อวันที่ 2 กุมภาพันธ์ 2567 และยกเลิกฉบับ พ.ศ. 2562 แล้วค่ะ กรอบนี้มี 3 ระดับคุณวุฒิ คือ ประกาศนียบัตรวิชาชีพ (ปวช.) ประกาศนียบัตรวิชาชีพชั้นสูง (ปวส.) และปริญญาตรีสายเทคโนโลยีหรือสายปฏิบัติการ ผู้สำเร็จการศึกษาต้องมีผลลัพธ์การเรียนรู้อย่างน้อย 4 ด้าน ได้แก่ ด้านคุณธรรม จริยธรรม และคุณลักษณะที่พึงประสงค์ ด้านความรู้ ด้านทักษะ และด้านความสามารถในการประยุกต์ใช้และความรับผิดชอบค่ะ",
+      "answer_en": "The National Vocational Qualifications Framework sets the quality standard that vocational graduates of every level and field must meet. It is the basis for setting the qualification standards of each level, developing or revising competency-based curricula, improving the quality of vocational education, and accrediting curricula and graduates' qualifications. The framework in force is the Ministry of Education Announcement on the National Vocational Qualifications Framework B.E. 2567 (2024), published in the Royal Gazette on 2 February 2024, which repealed the B.E. 2562 (2019) version. It covers 3 qualification levels: the Vocational Certificate (Por Wor Chor), the Higher Vocational Certificate (Por Wor Sor), and the bachelor's degree in technology or practical-application tracks. Graduates must achieve learning outcomes in at least 4 domains: ethics, morals and desirable characteristics; knowledge; skills; and application ability and responsibility.",
+      "sources": [
+        {"title": "ประกาศกระทรวงศึกษาธิการ เรื่อง กรอบคุณวุฒิอาชีวศึกษาแห่งชาติ พ.ศ. ๒๕๖๗ — ราชกิจจานุเบกษา เล่ม ๑๔๑ ตอนพิเศษ ๓๓ ง หน้า ๒๒–๒๕ (๒ ก.พ. ๒๕๖๗) ลงนาม พลตำรวจเอก เพิ่มพูน ชิดชอบ รัฐมนตรีว่าการกระทรวงศึกษาธิการ ๒๕ ม.ค. ๒๕๖๗",
+         "url": "https://ratchakitcha.soc.go.th/documents/19469.pdf",
+         "used": "ข้อ ๓ (ยกเลิกฉบับ ๒๕๖๒ ลงวันที่ ๑๓ ก.พ. ๒๕๖๒) · ข้อ ๔ (วัตถุประสงค์) · ข้อ ๕.๑ (๓ ระดับ) · ข้อ ๕.๒ (ผลลัพธ์การเรียนรู้อย่างน้อย ๔ ด้าน)"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+﻿website_department,vora_program,vora_code,vora_status,result
+การตลาด,การตลาด,VTCN-MARKETING,published,OK
+การจัดการสำนักงาน,การจัดการสำนักงาน,VTCN-OFFICE,published,OK
+การบัญชี,การบัญชี,VTCN-ACCOUNT,published,OK
+เทคโนโลยีสารสนเทศ,เทคโนโลยีสารสนเทศ,VTCN-IT,published,OK
+สามัญสัมพันธ์,,,,NOT_A_PROGRAM (สอนวิชาพื้นฐาน ไม่รับสมัคร)
+ช่างไฟฟ้ากำลัง,ช่างไฟฟ้ากำลัง,VTCN-POWER,published,OK
+ช่างกลโรงงาน,ช่างกลโรงงาน,VTCN-MACHINE,published,OK
+ช่างเชื่อมโลหะ,ช่างเชื่อมโลหะ,VTCN-WELD,published,OK
+ช่างอิเล็กทรอนิกส์,ช่างอิเล็กทรอนิกส์,VTCN-ELEC,published,OK
+ช่างยนต์,ช่างยนต์,VTCN-AUTO,published,OK
+ช่างก่อสร้าง,ช่างก่อสร้าง,VTCN-CONST,published,OK
+เทคโนโลยีคอมพิวเตอร์,เทคโนโลยีคอมพิวเตอร์,VTCN-COMPUTER,published,OK
+เมคคาทรอนิกส์และหุ่นยนต์,เมคคาทรอนิกส์และหุ่นยนต์,VTCN-MECHA,published,OK
+เทคนิคพื้นฐาน,เทคนิคพื้นฐาน,VTCN-BASIC,published,OK
+อาหารและโภชนาการ,อาหารและโภชนาการ,VTCN-FOOD,published,OK
+เทคนิคยานยนต์ไฟฟ้า,เทคนิคยานยนต์ไฟฟ้า,VTCN-EV,published,OK
+เทคโนโลยีธุรกิจดิจิทัล,เทคโนโลยีธุรกิจดิจิทัล,VTCN-DIGIBIZ,published,OK
+เทคนิคอุตสาหกรรม,เทคนิคอุตสาหกรรม,VTCN-INDUS,published,OK
+,เทคโนโลยีสารสนเทศ,IT,archived,DUPLICATE_NAME (ไม่ได้เผยแพร่)
+,ช่างไฟฟ้ากำลัง,ELEC,archived,DUPLICATE_NAME (ไม่ได้เผยแพร่)
+,ช่างยนต์,AUTO,archived,DUPLICATE_NAME (ไม่ได้เผยแพร่)
+,การบัญชี,ACC,archived,DUPLICATE_NAME (ไม่ได้เผยแพร่)
+,เมคคาทรอนิกส์และหุ่นยนต์,MECHA,archived,DUPLICATE_NAME (ไม่ได้เผยแพร่)
+,เทคโนโลยีธุรกิจดิจิทัล,DBT,archived,DUPLICATE_NAME (ไม่ได้เผยแพร่)

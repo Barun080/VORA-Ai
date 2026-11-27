@@ -1,0 +1,42 @@
+{
+ "batch": "kbdraft-20261127-general",
+ "note": "27 พ.ย. 2569: ร่างคำตอบคำถามทั่วไปที่ระบบตอบไม่ได้ (บันทึก 'ตอบไม่ได้' จริง) — สถานะ 'รออนุมัติ' ยังไม่ถูกใช้ตอบจนกว่าเจ้าหน้าที่จะตรวจและกดอนุมัติที่หลังบ้าน › ฐานความรู้ AI · ข้อเท็จจริงทุกข้อมาจากข้อที่อนุมัติแล้วในฐานความรู้ หรือแหล่งที่ระบุ ไม่เพิ่มตัวเลขใหม่",
+ "fixes": [
+  {
+   "match_question": "เรียนสายอาชีพยากไหม",
+   "status": "pending",
+   "category": "general",
+   "alt_questions": "เรียนยากไหม\nเรียนหนักไหม\nเรียนอาชีวะยากไหม\nเรียนที่นี่ยากไหม\nเรียนสายช่างยากไหม",
+   "answer_th": "ความยากขึ้นอยู่กับสาขาและความถนัดของแต่ละคนค่ะ การเรียนสายอาชีพเน้นเรียนรู้จากการลงมือทำ ฝึกใช้เครื่องมือและอุปกรณ์ของสาขา ถ้าชอบลงมือปฏิบัติจะเรียนได้สนุกขึ้น ลองบอกสาขาที่สนใจได้นะคะ หนูจะเล่าว่าสาขานั้นเรียนอะไรบ้าง หรือถ้ายังไม่แน่ใจ ลองให้หนูช่วยแนะนำสาขาตามความชอบก็ได้ค่ะ",
+   "answer_en": "It depends on the program and on what you're good at. Vocational study is hands-on: you learn by doing and practise with real tools. Tell me which program interests you and I'll explain what it covers.",
+   "sources": [{"title": "ฐานความรู้ข้อ 57 'ทำไมการเรียนสายอาชีพจึงน่าสนใจ' (เรียนรู้จากการลงมือทำ ฝึกใช้เครื่องมือ) — ส่วนที่เหลือเป็นคำแนะนำทั่วไป ไม่มีข้อเท็จจริงใหม่", "url": ""}]
+  },
+  {
+   "match_question": "เล่าเกี่ยวกับวิทยาลัยเทคนิคน่านหน่อย",
+   "status": "pending",
+   "category": "general",
+   "alt_questions": "เกี่ยวกับวิทยาลัยเทคนิคน่าน\nแนะนำวิทยาลัยหน่อย\nวิทยาลัยเทคนิคน่านเป็นยังไง\nเล่าเรื่องวิทยาลัยให้ฟังหน่อย",
+   "answer_th": "วิทยาลัยเทคนิคน่านอยู่ที่ถนนรอบกำแพงเมืองทิศตะวันตก ตำบลในเวียง อำเภอเมืองน่าน ค่ะ เริ่มจากโรงเรียนช่างไม้น่านที่เปิดสอนเมื่อ 1 สิงหาคม พ.ศ. 2481 และยกฐานะเป็นวิทยาลัยเทคนิคน่านเมื่อ พ.ศ. 2523 ปัจจุบันเปิดสอน 3 ระดับ คือ ปวช. ปวส. และปริญญาตรีสายปฏิบัติการ (ทล.บ.) มีแผนกวิชา 18 แผนก สนใจเรื่องไหนถามต่อได้เลยค่ะ",
+   "answer_en": "Nan Technical College is on Rob Kamphaeng Mueang West Road, Nai Wiang, Mueang Nan. It began as Nan Carpentry School in 1938 and became Nan Technical College in 1980. It offers three levels (Vocational Certificate, Higher Vocational Diploma and a Bachelor of Technology) across 18 departments.",
+   "sources": [{"title": "ฐานความรู้ข้อ 45 (ที่ตั้ง) · 191 (ประวัติ) · 52 (ระดับที่เปิดสอน) · 16 (18 แผนก) — รวมข้อที่อนุมัติแล้ว", "url": ""}]
+  },
+  {
+   "match_question": "อาชีวะมีที่ไหนบ้าง",
+   "status": "pending",
+   "category": "general",
+   "alt_questions": "วิทยาลัยอาชีวะมีที่ไหนบ้าง\nเรียนอาชีวะได้ที่ไหน",
+   "answer_th": "สถานศึกษาอาชีวะมีทั่วประเทศค่ะ อยู่ในความดูแลของสำนักงานคณะกรรมการการอาชีวศึกษา (สอศ.) ซึ่งมีสถาบันการอาชีวศึกษาในสังกัด 23 แห่ง ดูรายชื่อสถานศึกษาทั้งหมดได้ที่เว็บไซต์ สอศ. www.vec.go.th ค่ะ ส่วนในเมืองน่าน หนูเป็นหุ่นยนต์ของวิทยาลัยเทคนิคน่าน ถามเรื่องวิทยาลัยได้เลยนะคะ",
+   "answer_en": "Vocational colleges are nationwide under the Office of the Vocational Education Commission (OVEC), which has 23 vocational institutes. See www.vec.go.th for the full list. I'm the robot of Nan Technical College, so ask me anything about it.",
+   "sources": [{"title": "ฐานความรู้ข้อ 59 (สอศ.) และข้อ 62 (สถาบันการอาชีวศึกษา 23 แห่ง)", "url": ""}, {"title": "เว็บไซต์ สอศ. (data.go.th ระบุ URL หน่วยงาน)", "url": "https://data.go.th/en/dataset/vec_grad"}]
+  },
+  {
+   "match_question": "เว็บไซต์ข้อมูลอาชีวศึกษาคืออะไร",
+   "status": "pending",
+   "category": "general",
+   "alt_questions": "เว็บไซต์เกี่ยวกับข้อมูลอาชีวะ\nหาข้อมูลอาชีวะได้ที่ไหน\nเว็บ สอศ.\nเว็บไซต์วิทยาลัยคืออะไร",
+   "answer_th": "ข้อมูลอาชีวศึกษาระดับประเทศดูได้ที่เว็บไซต์สำนักงานคณะกรรมการการอาชีวศึกษา (สอศ.) www.vec.go.th ค่ะ ส่วนข้อมูลของวิทยาลัยเทคนิคน่าน ดูได้ที่ www.technicnan.ac.th หรือถามหนูได้เลยค่ะ",
+   "answer_en": "National vocational education information is on the OVEC website, www.vec.go.th. For Nan Technical College, see www.technicnan.ac.th or just ask me.",
+   "sources": [{"title": "เว็บไซต์ สอศ. (data.go.th ระบุ URL หน่วยงาน)", "url": "https://data.go.th/en/dataset/vec_grad"}, {"title": "เว็บไซต์วิทยาลัยเทคนิคน่าน", "url": "https://www.technicnan.ac.th"}]
+  }
+ ]
+}
