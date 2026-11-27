@@ -1,0 +1,101 @@
+{
+  "name": "VORA example layers (exported from the placeholder avatar)",
+  "label": "อวตาร VORA (ภาพเลเยอร์ตัวอย่าง)",
+  "viewBox": [
+    0,
+    0,
+    400,
+    820
+  ],
+  "pivots": {
+    "head": [
+      200,
+      268
+    ],
+    "armL": [
+      150,
+      302
+    ],
+    "elbowL": [
+      150,
+      392
+    ],
+    "armR": [
+      250,
+      302
+    ],
+    "elbowR": [
+      250,
+      392
+    ],
+    "feet": [
+      200,
+      790
+    ]
+  },
+  "layers": [
+    {
+      "slot": "shadow",
+      "src": "shadow.png"
+    },
+    {
+      "slot": "hair_back",
+      "src": "hair_back.png"
+    },
+    {
+      "slot": "legs",
+      "src": "legs.png"
+    },
+    {
+      "slot": "shoes",
+      "src": "shoes.png"
+    },
+    {
+      "slot": "body",
+      "src": "body.png"
+    },
+    {
+      "slot": "neck",
+      "src": "neck.png"
+    },
+    {
+      "slot": "arm_l_upper",
+      "src": "arm_l_upper.png"
+    },
+    {
+      "slot": "arm_l_fore",
+      "src": "arm_l_fore.png"
+    },
+    {
+      "slot": "arm_r_upper",
+      "src": "arm_r_upper.png"
+    },
+    {
+      "slot": "arm_r_fore",
+      "src": "arm_r_fore.png"
+    },
+    {
+      "slot": "head",
+      "src": "head.png"
+    },
+    {
+      "slot": "hair_front",
+      "src": "hair_front.png"
+    },
+    {
+      "slot": "accessories",
+      "src": "accessories.png"
+    }
+  ],
+  "eyes": {
+    "open": "eyes_open.png",
+    "happy": "eyes_happy.png"
+  },
+  "mouth": {
+    "smile": "mouth_smile.png",
+    "neutral": "mouth_neutral.png",
+    "sad": "mouth_sad.png",
+    "talk_half": "mouth_talk_half.png",
+    "talk_open": "mouth_talk_open.png"
+  }
+}
