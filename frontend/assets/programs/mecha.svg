@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1d5aa6"/><stop offset="1" stop-color="#3a1f6e"/></linearGradient>
+<pattern id="p" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#fff" stroke-opacity=".12"/></pattern></defs>
+<rect width="640" height="400" fill="url(#g)"/><rect width="640" height="400" fill="url(#p)"/>
+<g fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><circle cx="220" cy="230" r="48"/><circle cx="220" cy="230" r="16.799999999999997"/><line x1="220" y1="182" x2="220" y2="160" transform="rotate(0 220 230)"/><line x1="220" y1="182" x2="220" y2="160" transform="rotate(45 220 230)"/><line x1="220" y1="182" x2="220" y2="160" transform="rotate(90 220 230)"/><line x1="220" y1="182" x2="220" y2="160" transform="rotate(135 220 230)"/><line x1="220" y1="182" x2="220" y2="160" transform="rotate(180 220 230)"/><line x1="220" y1="182" x2="220" y2="160" transform="rotate(225 220 230)"/><line x1="220" y1="182" x2="220" y2="160" transform="rotate(270 220 230)"/><line x1="220" y1="182" x2="220" y2="160" transform="rotate(315 220 230)"/><path d="M300 300 V220 L380 150 L460 170"/><circle cx="300" cy="220" r="14" fill="#fff"/><circle cx="380" cy="150" r="14" fill="#fff"/><path d="M460 170 L490 145 M460 170 L490 195"/></g>
+<rect x="0" y="372" width="640" height="28" fill="#ffc93c"/>
+<text x="32" y="352" font-family="Mitr, Leelawadee UI, sans-serif" font-size="34" fill="#fff" fill-opacity=".9">เมคคาทรอนิกส์และหุ่นยนต์ · Mechatronics</text>
+</svg>

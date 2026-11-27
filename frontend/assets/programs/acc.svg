@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1d6a5a"/><stop offset="1" stop-color="#0f2740"/></linearGradient>
+<pattern id="p" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#fff" stroke-opacity=".12"/></pattern></defs>
+<rect width="640" height="400" fill="url(#g)"/><rect width="640" height="400" fill="url(#p)"/>
+<g fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><rect x="220" y="70" width="200" height="250" rx="18"/><rect x="250" y="100" width="140" height="50" rx="6"/><circle cx="270" cy="190" r="9" fill="#fff"/><circle cx="270" cy="235" r="9" fill="#fff"/><circle cx="270" cy="280" r="9" fill="#fff"/><circle cx="320" cy="190" r="9" fill="#fff"/><circle cx="320" cy="235" r="9" fill="#fff"/><circle cx="320" cy="280" r="9" fill="#fff"/><circle cx="370" cy="190" r="9" fill="#fff"/><circle cx="370" cy="235" r="9" fill="#fff"/><circle cx="370" cy="280" r="9" fill="#fff"/></g>
+<rect x="0" y="372" width="640" height="28" fill="#ffc93c"/>
+<text x="32" y="352" font-family="Mitr, Leelawadee UI, sans-serif" font-size="34" fill="#fff" fill-opacity=".9">การบัญชี · Accounting</text>
+</svg>

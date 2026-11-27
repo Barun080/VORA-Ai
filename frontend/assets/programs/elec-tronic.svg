@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#13606f"/><stop offset="1" stop-color="#0f2740"/></linearGradient>
+<pattern id="p" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#fff" stroke-opacity=".12"/></pattern></defs>
+<rect width="640" height="400" fill="url(#g)"/><rect width="640" height="400" fill="url(#p)"/>
+<g fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"><rect x="240" y="110" width="160" height="160" rx="16"/><line x1="270" y1="80" x2="270" y2="110"/><line x1="270" y1="270" x2="270" y2="300"/><line x1="320" y1="80" x2="320" y2="110"/><line x1="320" y1="270" x2="320" y2="300"/><line x1="370" y1="80" x2="370" y2="110"/><line x1="370" y1="270" x2="370" y2="300"/><line x1="210" y1="140" x2="240" y2="140"/><line x1="400" y1="140" x2="430" y2="140"/><line x1="210" y1="190" x2="240" y2="190"/><line x1="400" y1="190" x2="430" y2="190"/><line x1="210" y1="240" x2="240" y2="240"/><line x1="400" y1="240" x2="430" y2="240"/></g>
+<rect x="0" y="372" width="640" height="28" fill="#ffc93c"/>
+<text x="32" y="352" font-family="Mitr, Leelawadee UI, sans-serif" font-size="34" fill="#fff" fill-opacity=".9">อิเล็กทรอนิกส์ · Electronics</text>
+</svg>
