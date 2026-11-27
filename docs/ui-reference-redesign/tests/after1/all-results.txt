@@ -1,0 +1,137 @@
+PASS 1 เปิด Kiosk แล้วกล้องเริ่มทำงานเอง (ไม่ต้องกดปุ่ม) {"cam":"on","gum":1,"video":true}
+PASS 1b เรียกเปิดกล้องซ้ำ 3 ครั้ง ไม่เปิดซ้อน {"gum":1,"same":true}
+PASS 13 สนทนาด้วยข้อความผ่าน /api/chat เดิม และพูดตอบ {"bot":"ระดับ ปวช. มีสาขาช่างยนต์ ช่างไฟฟ้ากำลัง อิเล็กทรอนิกส์ เทคโ","cards":7,"spoken":2}
+PASS 13b ปุ่มหยุด: ตัดเสียงที่กำลังพูดจริง และส่งคำสั่งหยุดหุ่น {"state":"idle","cancel":true,"speaking":false}
+FAIL 1 kiosk: โหลด tokens.css + components.css ผ่าน base.css · ยังไม่มี element ใช้ class/ธีม vora (หน้าตาเดิม) {"brand":"#FFD400","voraClass":1,"themed":1,"errs":[]}
+PASS 2 mobile: โหลด tokens.css + components.css ผ่าน base.css · ยังไม่มี element ใช้ class/ธีม vora (หน้าตาเดิม) {"brand":"#FFD400","voraClass":0,"themed":0,"errs":[]}
+PASS 3 admin: โหลด tokens.css + components.css ผ่าน base.css · ยังไม่มี element ใช้ class/ธีม vora (หน้าตาเดิม) {"brand":"#FFD400","voraClass":0,"themed":0,"errs":[]}
+PASS 4 pastel: โหลด tokens.css + components.css ผ่าน base.css · ยังไม่มี element ใช้ class/ธีม vora (หน้าตาเดิม) {"brand":"#FFD400","voraClass":0,"themed":0,"errs":[]}
+PASS 5 classic: โหลด tokens.css + components.css ผ่าน base.css · ยังไม่มี element ใช้ class/ธีม vora (หน้าตาเดิม) {"brand":"#FFD400","voraClass":0,"themed":0,"errs":[]}
+PASS 6 ธีม light/dark: พื้น/ตัวอักษรตาม token (light #F7F7F5 / dark #08090C) {"lightBg":"rgb(247, 247, 245)","darkBg":"rgb(8, 9, 12)","lightText":"rgb(20, 22, 27)","darkText":"rgb(255, 255, 255)","btnL":"rgb(255, 212, 0)","btnD":"rgb(255, 212, 0)","btnTxt":"rgb(11, 11, 13)","cardD":"rgb(20, 22, 2
+PASS 7 คอมโพเนนต์ใช้ token: ปุ่มหลักเหลืองแบรนด์ ตัวอักษรดำ · การ์ดธีมมืดใช้ surface-1 
+PASS 8 ไอคอน SVG ครบทุกตัว (32 แบบ × 2 ธีม) และแทนที่ data-vora-icon หมด svg=87
+PASS 9 ฟอนต์หลัก Anuphan โหลดจากเครื่อง · ไม่มีคำขอไปโดเมนภายนอก · ไม่มี error {"ext":[],"errs":[]}
+PASS 10 สลับธีมทั้งหน้า: light → dark → light (ค่าสีเปลี่ยนตาม token และกลับคืน) {"before":"rgb(247, 247, 245)","after":{"bg":"rgb(8, 9, 12)","t":"dark","tok":"#FFFFFF"},"back":"rgb(247, 247, 245)"}
+PASS 11 contrast ที่แสดงจริง ≥ 4.5:1 (ข้อความรอง, ลิงก์) ทั้งสองธีม [{"t":"light","muted":"6.64","link":"7.57"},{"t":"dark","muted":"10.37","link":"14.87"}]
+PASS 1@1366 Idle แล้วอวตารขยาย 1.3–1.5 เท่า และซ่อนเครื่องมือ (1366×768) scale=1.400
+PASS 2@1366 อวตารไม่ถูกตัดขอบจอ และอยู่กึ่งกลางทั้งแนวนอน/ตั้ง (1366×768) top=40 bottom=728/768 cx=683/683 cy=384/384
+FAIL 3@1366 กลับ Active แล้วอวตารลดขนาดกลับตำแหน่งเดิม และเครื่องมือกลับมา (1366×768) Δtop=0.0 Δh=0.0
+PASS E@1366 ไม่มี JavaScript error (1366×768) 
+PASS 1@1600 Idle แล้วอวตารขยาย 1.3–1.5 เท่า และซ่อนเครื่องมือ (1600×900) scale=1.400
+PASS 2@1600 อวตารไม่ถูกตัดขอบจอ และอยู่กึ่งกลางทั้งแนวนอน/ตั้ง (1600×900) top=46 bottom=852/900 cx=800/800 cy=449/450
+FAIL 3@1600 กลับ Active แล้วอวตารลดขนาดกลับตำแหน่งเดิม และเครื่องมือกลับมา (1600×900) Δtop=0.0 Δh=0.0
+PASS E@1600 ไม่มี JavaScript error (1600×900) 
+PASS 1@1920 Idle แล้วอวตารขยาย 1.3–1.5 เท่า และซ่อนเครื่องมือ (1920×1080) scale=1.400
+PASS 2@1920 อวตารไม่ถูกตัดขอบจอ และอยู่กึ่งกลางทั้งแนวนอน/ตั้ง (1920×1080) top=57 bottom=1024/1080 cx=960/960 cy=540/540
+FAIL 3@1920 กลับ Active แล้วอวตารลดขนาดกลับตำแหน่งเดิม และเครื่องมือกลับมา (1920×1080) Δtop=0.0 Δh=0.0
+PASS E@1920 ไม่มี JavaScript error (1920×1080) 
+PASS 4 อวตารยังพูดได้ในโหมด Idle (ไม่ปลุกหน้าจอ แสดงกล่องคำพูด) {"mode":"idle","avatar":"announcing","bubble":true,"spoke":true}
+PASS 5 อวตารทักทายได้ในโหมด Idle และหน้าจอไม่สลับเป็น Active เพราะเห็นคนอย่างเดียว {"mode":"idle","bubble":"สวัสดีค่ะ หนูชื่อวอร่า หุ่นยนต"}
+PASS 5b ลำดับ Event: VISITOR_DETECTED → GREETING_STARTED → AVATAR_SPEAKING → GREETING_FINISHED → AVATAR_IDLE avatar:idle → avatar:alert → avatar:idle → avatar:alert → visitor:detected → avatar:idle → avatar:alert → avatar:idle → avatar:alert → avatar:idle → avatar:alert → avatar:idle → avatar:alert → greeting:started → avatar:emotion → avatar:gesture → avatar:caption → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:speaking → avatar:alert → avatar:idle → avatar:alert → greeting:finished → avatar:idle → avatar:alert → avatar:idle → avatar:alert → avatar:idle → avatar:alert → avatar:idle → avatar:alert
+PASS 5c คนเดิมกลับเข้ามาในช่วงคูลดาวน์ → VISITOR_RETURNED ไม่ทักซ้ำ visitor:greeted → visitor:left → visitor:returned
+PASS 6 กล้องทำงานต่อเนื่องขณะ Idle (stream เดิน, สถานะ on) videoTime 54.9→63.8s ใน 8 วิ
+PASS 7 Face Detection ทำงานต่อเนื่องขณะ Idle (อัตราไม่ต่ำกว่าโหมด Active) faceFrames ใน 8 วิ: Active 5 / Idle 4
+PASS 8 MediaPipe (ใบหน้า+ท่ามือ) ทำงานต่อเนื่องขณะ Idle (อัตราไม่ต่ำกว่าโหมด Active) loop ticks ใน 8 วิ: Active 16 / Idle 13
+PASS 8b WebSocket และสถานะหุ่นยนต์ไม่หยุดระหว่าง Idle {"ws":true,"robot":"ok"}
+PASS 8c ท่ามือหน้ากล้อง (Event CAMERA_GESTURE) ปลุกหน้าจอเป็น Active 
+PASS 9 สลับ Idle/Active 40 ครั้งติดกัน: จบที่สถานะถูกต้อง ไม่มี Animation ค้าง/ซ้อน {"scale":"1.400","expected":"1.400","finiteRunning":0,"animations":"CSS animations 3→3"}
+PASS 10 สลับ 300 ครั้ง: จำนวน Event Listener ไม่เพิ่ม และหน่วยความจำไม่โตผิดปกติ window listeners 25→25, bus listeners 34→34, heap 21.7→21.7 MB
+PASS R หลังสลับโหมดหลายร้อยครั้ง: ถาม-ตอบ AI และปุ่มหยุด (/api/robot/stop) ยังทำงาน 
+PASS T Idle Timer: ไม่ซ่อนเครื่องมือระหว่างตอบคำถาม และเข้า Idle เองเมื่อว่างครบเวลา ระหว่างตอบ=active, หลังว่าง=idle
+PASS E ไม่มี JavaScript error ตลอดการทดสอบ 
+FAIL 1@1366 Active: Orbital Menu 6 หมวด แสดงรอบอวตาร ไม่บังใบหน้า/ตัวอวตาร ไม่ทับกัน อยู่ในเวที (1366×768) layout=rail faceBottom=313 minOrbTop=203 inStage=true noFace=true noBody=true noOverlap=true
+PASS 2@1366 กล่องคำพูดยาวสุดไม่ทับปุ่มเมนู (1366×768) bubble.b=311 orbTop=203
+PASS 3@1366 Active: แสดง Chat, Quick Actions, Tool Icons, Voice Controls ครบ (1366×768) {"chat":true,"quick":true,"tools":true,"mic":true,"input":true,"textMenu":true,"menu":true}
+PASS 4@1366 Idle: ซ่อนแผงและเมนูทั้งหมด เหลืออวตาร + ข้อความแนะนำ (1366×768) {"mode":"idle","dmode":"idle","orbs":true,"panels":true,"hint":true,"avatar":true}
+PASS E@1366 ไม่มี JavaScript error (1366×768) 
+FAIL 1@1600 Active: Orbital Menu 6 หมวด แสดงรอบอวตาร ไม่บังใบหน้า/ตัวอวตาร ไม่ทับกัน อยู่ในเวที (1600×900) layout=rail faceBottom=366 minOrbTop=225 inStage=true noFace=true noBody=true noOverlap=true
+PASS 2@1600 กล่องคำพูดยาวสุดไม่ทับปุ่มเมนู (1600×900) bubble.b=364 orbTop=225
+PASS 3@1600 Active: แสดง Chat, Quick Actions, Tool Icons, Voice Controls ครบ (1600×900) {"chat":true,"quick":true,"tools":true,"mic":true,"input":true,"textMenu":true,"menu":true}
+PASS 4@1600 Idle: ซ่อนแผงและเมนูทั้งหมด เหลืออวตาร + ข้อความแนะนำ (1600×900) {"mode":"idle","dmode":"idle","orbs":true,"panels":true,"hint":true,"avatar":true}
+PASS E@1600 ไม่มี JavaScript error (1600×900) 
+FAIL 1@1920 Active: Orbital Menu 6 หมวด แสดงรอบอวตาร ไม่บังใบหน้า/ตัวอวตาร ไม่ทับกัน อยู่ในเวที (1920×1080) layout=rail faceBottom=440 minOrbTop=271 inStage=true noFace=true noBody=true noOverlap=true
+PASS 2@1920 กล่องคำพูดยาวสุดไม่ทับปุ่มเมนู (1920×1080) bubble.b=437 orbTop=271
+PASS 3@1920 Active: แสดง Chat, Quick Actions, Tool Icons, Voice Controls ครบ (1920×1080) {"chat":true,"quick":true,"tools":true,"mic":true,"input":true,"textMenu":true,"menu":true}
+PASS 4@1920 Idle: ซ่อนแผงและเมนูทั้งหมด เหลืออวตาร + ข้อความแนะนำ (1920×1080) {"mode":"idle","dmode":"idle","orbs":true,"panels":true,"hint":true,"avatar":true}
+PASS E@1920 ไม่มี JavaScript error (1920×1080) 
+PASS 5@mobile จอเล็ก (390×844): ใช้ Orbital ไม่บังใบหน้า ปุ่มแรกไม่ถูกตัด layout=rail faceBottom=333 orbTop=896 firstL=109 scroll=504/504
+PASS 5b@mobile จอเล็ก: แตะเมนู → นำเสนอเต็มจอ ใช้งานได้ {"mode":"presentation","cards":4,"w":390,"vw":390}
+PASS E@mobile ไม่มี JavaScript error (mobile) 
+PASS 5@tablet จอเล็ก (768×1024): ใช้ Orbital ไม่บังใบหน้า ปุ่มแรกไม่ถูกตัด layout=rail faceBottom=322 orbTop=1010 firstL=110 scroll=504/504
+PASS 5b@tablet จอเล็ก: แตะเมนู → นำเสนอเต็มจอ ใช้งานได้ {"mode":"presentation","cards":4,"w":768,"vw":768}
+PASS E@tablet ไม่มี JavaScript error (tablet) 
+PASS 6 Trigger เข้า Active: เมาส์ คลิก แตะ คีย์บอร์ด ปุ่มเสียง ท่ามือ {"mouse":true,"click":true,"touch":true,"keyboard":true,"voice":true,"gesture":true}
+FAIL 6b Visitor Detection: ค่าเริ่มต้นไม่ปลุกหน้าจอ (ทักใน Idle) · เปิด wakeOnVisitor แล้วเข้า Active default=idle wakeOnVisitor=false
+PASS 7 Presentation: 4 หมวดแสดงข้อมูลตรงกับ API จริง (สาขา/ข่าว/รับสมัคร/วิทยาลัย) ซ่อนแผงซ้าย-ขวา {"api":{"programs":7,"news":4,"admission":1,"about":7},"sec":{"departments":[7,0],"news":[4,0],"admission":[1,4],"college":[0,7]}}
+PASS 7b ปุ่มปิด: กลับสู่ Active และแผงซ้าย-ขวากลับมา {"mode":"active","left":"flex","hidden":true}
+PASS 8 รายละเอียดสาขา: อวตารบรรยายด้วยเสียงจริง, ปุ่มกลับ, Esc ปิดการนำเสนอ {"title":"ช่างยนต์","back":true,"spoke":["สาขาช่างยนต์ ระดับ ป","สาขาช่างยนต์ ระดับ ป","เรียนเกี่ยวกับเครื่อ"],"avatar":"pointing","cardsAfterBack":7,"esc":"active"}
+PASS 9 Presentation → Idle เมื่อไม่มีการใช้งานและไม่มีงานค้าง (มีงานค้าง = ยังไม่ปิด) whileBusy=presentation thenIdle=true active->presentation(open:news:orbit) presentation->active(close:timeout) active->idle(ui-idle)
+PASS 10 ระหว่างนำเสนอ Idle Timer ของ UIController ไม่ซ่อนหน้าจอ 
+FAIL 11 Keyboard Navigation: ลูกศร/Home/End เลื่อนโฟกัสตามวง, Enter เปิด, Esc ปิด, โฟกัสย้ายเข้าพื้นที่นำเสนอ order=departments,news,news,departments,departments,feedback,college open={"mode":"presentation","section":"departments","focus":"present-title"}
+PASS 12 เมนูตัวอักษรใหญ่: 6 หมวด ตัวอักษร ≥ 24px ปุ่มสูง ≥ 72px และเปิดหมวดได้ {"open":true,"n":6,"font":34.6,"h":97.3125,"mode":"presentation","section":"admission","dialog":false}
+PASS 13 สลับภาษาอังกฤษ: เมนูรอบตัวและหน้าการนำเสนอเปลี่ยนภาษา {"orb":"Departments","title":"Departments","close":"Close"}
+PASS 14 กล้องไม่หยุด/ไม่เปิดซ้ำ ระหว่าง Idle ⇄ Active ⇄ Presentation (5 รอบ) gum 1→1 track=live videoTime 113.3→139.7
+PASS 15 WebSocket ไม่หลุด/ไม่เชื่อมต่อซ้ำ ระหว่างสลับโหมด ws 1→1 open=1
+PASS 16 อวตารไม่ถูกสร้างใหม่ (SVG เดิม ตัวเดียว) ระหว่างสลับโหมด {"svgCount":1,"same":true}
+PASS 17 สลับโหมดรัว 30 ครั้ง: จบสถานะถูกต้อง ไม่มีพื้นที่ค้าง Listener ไม่เพิ่ม {"mode":"active","presentHidden":true,"cls":false,"listeners":34,"timers":0,"l0":34}
+PASS 1 Avatar Adapter: AvatarController มีคำสั่งครบตามสัญญา (loadCharacter, setState, setExpression, playAnimation, setGaze, setSpeech, setVisibility, dispose, capabilities) missing=[] kind=rig
+FAIL 1b capabilities(): สถานะมาตรฐาน 10 แบบ + ท่าทาง + สีหน้า + Lip Sync {"kind":"rig","states":["idle","greeting","listening","thinking","speaking","presenting","pointing","waving","thanking","happy"],"extraStates":["announcing","error"],"animations":["nod","present","point_screen","explain","think","happy","listen","idle"],"expressions":["neutral","happy","sorry"],"lipSync":"level"}
+PASS 2 setState: ทั้ง 10 สถานะเปลี่ยนได้ และสถานะใหม่เล่นท่าเข้าที่ถูกต้อง {"idle":{"state":"idle","gesture":null},"greeting":{"state":"greeting","gesture":"wave"},"listening":{"state":"listening","gesture":"listen"},"thinking":{"state":"thinking","gesture":"think"},"speaking":{"state":"speaking","gesture":null},"presenting":{"state":"presenting","gesture":"present"},"pointing":{"state":"pointing","gesture":"point_screen"},"waving":{"state":"waving","gesture":"wave"},"thanking":{"state":"thanking","gesture":"bow"},"happy":{"state":"happy","gesture":"happy"}}
+FAIL 3 playAnimation/setExpression: ท่าที่มี → supported:true, ท่าที่ไม่มี → supported:false (ไม่แสดงว่าเล่นสำเร็จ) {"ok":{"name":"wave","supported":false,"durationMs":0},"bad":{"name":"backflip","supported":false,"durationMs":0},"ex":{"expression":"happy","supported":true},"exBad":{"expression":"neutral","supported":false}}
+PASS 4 setGaze มองตามทิศ, setSpeech แสดงคำพูด+ระดับปาก, setVisibility ซ่อนแล้วหยุดวาด/แสดงแล้ววาดต่อ {"look":{"target":0.8,"x":0.35372271901081603,"moved":0.35372271901081603},"bubble":"ทดสอบกล่องคำพูด","mouth":0.7,"hiddenCalls":0,"vis":"hidden","shownCalls":7}
+PASS 5 ลำดับสถานะ: presenting < คิด/ฟัง, พูดในท่านำเสนอ (ปากขยับ), pointing ชั่วคราวแล้วกลับ presenting, ขัดข้องทับได้, ล้างแล้วกลับ idle {"idle":"presenting","thinking":"thinking","listening":"listening","speaking":"presenting","talking":true,"pointing":"pointing","afterPointing":"presenting","alert":"error","afterAlert":"presenting","cleared":"idle"}
+PASS 6 ใช้งานจริง: เปิดนำเสนอ → presenting, เปิดรายละเอียด → pointing, ปิด → ล้างสถานะ, ส่งแบบประเมิน → thanking {"inPres":"presenting","ptr":"pointing","afterClose":{"hint":null,"avatar":"idle"},"thank":true}
+PASS 7 Person Detection: ตรวจพบผู้เข้าชม → Visitor Session ชั่วคราว + VISITOR_DETECTED {"session":{"id":"V1","people":0,"maxPeople":1},"log":["visitor:detected"]}
+PASS 8 Greeting ไม่ซ้ำ: คนเดิมยืนอยู่นานกว่าคูลดาวน์ 4 เท่า → ทักทายครั้งเดียว greets=1
+PASS 9 Smart Greeting: หลังทักทายแนะนำหมวดตามข้อมูลจริง (ไฮไลต์เมนู + ข้อความในโหมดว่าง) และอวตารหันไปทางผู้เข้าชม {"suggested":["admission","departments"],"hint":"แนะนำ: รับสมัคร · สาขาวิชา — แตะหน้าจอได้เลย","mode":"idle","hasAdmission":true,"gazeX":-0.7}
+PASS 10 Presence Session: ออก → ปิด Session ล้าง Tracking ID มองตรง · กลับในคูลดาวน์ไม่ทัก · พ้นคูลดาวน์ทักใหม่ {"left":{"session":null,"tracks":0,"lookT":0},"returned":0,"fresh":1}
+PASS 11 หลายคน: ตรวจนับได้ 3 คน ทักครั้งเดียวด้วยข้อความกลาง ("ทุกคน") ไม่ระบุตัวบุคคล {"max":3,"caption":"สวัสดีค่ะทุกคน หนูชื่อวอร่า หุ","greets":1,"body":"/api/greet {\"session_id\":null,\"lang\":\"th\",\"trigger\":\"face\",\"people\":3}"}
+PASS 12 ไม่มีการระบุตัวบุคคล: ไม่มีภาพ/Embedding/Landmark ใบหน้าใน Request ที่ส่งออก, Storage หรือ Visitor Session {"requests":8,"leak":0,"store":23,"storeHasImage":false,"snapKeys":"{\"session\":null,\"tracks\":[]}"}
+PASS 13 Camera Stream ต่อเนื่องและไม่เปิดซ้ำ ระหว่างสลับโหมด {"c0":{"gum":1,"vt":109.584863},"c1":{"gum":1,"vt":125.384465,"track":"live","running":true}}
+PASS 14 Privacy Pause (หัวจอ): กล้องหยุดจริง (track ไม่ live, MediaPipe หยุด) ล้าง Session แสดงสถานะ + นับถอยหลังทั้งหัวจอ แผงสถานะ และป้ายในโหมดว่าง {"cam":"paused","track":"none","running":false,"session":null,"pill":"กลับมาใน 0:04","pressed":"true","row":"พักกล้องชั่วคราว","badge":{"shown":true,"text":"พักกล้องชั่วคราว · กลับมาใน 0:03แตะเพื่อเปิดกล้อง"}}
+PASS 15 Privacy Pause: ครบเวลาแล้วกล้องกลับมาเอง เปิดใหม่ 1 ครั้ง (ไม่ซ้อน) {"back":true,"gumBefore":1,"gum":2,"running":true}
+PASS 16 Privacy Pause (ป้ายโหมดว่าง): พักได้ ระหว่างพักไม่ประมวลผลภาพ และแตะอีกครั้งเปิดกล้องทันที {"badgeReady":true,"pausedByBadge":true,"faces0":67,"faces1":67,"resumed":true}
+PASS E ไม่มี JavaScript error ตลอดการทดสอบหลัก 
+PASS 17 ไม่ได้รับสิทธิ์กล้อง: แสดงสถานะ ไม่มีปุ่มพักกล้อง แตะป้ายกล้องเปิดแผงช่วยเหลือ และถาม-ตอบยังใช้ได้ {"cam":"denied","badge":true,"tools":true,"chat":true,"errs":[]}
+FAIL 18 loadCharacter: โหลดไม่ได้ → ใช้ตัวเดิมต่อ (fallback) · โหลดชุดเลเยอร์ PSD ได้ · AI/เมนูทำงานเหมือนเดิม · กลับเป็นตัวจำลองได้ {"bad":{"kind":"rig","ok":false,"fallback":true,"error":"โหลด manifest ไม่ได้ (404)"},"afterBad":"rig","good":{"kind":"layered","ok":true,"fallback":false},"images":20,"state":"presenting","anim":true,"cap":"layered","chat":true,"layout":"rail","svgH":491.515625,"back":{"kind":"placeholder","ok":true,"fallback":false,"images":0},"errs":[]}
+PASS 19 dispose(): ยกเลิก Event ของอวตารทั้งหมด และหยุดวงรอบวาด {"before":34,"after":17,"calls":0}
+PASS 1 เริ่มเส้นทางจากหมวดรับสมัคร: ขั้น 1 แสดงระดับการศึกษาจากฐานข้อมูลจริง + Progress Timeline 6 ขั้น {"o1":["ปวช.","ปวส."],"levels":["ปวช.","ปวส."],"tl":{"n":6,"now":"ระดับการศึกษา","title":"เส้นทางการสมัครเรียน"}}
+PASS 2 เดินหน้า: แผนก/สาขา กรองตามที่เลือกจากข้อมูลจริง และขั้นอาชีพแสดงรายละเอียด+อาชีพตรงกับฐานข้อมูล {"lv":"ปวช.","o2":["ช่างอุตสาหกรรม","เทคโนโลยีสารสนเทศ","บริหารธุรกิจ"],"dep":"ช่างอุตสาหกรรม","o3":["ช่างยนต์","ช่างไฟฟ้ากำลัง","อิเล็กทรอนิกส์"],"careerOk":true}
+PASS 3 ขั้นการสมัคร: ประกาศรับสมัครจากฐานข้อมูล + คำตอบของ AI จากฐานความรู้ (ตรงกับ /api/chat) {"news":1,"ai":"คำตอบจากฐานความรู้สมัครได้ทั้งออนไลน์ผ่านเว็บไซต์วิทยาลัย แล","nodata":false,"answered":true}
+PASS 4 QR Handoff: QR มีเพียงรหัสสาขา เปิดบนมือถือแล้วแสดงสาขาที่เลือกทันที {"url":"http://192.0.2.2:8000/m/?program=1","svg":true,"done":true,"mob":"ช่างยนต์"}
+PASS 5 ย้อนกลับ (ปุ่ม + แตะ Timeline): กลับขั้นก่อนได้ ตัวเลือกเดิมยังถูกเลือกไว้ และแสดงขั้นถัดไปที่แนะนำ {"tl2":{"done":4,"enabled":[true,true,true,true,true,true]},"back":{"step":"program","on":"ช่างยนต์","sug":"ขั้นถัดไปที่แนะนำ: อาชีพ"}}
+PASS 6 เปลี่ยนเส้นทาง: เลือกระดับใหม่ → ล้างแผนก/สาขาเดิม ปิดขั้นข้างหน้า และแสดงแผนกของระดับใหม่ {"c":{"level":"ปวส."},"max":1,"future":true,"o2b":["ช่างอุตสาหกรรม","บริหารธุรกิจ"]}
+PASS 7 ถามแทรก: ได้คำตอบจาก AI (ตรงกับ /api/chat) แล้วเส้นทางยังอยู่ขั้นเดิมบนจอ {"before":{"step":1,"n":0,"bots":2},"after":{"step":1,"n":1,"mode":"presentation","section":"journey","jstep":"department","bot":"ระดับ ปวช. ได้รับการสนับสนุนตามโครงการเรียนฟรี 15 "}}
+PASS 8 เปลี่ยนหัวข้อ (ไปดูข่าว) แล้วกลับสู่เส้นทางเดิมที่ขั้นเดิมด้วยปุ่ม "ทำต่อ" {"rs":{"shown":true,"text":"ทำต่อ: ขั้นที่ 2 แผนกวิชา","detours":1},"rs2":{"section":"journey","step":"department","level":"ปวส."}}
+PASS 9 Session: ปิด/เปิดการนำเสนอและสลับภาษาแล้วเส้นทางยังอยู่ · sessionStorage เก็บเฉพาะตัวเลือกและเวลา {"resumeTxt":"ทำต่อ: ขั้นที่ 2 แผนกวิชา","stored":{"id":"admission","step":1,"choices":{"level":"ปวส."},"maxStep":1,"startedAt":1794148814605,"updatedAt":1794148846856,"interjections":1,"detours":1}}
+PASS 10 หมดอายุ Session: เกิน TTL / ผู้เข้าชมออกไปและไม่มีการแตะจอ / เริ่มบทสนทนาใหม่ → ล้าง · ยังมีคนใช้งานอยู่ → ไม่ล้าง {"ttl":true,"left":true,"keptWhileActive":true,"reset":true}
+PASS 11 ไม่มีข้อมูล: แจ้ง "ไม่มีข้อมูลยืนยัน" ไม่แต่งคำตอบ และเสนอช่องทางติดต่อเจ้าหน้าที่ {"nd1":{"msg":"ยังไม่มีข้อมูลยืนยันเรื่องอาชีพของสาขานี้ในระบบ","contact":true},"nd2":{"cls":"jcard jai nodata","text":"ไม่มีข้อมูลยืนยันขออภัยค่ะ หนูยังไม่มีข้อมูลเรื่องนี้ ติดต่องานประชาสัมพันธ์"}}
+PASS 12 อวตารอธิบายทุกขั้น (เสียงจริงผ่านระบบเสียงเดิม) และเลือกด้วยคีย์บอร์ดได้ {"explained":[true,true,true,true,true],"kb":"department"}
+PASS 14 คำถาม "สาขานี้…" ตอบตามสาขาที่แสดงบนจอ (เส้นทาง + แผนผังความรู้) ไม่ใช่สาขาที่คุยไว้ก่อนหน้า {"target":"เมคคาทรอนิกส์และหุ่นยนต์","a1":"สาขาเมคคาทรอนิกส์และหุ่นยนต์ ระดับ ปวส. ผสานเครื่อ","a2":"จบสาขาเมคคาทรอนิกส์และหุ่นยนต์แล้ว ทำงานเป็นช่างเท","a3":"สาขาเมคคาทรอนิกส์และหุ่นยนต์ ระดับ ปวส. ผสานเครื่อ"}
+PASS 13 กล้อง/WebSocket ไม่ได้รับผลกระทบ (เปิดกล้องครั้งเดียว ยังเชื่อมต่อ) {"gum":1,"cam":"on","ws":true}
+PASS E ไม่มี JavaScript error 
+PASS 1 เปิดแผนผังความรู้: Node กลางคือชื่อวิทยาลัยจากระบบ หัวข้อรอบ ๆ ตรงกับความสัมพันธ์จากฐานข้อมูล และวางเป็นวงกลมบนจอ 1600×900 {"center":"วิทยาลัยเทคนิคตัวอย่าง","shown":10,"total":11,"layout":"radial"}
+PASS 2 คลิกเจาะลึก ระดับ → แผนก → สาขา → อาชีพ: ทุกชั้นตรงกับกราฟ และรายละเอียด/อาชีพตรงกับข้อมูลสาขาจริง {"lv":["ช่างอุตสาหกรรม","บริหารธุรกิจ","เทคโนโลยีสารสนเทศ"],"dep":["ช่างยนต์","ช่างไฟฟ้ากำลัง","อิเล็กทรอนิกส์"],"prog":"ช่างยนต์","careerOk":true}
+PASS 3 ย้อนกลับ: ปุ่มขึ้นหนึ่งชั้น และ Breadcrumb กลับหัวข้อหลักได้ ["หัวข้อหลัก","ปวช.","ช่างอุตสาหกรรม","ช่างยนต์"]
+PASS 4 หมวดความรู้ → คำถาม-คำตอบที่อนุมัติ แสดงคำตอบจากฐานข้อมูล และปุ่ม "ถาม VORA" ส่งคำถามให้ AI จริง {"topic":"กิจกรรม","n":1,"asked":"ชมรมและกิจกรรมนักศึกษา"}
+PASS 5 ไม่สร้างข้อมูลเท็จ: Node และเส้นเชื่อมทุกเส้นที่แสดง มีอยู่ในกราฟจากฐานข้อมูล ตรวจ 5 ชั้น
+PASS 6 ข้อมูลไม่เพียงพอ: แสดง "ข้อมูลยังไม่เพียงพอ…" ไม่สร้าง Node อาชีพแทน · ไม่มีข้อมูลเลย → แจ้งว่าไม่มีข้อมูล {"gap":{"gap":"ข้อมูลยังไม่เพียงพอ: ยังไม่มีข้อมูลอาชีพในระบบ","kids":0},"empty":"ยังไม่มีข้อมูลในฐานความรู้"}
+PASS 7 Performance: วาดชั้นละไม่เกิน 13 Node (Node กลาง + สูงสุด 12 ต่อหน้า แบ่งหน้า) แม้กราฟมี 301 Node · ใช้เวลาวาด < 100 ms {"perfReal":{"focus":"college","rendered":11,"total":45,"ms":3.4,"layout":"radial"},"perfBig":{"focus":"college","rendered":12,"total":301,"ms":2.3,"layout":"radial","dom":12,"more":"อีก 289 หัวข้อ"},"per":11,"page2":"หัวข้อ 11"}
+PASS 8 UI อ่านง่าย: ชั้นที่มีหัวข้อมากที่สุด Node ไม่ทับกัน อยู่ในพื้นที่ และตัวอักษร ≥ 15px {"busiest":"college","n":11,"inside":true,"overlap":false,"font":16.954}
+PASS 9 คีย์บอร์ด: ลูกศรเลื่อน, Enter เจาะลึก (โฟกัสอยู่ที่ Node กลาง), Backspace ขึ้นชั้น, Home กลับหัวข้อหลัก {"f1":"level:ปวช.","f2":{"center":"level:ปวช.","focused":true},"f3":"college"}
+PASS 10 ปุ่ม "ฟัง VORA อธิบาย": อวตารบรรยายสาขาด้วยข้อมูลจริง (ใช้ openCard เดิม) สาขาช่างยนต์ ระดับ ปวช.
+PASS 11 ภาษาอังกฤษ: หัวข้อและชื่อวิทยาลัยเป็นภาษาอังกฤษจากฐานข้อมูล {"title":"Knowledge map","center":"Demo Technical College"}
+PASS 12 กล้อง/WebSocket ไม่ได้รับผลกระทบ {"gum":1,"cam":"on","ws":true}
+PASS E ไม่มี JavaScript error 
+PASS 13 จอเล็ก 390×844: แสดงแบบรายการ ปุ่มกว้างพอแตะ และแตะเจาะลึกได้ {"mode":"list","n":12,"w":333.44281005859375,"after":"level:ปวช."}
+PASS 1 เปิดปฏิทินกิจกรรมจากหมวดข่าว: กลุ่มและลำดับรายการตรงกับ /api/timeline ทุกกลุ่ม ["important:1","today:1","upcoming:6","past:1"]
+PASS 2 ข่าวฉบับร่างไม่แสดง · ข่าว priority 5 ที่ไม่ใช่รับสมัครไม่อยู่ในวันสำคัญ · รับสมัครออนไลน์ภายใน 60 วันอยู่ในวันสำคัญ {"g":"important","ids":[7]}
+PASS 3 ข่าวเดิม (เวลา 00:00 ไม่มีสถานที่) แสดง "ไม่ระบุเวลา" และ "ไม่ระบุสถานที่" · ข่าวที่มีข้อมูลแสดงเวลาและสถานที่จริง · ออนไลน์แสดงช่องทาง {"tOld":"ศุกร์ 13 พ.ย. 2569 · ไม่ระบุเวลา | อีก 5 วัน | นักศึกษาคว้ารางวัลการแข่งขันทักษะวิชาชีพ | ไม่ระบุสถานที่","tCampus":"อังคาร 10 พ.ย. 2569 · 13:30 น. | อีก 2 วัน | P5 ทดสอบ: แนะแนวในหอประชุม | หอประชุมวิทยาลัย (ภายในวิทยาลัย)","tOnline":"ศุกร์ 13 พ.ย. 2569 · 19:00 น. | อีก 5 วัน | P5 ทดสอบ: ประชุมผู้ปกครองออนไลน์ | ออนไลน์ · Facebook Live เพจวิทยาลัย"}
+PASS 4 รายละเอียดสถานที่ภายนอก: วันที่ เวลา 09:00 สถานที่ · QR รายละเอียด + QR แผนที่ · VORA พูดเวลาและสถานที่ {"qrs":2,"speech":"P5 ทดสอบ: นิทรรศการภายนอก วันที่ วันพุธที่ 11 พฤศจิกายน 2569 เวลา 09:00 นาฬิกา ที่ ศูนย์การค้าตัวอย่าง สแกน QR เพื่อดูรายละเอียดบนมือถือได้ค"}
+PASS 5 ออนไลน์: ไม่มี QR แผนที่ เสียงบอก "ออนไลน์" · ข่าวเดิม: ไม่มี QR แผนที่ เสียงไม่พูดเวลา/สถานที่ที่ไม่มีในระบบ {"online":"P5 ทดสอบ: ประชุมผู้ปกครองออนไลน์ วันที่ วันศุกร์ที่ 13 พฤศจิกายน 2569 เวลา 19:00 นาฬิกา จัดแบบออนไลน","old":"นักศึกษาคว้ารางวัลการแข่งขันทักษะวิชาชีพ วันที่ วันศุกร์ที่ 13 พฤศจิกายน 2569 สแกน QR เพื่อดูรายละเอียดบนมือถือได้ค่ะ"}
+PASS 6 พื้นที่ปฏิทินไม่บังใบหน้าอวตาร (1600×900) {"hit":false,"aw":269.96875}
+PASS 7 Esc: ปิดปฏิทิน หยุดเสียง และไม่มีข้อผิดพลาดของหน้าเว็บ {"hidden":true,"speaking":false,"mode":"active","errors":[]}
+PASS 8 ภาษาอังกฤษ: หัวข้อ/ป้ายเป็นอังกฤษ และ "Location not specified" สำหรับข่าวที่ไม่มีสถานที่ Event calendar
+PASS 9 จอ 1280×800: ไม่เลื่อนแนวนอน ไม่บังใบหน้าอวตาร · จอ 1080×1920: ไม่เลื่อนแนวนอน และใช้พื้นที่เท่ากับหมวดข่าวเดิม [{"size":"1080x1920","hscroll":false,"faceHit":true,"items":9,"sameAsNews":true},{"size":"1280x800","hscroll":false,"faceHit":false,"items":9,"sameAsNews":true}]
+PASS 10 มือถือ ?news=: แสดงวันที่ เวลา สถานที่ และลิงก์แผนที่จริง · ข่าวเดิมแสดงไม่ระบุเวลา/ไม่ระบุสถานที่ {"map":"https://maps.google.com/?q=example"}
+PASS 11 หลังบ้าน: ออนไลน์ปิดช่องแผนที่ ภายในวิทยาลัยต้องกรอกชื่อ บันทึกจากฟอร์มได้ค่าครบ และตารางแสดงคอลัมน์สถานที่ {"col":true,"onl":{"map":true,"nameReq":false},"blocked":true,"saved":["อาคาร 2 ห้อง 201","campus","2026-11-14T10:15:00"],"errors":[]}

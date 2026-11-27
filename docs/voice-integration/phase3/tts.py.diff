@@ -1,0 +1,171 @@
+--- _backups/voice-integration-20261112-phase1/backend/app/tts.py	2026-11-12 06:05:18.000000000 +0000
++++ backend/app/tts.py	2026-11-12 10:43:54.819329700 +0000
+@@ -17,6 +17,7 @@
+ import re
+ import time
+ 
++from . import voice_profiles
+ from .config import DATA_DIR, settings
+ from .services import record_event
+ 
+@@ -73,11 +74,9 @@
+ 
+ 
+ def voice_for(lang: str) -> str:
+-    """เสียงที่ใช้กับภาษานี้ — อังกฤษใช้เสียงเดียวกับไทยถ้าไม่ได้กำหนดแยก (รักษาเสียงประจำตัว VORA)"""
+-    en = (settings.tts_voice_en or "").strip()
+-    if lang == "en" and en and en.lower() != "same":
+-        return en
+-    return settings.tts_voice_th
++    """เสียง Microsoft (edge) ที่ใช้กับภาษานี้ — อังกฤษใช้เสียงเดียวกับไทยถ้าไม่ได้กำหนดแยก (รักษาเสียงประจำตัว VORA)
++    12 พ.ย. 2569 (Phase 3): ย้ายไปไว้ที่ voice_profiles.edge_voice (พฤติกรรมเดิม)"""
++    return voice_profiles.edge_voice(lang)
+ 
+ 
+ def prosody() -> tuple[str, str]:
+@@ -113,15 +112,26 @@
+     return audio
+ 
+ 
+-async def synthesize(text: str, lang: str = "th", prefetch: bool = False) -> bytes | None:
++async def synthesize(text: str, lang: str = "th", prefetch: bool = False,
++                     provider: str | None = None, info: dict | None = None) -> bytes | None:
+     """prefetch=True: คำขอเตรียมเสียงล่วงหน้า — ล้มเหลวได้โดยไม่ทำให้ประโยคที่กำลังจะพูดเข้าช่วงพัก
+-    12 พ.ย. 2569: edge-tts ไม่ได้เสียง → ใช้เสียงสำรอง (VORA_TTS_FALLBACK=google) ถ้าเปิดไว้"""
+-    if settings.tts_provider == "google":
+-        return await google_synthesize(text, lang)
+-    audio = await _synthesize_edge(text, lang, prefetch)        # ไม่มี edge-tts → _stream ล้มเอง แล้วใช้เสียงสำรอง
+-    if audio or not google_on():
+-        return audio
+-    return await google_synthesize(text, lang)
++    12 พ.ย. 2569: edge-tts ไม่ได้เสียง → ใช้เสียงสำรอง (VORA_TTS_FALLBACK=google) ถ้าเปิดไว้
++    Phase 3: ลำดับผู้ให้บริการจาก voice_profiles.provider_order() (พฤติกรรมเดิม)
++    · provider="edge"/"google" = ล็อกผู้ให้บริการ ไม่ข้ามไปเสียงอื่น (ใช้ต่อประโยคของคำตอบเดิมให้เป็นเสียงเดียวกัน)
++    · info (dict) ได้ info["provider"] = ผู้ให้บริการที่ให้เสียงจริง"""
++    order = voice_profiles.provider_order()
++    if provider is not None:
++        order = [p for p in order if p == provider]
++    for p in order:
++        if p == "google":
++            audio = await google_synthesize(text, lang)
++        else:
++            audio = await _synthesize_edge(text, lang, prefetch)   # ไม่มี edge-tts → _stream ล้มเอง แล้วไปผู้ให้บริการถัดไป (ถ้ามี)
++        if audio:
++            if info is not None:
++                info["provider"] = p
++            return audio
++    return None
+ 
+ 
+ async def _synthesize_edge(text: str, lang: str = "th", prefetch: bool = False) -> bytes | None:
+@@ -130,9 +140,9 @@
+         return None
+     voice = voice_for(lang)
+     rate, pitch = prosody()
+-    key = hashlib.sha1(f"{voice}|{rate}|{pitch}|{text}".encode()).hexdigest()
+     CACHE_DIR.mkdir(parents=True, exist_ok=True)
+-    f = CACHE_DIR / f"{key}.mp3"
++    f = _epath(text, lang)
++    key = f.stem
+     if f.exists():
+         return f.read_bytes()
+     if time.monotonic() < _state["fail_until"]:
+@@ -203,28 +213,65 @@
+ _live = {"n": 0}
+ 
+ 
+-def cache_path(text: str, lang: str):
+-    text = re.sub(r"\s+", " ", text or "").strip()
+-    voice = voice_for(lang)
++def _norm(text: str) -> str:
++    return re.sub(r"\s+", " ", text or "").strip()
++
++
++def _cache_key(provider: str, lang: str, text: str, voice: str, rate: str = "", pitch: str = "") -> str:
++    """12 พ.ย. 2569 (Phase 3): แคชแยกตาม character/voice profile · ผู้ให้บริการ · เสียงของผู้ให้บริการ · ภาษา · จังหวะ · ข้อความ (ช่องว่างปกติ)
++    เดิม: แคช edge ไม่มีชื่อผู้ให้บริการ และ stream() ตรวจแคช edge ก่อนดูว่าตั้งผู้ให้บริการอะไร
++    → ตั้งเป็น google แล้วข้อความที่เคยแคชตอนใช้ edge ยังเล่นเป็นเสียง Microsoft (เสียงสลับ) · ชื่อไฟล์ใหม่ไม่ชนกับไฟล์รูปแบบเดิม
++    (ไฟล์รูปแบบเดิมไม่ถูกใช้อีก และถูกลบตามลำดับเก่าสุดก่อนเมื่อเกิน CACHE_MAX_FILES เหมือนเดิม)"""
++    prof = voice_profiles.profile_for(None, lang)
++    raw = f"v2|{prof.character_id}|{prof.voice_id}|{provider}|{voice}|{prof.language}|{rate}|{pitch}|{_norm(text)}"
++    return hashlib.sha1(raw.encode()).hexdigest()
++
++
++def _epath(text: str, lang: str):
++    """ไฟล์แคชของเสียง Microsoft (edge)"""
+     rate, pitch = prosody()
+-    return CACHE_DIR / (hashlib.sha1(f"{voice}|{rate}|{pitch}|{text}".encode()).hexdigest() + ".mp3")
++    return CACHE_DIR / f"edge-{_cache_key('edge', lang, text, voice_for(lang), rate, pitch)}.mp3"
+ 
+ 
+-async def stream(text: str, lang: str = "th"):
+-    """async generator ของไฟล์เสียง MP3 ทีละชิ้น · ไม่มีเสียงเลย = ไม่ yield อะไร"""
+-    text = re.sub(r"\s+", " ", text or "").strip()
++def cache_path(text: str, lang: str):
++    """ไฟล์แคชของผู้ให้บริการหลักที่ตั้งไว้ (google → แคช Google · อื่น ๆ → แคช edge)"""
++    order = voice_profiles.provider_order()
++    return _gpath(text, lang) if order[:1] == ["google"] else _epath(text, lang)
++
++
++async def stream(text: str, lang: str = "th", provider: str | None = None, info: dict | None = None):
++    """async generator ของไฟล์เสียง MP3 ทีละชิ้น · ไม่มีเสียงเลย = ไม่ yield อะไร
++    Phase 3: ไล่ผู้ให้บริการตาม voice_profiles.provider_order() — แต่ละรายตรวจเฉพาะแคชของตัวเอง (ไม่หยิบเสียงของผู้ให้บริการอื่น)
++    ส่งเสียงชิ้นแรกของคำตอบแล้ว = ใช้ผู้ให้บริการนั้นจนจบ ไม่สลับเสียงกลางคำตอบ
++    provider = ล็อกผู้ให้บริการ · info["provider"] = ผู้ให้บริการที่ให้เสียงจริง"""
++    text = _norm(text)
+     if not available() or not text:
+         return
+     CACHE_DIR.mkdir(parents=True, exist_ok=True)
+-    f = cache_path(text, lang)
++    order = voice_profiles.provider_order()
++    if provider is not None:
++        order = [p for p in order if p == provider]
++    for p in order:
++        got = False
++        gen = google_stream(text, lang) if p == "google" else _edge_stream(text, lang)
++        async for chunk in gen:
++            if not got:
++                got = True
++                if info is not None:
++                    info["provider"] = p
++            yield chunk
++        if got:
++            return
++
++
++async def _edge_stream(text: str, lang: str = "th"):
++    """สตรีมจาก Microsoft edge-tts (โค้ดเดิมของ stream() ย้ายมา) · ตรวจเฉพาะแคช edge"""
++    f = _epath(text, lang)
+     if f.exists():
+         yield f.read_bytes()
+         return
+     if time.monotonic() < _state["fail_until"] or not _edge_ok():
+-        if google_on():
+-            async for g in google_stream(text, lang):
+-                yield g
+-        return
++        return                           # ช่วงพัก/ไม่มี edge-tts → ผู้ให้บริการถัดไปตามลำดับ (ถ้ามี)
+     import edge_tts
+ 
+     voice = voice_for(lang)
+@@ -271,9 +318,6 @@
+             record_event("warn", "speech", f"edge-tts stream failed: {_state['last_error']}")
+     finally:
+         _live["n"] -= 1
+-    if google_on():                      # edge ไม่ได้เสียงเลย → เสียงสำรอง (ทีละท่อน)
+-        async for g in google_stream(text, lang):
+-            yield g
+ 
+ 
+ async def warm(text: str, lang: str = "th") -> bool:
+@@ -318,8 +362,8 @@
+ 
+ 
+ def _gpath(text: str, lang: str):
+-    text = re.sub(r"\s+", " ", text or "").strip()
+-    return CACHE_DIR / ("g-" + hashlib.sha1(f"google|{lang}|{text}".encode()).hexdigest() + ".mp3")
++    """ไฟล์แคชของเสียง Google (Phase 3: คีย์รวม profile / ผู้ให้บริการ / เสียง / ภาษา)"""
++    return CACHE_DIR / f"google-{_cache_key('google', lang, text, voice_profiles.google_voice(lang, _norm(text)))}.mp3"
+ 
+ 
+ async def google_stream(text: str, lang: str = "th"):

@@ -1,0 +1,41 @@
+--- _backups/voice-integration-20261112-phase4/backend/app/tts.py	2026-11-12 10:56:02.677952000 +0000
++++ backend/app/tts.py	2026-11-12 11:01:25.391579000 +0000
+@@ -90,7 +90,9 @@
+     rate, pitch = prosody()
+     return {"provider": settings.tts_provider, "available": available(), "fallback": settings.tts_fallback,
+             "fallback_error": _g_state["last_error"], "voice_th": voice_for("th"), "voice_en": voice_for("en"),
+-            "rate": rate, "pitch": pitch, "cooling_down": time.monotonic() < _state["fail_until"], "last_error": _state["last_error"]}
++            "rate": rate, "pitch": pitch, "cooling_down": time.monotonic() < _state["fail_until"], "last_error": _state["last_error"],
++            # Phase 4 (เพิ่มเท่านั้น): ลำดับผู้ให้บริการที่หน้าจอใช้ล็อกเสียงต่อหนึ่งคำตอบ + voice profile ของ VORA
++            "order": voice_profiles.provider_order(), "profile": voice_profiles.profile_for(None).voice_id}
+ 
+ 
+ def _prune_cache() -> None:
+@@ -233,10 +235,23 @@
+     return CACHE_DIR / f"edge-{_cache_key('edge', lang, text, voice_for(lang), rate, pitch)}.mp3"
+ 
+ 
+-def cache_path(text: str, lang: str):
+-    """ไฟล์แคชของผู้ให้บริการหลักที่ตั้งไว้ (google → แคช Google · อื่น ๆ → แคช edge)"""
+-    order = voice_profiles.provider_order()
+-    return _gpath(text, lang) if order[:1] == ["google"] else _epath(text, lang)
++def cache_path(text: str, lang: str, provider: str | None = None):
++    """ไฟล์แคชของผู้ให้บริการที่ล็อกไว้ หรือของผู้ให้บริการหลักที่ตั้งไว้ (google → แคช Google · อื่น ๆ → แคช edge)"""
++    if provider is None:
++        provider = (voice_profiles.provider_order() or ["edge"])[0]
++    return _gpath(text, lang) if provider == "google" else _epath(text, lang)
++
++
++def resolve_provider(requested: str | None) -> str | None:
++    """Phase 4: ค่า provider ที่หน้าจอส่งมาเพื่อล็อกเสียงของคำตอบ
++    ว่าง/None → None (หน้าจอรุ่นเก่า: ใช้ลำดับเดิม สำรองได้เฉพาะก่อนเสียงชิ้นแรก)
++    edge/google ที่อยู่ในลำดับที่ตั้งไว้ → ค่านั้น · อื่น ๆ → ValueError (ไม่เดา ไม่ข้ามไปเสียงอื่น)"""
++    p = (requested or "").strip().lower()
++    if not p:
++        return None
++    if p not in voice_profiles.provider_order():
++        raise ValueError(f"tts provider not enabled: {p}")
++    return p
+ 
+ 
+ async def stream(text: str, lang: str = "th", provider: str | None = None, info: dict | None = None):

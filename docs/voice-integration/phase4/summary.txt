@@ -1,0 +1,53 @@
+VORA voice integration — Phase 4 (Voice Integration) — 2026-11-12
+
+before editing: read phase3 summary / baseline-comparison / tts.py.diff; phase-3 checksums OK; backups in
+  _backups/voice-integration-20261112-phase4/ (voice.js, app.js, public.py, tts.py, eq.js, profile.js, voice-core.test.mjs) + SHA256SUMS.txt
+
+files modified (diffs in this folder):
+  backend/app/routers/public.py  (+36/-) /api/tts and /api/tts/session accept optional provider (edge|google, must be enabled; other = 400);
+                                 session stores the lock; stream + /api/tts use only that provider; audio responses add X-VORA-TTS-Provider.
+                                 No provider sent = previous behaviour (old clients unchanged). Session response adds "provider" (additive).
+  backend/app/tts.py             (+23/-) resolve_provider(); cache_path(text, lang, provider=None); status() adds "order" and "profile" (additive).
+  frontend/kiosk/voice.js        (+133/-) Speaker wired to voice core:
+                                   - speechChunks(): split original text, normalizeForSpeech each sentence (same for speak + prefetch)
+                                   - precached MP3 only when the whole text matches AND primary provider is google (the MP3s are Google voice)
+                                   - provider lock per response: session + every sentence request carry the same provider;
+                                     switch to the next provider (cfg.tts.order) only if this response has produced no audio yet; never back
+                                   - analyser -> EQ -> gain(0.9) -> speakers; analyser/EQ created once; each MediaElementSource disconnected after play
+                                   - preservesPitch = true; no detune; browser voice via profile.pickFemaleVoice (female only, fixed order)
+                                 Listener: unchanged. Public Speaker methods/fields: unchanged (+ order, profile, lastProvider).
+  frontend/kiosk/app.js          (+13/-) import parseVoiceCommand; speaker.order = cfg.tts.order; onFinal: "หยุดพูด" -> stopSpeaking()
+                                 (stops speaker, idle, caption; does NOT call /api/robot/stop, does NOT go to AI). Nothing else touched.
+  frontend/kiosk/voice/eq.js     comments only (documents the approved order: analyser before EQ). Code unchanged.
+
+files added:
+  frontend/kiosk/voice/commands.js                   parseVoiceCommand(): only "หยุดพูด" (+ polite endings)
+  backend/tests/test_voice_integration.py            14 tests
+  frontend/tests/voice/voice-integration.test.mjs    23 tests (real voice.js in a fake browser)
+  frontend/tests/voice/voice-core.test.mjs           updated: EQ topology test now analyser -> EQ -> destination
+
+not touched (verified by sha256 vs phase 1): classic/, pastel/, ai/ (router, RAG, KB), db/models/schema_guard, robot/,
+  other routers, config/main/services/seed/scheduler, shared/admin/mobile, requirements.txt, .env, .env.example,
+  MP3 originals and copies. No greeting change, no PostgreSQL, no wake word, no new command besides "หยุดพูด", old cache untouched.
+
+tests:
+  targeted: pytest voice_core 23 + voice_integration 14 + tts 11 + site_apply_tts 21 = 69/69 passed
+            node voice-core 19 + voice-integration 23 = 42/42 passed
+  full regression: 954 passed / 1 failed / 0 skipped / 955
+  baseline phase 1: 917 passed / 1 failed / 0 skipped / 918
+  -> +37 new tests all passing, no existing test changed status, 1 failure = known test_reports_overview_and_csv
+  mutation check: breaking lock / pipeline / no-return rule in a scratch copy fails 8 kiosk tests
+
+network: netguard blocked only local test addresses. 9 UDP connects to 10.255.255.255:1 (baseline 7): the +2 come from the new
+  config test calling /api/kiosk/config, which runs VORA's existing _lan_ip() (UDP route lookup for the LAN IP; no packet sent).
+  No real Google/Microsoft TTS, no LLM, no STT, no data sent out.
+
+notes / decisions for the user:
+  1. Precached MP3s are wired but no current VORA flow speaks those exact texts (greeting differs; wake word off;
+     click/headpat not used). They will play only when a flow speaks the same text. Greeting left unchanged as instructed.
+  2. Speed: profile speed = 1.0, but the existing admin setting "ความเร็วเสียงพูด" (voice_rate, 0.6–1.6, default 1.0) still sets
+     playbackRate as before (pitch preserved). If production voice_rate != 1.0, speed differs. Not changed (needs approval).
+  3. "หยุดพูด" works on what the existing Listener hears after the mic button. Pressing the mic already stops speech;
+     the command makes sure the phrase is not sent to AI and the speaker state is reset. No always-on listening.
+  4. Browser fallback (no EQ possible on speechSynthesis) remains the last resort; male voices are never used.
+  5. Not verified here: a real browser + real speakers on the kiosk (audio quality, EQ sound, autoplay). Needs a manual check.

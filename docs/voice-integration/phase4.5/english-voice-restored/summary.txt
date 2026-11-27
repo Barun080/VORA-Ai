@@ -1,0 +1,15 @@
+Phase 4.5 — English voice restored (revert of "one voice for Thai and English") — 2026-11-16 ~20:55 local
+request (owner 20:50): change the English voice back; the Thai voice reading English has an unacceptable accent.
+
+action: restored the 3 files changed at ~18:30 from _backups/voice-thai-voice-20261116/ (backup integrity verified with its SHA256SUMS first;
+        current files verified identical to that change's checksums-after, i.e. nothing else was lost by the restore):
+  backend/app/tts.py                google_stream(): tl = "en" for English-only text with lang=en, otherwise "th"   (as before 18:30)
+  backend/app/voice_profiles.py     google_voice(): "google-translate-en" / "google-translate-th" by the same rule (cache key)
+  backend/tests/test_voice_core.py  back to the previous assertions (24 -> 23 tests)
+state before this restore saved in _backups/voice-english-restore-20261116/ (SHA256SUMS.txt) in case the single-voice version is wanted again.
+not touched: .env, frontend, greetings, EQ, rate/pitch, cache files (English-voice cache files made before 18:30 are read again; Thai-voice ones stay unused).
+
+tests (Linux VM, SQLite temp DB, netguard): voice_core 23/23, voice_integration 14/14, tts 11/11, site_apply_tts 21/21, greeting 44/44.
+full regression NOT re-run for this revert (only these 3 files changed since the 999/1/1000 run; expected 998/1/999).
+no real TTS request made. status: files changed on disk; start.bat restart by the owner needed.
+consequence: Thai and English are again two different Google voices (the situation before 18:30).

@@ -1,0 +1,12 @@
+browser-scenarios exit=1 4 pass 0 fail
+idle-scenarios exit=0 23 pass 3 fail
+phase1-scenarios exit=1 30 pass 5 fail
+phase2-scenarios exit=0 18 pass 3 fail
+phase3-scenarios exit=0 15 pass 0 fail
+phase4-scenarios exit=0 14 pass 0 fail
+phase5-scenarios exit=0 10 pass 1 fail
+gate6b-scenarios exit=0 10 pass 1 fail
+ALLDONE
+voice exit=0 15 pass 0 fail
+pytest 869 passed, 1 warning in 103.70s (0:01:43)
+FINISHED

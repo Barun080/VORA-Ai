@@ -1,0 +1,45 @@
+Provider-lock verification — Phase 4 (2026-11-12)
+
+Server (pytest, tests/test_voice_integration.py + tests/test_voice_core.py):
+  tests/test_voice_core.py::test_provider_order_is_explicit[google-none-order0] PASSED [  5%]
+  tests/test_voice_core.py::test_provider_order_is_explicit[google-google-order1] PASSED [  7%]
+  tests/test_voice_core.py::test_provider_order_is_explicit[edge-none-order2] PASSED [  8%]
+  tests/test_voice_core.py::test_provider_order_is_explicit[edge-google-order3] PASSED [ 10%]
+  tests/test_voice_core.py::test_provider_order_is_explicit[browser-google-order4] PASSED [ 11%]
+  tests/test_voice_core.py::test_provider_order_is_explicit[-none-order5] PASSED [ 13%]
+  tests/test_voice_core.py::test_cache_key_separates_provider_voice_language_text PASSED [ 14%]
+  tests/test_voice_core.py::test_old_format_cache_files_are_not_used PASSED [ 17%]
+  tests/test_voice_core.py::test_google_config_never_returns_edge_cache PASSED [ 18%]
+  tests/test_voice_core.py::test_google_config_warm_ignores_edge_cache PASSED [ 20%]
+  tests/test_voice_core.py::test_edge_config_never_returns_google_cache PASSED [ 21%]
+  tests/test_voice_core.py::test_edge_config_without_fallback_fails_silent_not_google PASSED [ 23%]
+  tests/test_voice_core.py::test_no_voice_switch_mid_response PASSED       [ 26%]
+  tests/test_voice_core.py::test_fallback_only_before_first_audio PASSED   [ 27%]
+  tests/test_voice_core.py::test_provider_lock_keeps_rest_of_response_on_same_voice PASSED [ 28%]
+  tests/test_voice_core.py::test_google_down_does_not_fall_to_edge PASSED  [ 30%]
+  tests/test_voice_integration.py::test_tts_locked_provider_and_header PASSED [ 34%]
+  tests/test_voice_integration.py::test_tts_locked_provider_failure_does_not_switch PASSED [ 36%]
+  tests/test_voice_integration.py::test_tts_legacy_client_without_provider PASSED [ 37%]
+  tests/test_voice_integration.py::test_tts_unknown_provider_400[random] PASSED [ 39%]
+  tests/test_voice_integration.py::test_tts_unknown_provider_400[browser] PASSED [ 40%]
+  tests/test_voice_integration.py::test_tts_unknown_provider_400[EDGE-X] PASSED [ 42%]
+  tests/test_voice_integration.py::test_tts_unknown_provider_400[microsoft] PASSED [ 43%]
+  tests/test_voice_integration.py::test_tts_provider_not_enabled_400 PASSED [ 44%]
+  tests/test_voice_integration.py::test_session_lock_recorded_and_stream_uses_only_it PASSED [ 46%]
+  tests/test_voice_integration.py::test_session_legacy_without_provider PASSED [ 47%]
+  tests/test_voice_integration.py::test_session_cached_flag_follows_lock PASSED [ 49%]
+  tests/test_voice_integration.py::test_session_bad_provider_400 PASSED    [ 50%]
+  tests/test_voice_integration.py::test_kiosk_config_exposes_order_and_profile_additively PASSED [ 52%]
+  tests/test_voice_integration.py::test_resolve_provider PASSED            [ 53%]
+
+Kiosk (node, frontend/tests/voice/voice-integration.test.mjs):
+  ok 10 - no random / no pitch-by-playbackRate in voice core sources
+  ok 20 - provider lock: whole response uses the locked provider (session carries provider)
+  ok 21 - stream broken midway → rest of the same response stays on the same provider (never another server voice)
+  ok 22 - edge fails mid-response and its sentences fail → remaining goes to browser female voice, NOT google
+  ok 23 - primary gives no audio at all → fallback provider locked from the START of the response, no return to primary
+  ok 24 - old server config (no order) → no provider param sent (legacy behaviour)
+  ok 25 - no random switching: 10 responses in a row use one provider and one browser voice
+  ok 42 - no random voice selection in voice.js (Math.random only drives browser mouth level)
+
+Mutation check (scratch copy, not in project): removing the lock / analyser→EQ link / no-return rule made 8 of 23 kiosk tests fail -> tests are not vacuous.

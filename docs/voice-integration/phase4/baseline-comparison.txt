@@ -1,0 +1,10 @@
+Phase 4 full regression vs Phase 1 baseline (same env: Linux VM, Python 3.12.16, SQLite, per-file runs, netguard)
+baseline: {'passed': 917, 'failed': 1, 'skipped': 0} total=918
+after   : {'passed': 954, 'failed': 1, 'skipped': 0} total=955
+new tests: 37  all passed: True
+  test_voice_core.py: 23  test_voice_integration.py: 14
+removed tests: none
+existing tests that changed status: none
+failed after: ['tests/test_system.py::test_reports_overview_and_csv'] = known pre-existing order dependency
+(canary test IDs normalized: VORA-CANARY-<random> is regenerated each run)
+frontend (node --test): voice-core 19 + voice-integration 23 = 42 passed, 0 failed (node-voice-tests.txt)

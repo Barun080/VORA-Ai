@@ -1,0 +1,28 @@
+Phase 4.5 — Microsoft Premwadee PRELIGHT (STEP 1, read-only) — 2026-11-13 ~18:20 local
+No .env change, no cache created, no speech synthesized, tts_doctor NOT run (it synthesizes and can edit .env).
+
+endpoint (from the installed package C:\VORA_Robot\.venv\Lib\site-packages\edge_tts, version 7.3.1):
+  synthesis: wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1  (WebSocket)
+  voice list: https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/voices/list
+  = the free "Read Aloud" service of Microsoft Edge (unofficial for third-party use, no SLA)
+authentication: no account / API key / cost. Uses a public TrustedClientToken built into edge-tts + a time-based
+  Sec-MS-GEC token (edge_tts/drm.py) -> requires a correct system clock. Client clock at test: 2026-11-13T11:20:15Z (correct).
+voice: th-TH-PremwadeeNeural (VORA_TTS_VOICE_TH in .env and config default); VORA_TTS_VOICE_EN=same.
+  Used only by the edge provider: tts.voice_for() -> voice_profiles.edge_voice(); rate/pitch from VORA_TTS_RATE (-5%) / VORA_TTS_PITCH (+0Hz).
+  Not used today because VORA_TTS_PROVIDER=google.
+
+network check (built-in browser pane on the VORA PC = same network; voice-list GET only, no audio):
+  DNS 27 ms · TCP 120 ms · TLS 83 ms · TTFB 426 ms · total 728 ms · HTTP 200
+  322 voices returned; Thai: th-TH-PremwadeeNeural (Female, GA), th-TH-NiwatNeural (Male, GA)
+
+history on this PC (from existing cache files, no calls):
+  50 Microsoft Premwadee files cached 2026-11-09 .. 2026-11-12, 26 of them on 2026-11-12; newest 12:49 local;
+  switch to Google at 13:05 local. -> Microsoft synthesis did succeed on this PC; failures were intermittent
+  (failed requests are not cached, so the failure rate cannot be measured from files).
+
+verified: endpoint host reachable from this PC's network now; Microsoft answers; Premwadee voice is listed as GA; clock OK.
+not verified: the WebSocket synthesis path itself (needs a real synthesis request), whether Microsoft currently returns
+  "No audio was received" for this network/client (the 12 Nov problem), the Python/aiohttp client path vs the browser path,
+  behaviour on the college network if the PC is on another network today.
+
+result: PASS (network reachability) / UNKNOWN (synthesis reliability) -> STEP 2 is needed to know if Premwadee works reliably.

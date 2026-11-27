@@ -1,0 +1,281 @@
+--- _backups/voice-integration-20261112-phase4/frontend/kiosk/voice.js	2026-11-12 10:56:01.309746200 +0000
++++ frontend/kiosk/voice.js	2026-11-12 11:01:23.648704200 +0000
+@@ -1,5 +1,15 @@
+ // ระบบเสียงของ VORA: รับเสียงพูด (STT) และพูดตอบ (TTS) โดยไม่ให้ฟังกับพูดชนกัน
+ // STT: Web Speech API ของเบราว์เซอร์ (แนะนำ Chrome/Edge)  TTS: เสียงจากเซิร์ฟเวอร์ (edge-tts) ถ้ามี ไม่เช่นนั้นใช้เสียงของเบราว์เซอร์
++// 12 พ.ย. 2569 (Phase 4 · voice integration): Speaker ใช้ voice core (voice/profile.js · voice/speech-text.js · voice/eq.js)
++//   - ข้อความผ่าน normalizeForSpeech ก่อนส่ง TTS (คงเวลา/วันที่/เบอร์/URL)
++//   - ล็อกผู้ให้บริการเสียงหนึ่งรายต่อหนึ่งคำตอบ (ส่ง provider ไปกับ /api/tts/session และ /api/tts) · สำรองได้เฉพาะที่ขอบเขตชัดเจน ไม่วนกลับ
++//   - ไฟล์เสียงที่เตรียมไว้ (assets/voices) ใช้เมื่อข้อความตรงทั้งข้อความและผู้ให้บริการตรงกัน
++//   - เสียง: แหล่งเสียง → Analyser (ปากอวตารวัดจากเสียงต้นฉบับ) → EQ → Gain(volume) → ลำโพง · analyser/EQ สร้างครั้งเดียว · ปลด source หลังเล่นจบ
++//   - เสียงเบราว์เซอร์: ผู้หญิงเท่านั้น เลือกแบบคงที่ (profile.pickFemaleVoice)
++//   Listener ไม่เปลี่ยน · ไม่มี wake word / การฟังตลอดเวลา
++import { profileFor, pickFemaleVoice, findPrecached } from "./voice/profile.js";
++import { normalizeForSpeech } from "./voice/speech-text.js";
++import { sharedVoiceEq, eqParams } from "./voice/eq.js";
+ 
+ const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+ 
+@@ -159,8 +169,18 @@
+   return out;
+ }
+ 
+-// เสียงผู้ชายที่พบบ่อยใน Windows / Edge / Chrome / macOS — ไม่ใช้เป็นเสียง VORA
+-const MALE_VOICE = /\b(pattara|niwat|david|mark|guy|andrew|brian|christopher|eric|roger|steffan|george|ryan|james|daniel|alex|fred|thomas)\b|uk english male/i;
++/** ประโยคสำหรับพูด: ตัดประโยคจากข้อความต้นฉบับ (ใช้ . ! ? ค่ะ ครับ เป็นจุดตัด) แล้ว normalize ทีละประโยค · ทิ้งประโยคว่าง
++ *  ใช้ฟังก์ชันเดียวกันทั้งตอนพูดและตอนเตรียมเสียงล่วงหน้า → ข้อความ/แคชตรงกัน */
++export function speechChunks(text) {
++  const raw = String(text || "");
++  if (!raw.trim()) return [];
++  return splitSentences(raw).map(normalizeForSpeech).filter(Boolean);
++}
++
++/** ข้อความทั้งคำตอบสำหรับสตรีม (= ประโยคทั้งหมดต่อกัน) */
++export function speechText(text) {
++  return speechChunks(text).join(" ");
++}
+ 
+ export class Speaker {
+   constructor({ onLevel, onStart, onEnd, onAudio } = {}) {
+@@ -172,6 +192,9 @@
+     this.token = 0;
+     this.voices = [];
+     this.fetchTimeoutMs = 9000;     // ประโยคละไม่เกิน 9 วิ (เซิร์ฟเวอร์จำกัด 8 วิ) แล้วใช้เสียงเบราว์เซอร์ต่อ
++    this.profile = profileFor("vora");   // Phase 4: หนึ่ง character = หนึ่ง voice profile (EQ อย่างเดียว · speed 1.0 · pitch 0)
++    this.order = [];                // ลำดับผู้ให้บริการจากเซิร์ฟเวอร์ (cfg.tts.order) · ว่าง = ไม่ส่ง provider (ทำงานแบบเดิม)
++    this.lastProvider = "";         // ผู้ให้บริการ/แหล่งเสียงที่ใช้จริงของคำตอบล่าสุด (precached:google · google · edge · browser)
+     if ("speechSynthesis" in window) {
+       const load = () => (this.voices = speechSynthesis.getVoices());
+       load();
+@@ -180,35 +203,62 @@
+   }
+ 
+   pickVoice(lang) {
+-    const want = lang === "en" ? "en" : "th";
+     // 11 พ.ย. 2569: ใช้เฉพาะเสียงผู้หญิง (เสียงประจำตัว VORA) — Chrome บน Windows มีเสียงไทยแค่ "Pattara" ซึ่งเป็นเสียงผู้ชาย
+-    // เดิมใช้ Pattara เมื่อไม่มีเสียงอื่น → บางคำตอบกลายเป็นเสียงผู้ชาย · ตอนนี้ถ้าไม่มีเสียงผู้หญิง = ไม่พูดด้วยเสียงเบราว์เซอร์ (ข้อความยังแสดงครบ)
+-    const vs = this.voices.filter((v) => v.lang && v.lang.toLowerCase().startsWith(want) && !MALE_VOICE.test(v.name));
+-    const prefer = lang === "en" ? ["Ava", "Jenny", "Aria", "Emma", "Google US", "Samantha", "Zira"] : ["Premwadee", "Achara", "Google", "Kanya", "Narisa"];
+-    for (const p of prefer) { const v = vs.find((x) => x.name.includes(p)); if (v) return v; }
+-    return vs[0] || null;
++    // ไม่มีเสียงผู้หญิง = ไม่พูดด้วยเสียงเบราว์เซอร์ (ข้อความยังแสดงครบ)
++    // Phase 4: ลำดับคงที่ตาม profile (Premwadee > Kanya > Narisa > Achara > Google ไทย) · บล็อกเสียงผู้ชายรวม ภัทระ/นิวัฒน์/Male
++    return pickFemaleVoice(this.voices, lang);
++  }
++
++  /** ผู้ให้บริการที่ล็อกได้ตามลำดับ (ว่าง = เซิร์ฟเวอร์รุ่นเก่า/ไม่ได้ตั้ง → ไม่ส่ง provider) */
++  providers() {
++    return (Array.isArray(this.order) ? this.order : []).filter((p) => p === "edge" || p === "google");
+   }
+ 
+   async speak(text, lang = "th") {
+     this.stop();
+     const my = ++this.token;
+     if (!text || !text.trim()) return;
++    const chunks = speechChunks(text);          // Phase 4: normalize ก่อนส่ง TTS
++    if (!chunks.length) return;
+     this.speaking = true;
+     this.lastPath = "";
++    this.lastProvider = "";
+     this.cb.onStart && this.cb.onStart();
+     try {
+-      let rest = splitSentences(text);
+-      if (this.serverTTS) {
++      let rest = chunks;
++      const providers = this.serverTTS ? this.providers() : [];
++      // 1) ไฟล์เสียงที่เตรียมไว้: ข้อความตรงทั้งข้อความ + ผู้ให้บริการหลักเป็นรายเดียวกับที่อัดไฟล์ (ไม่ผสมเสียง)
++      const pre = providers.length ? findPrecached(text, { provider: providers[0], lang }) : null;
++      if (pre) {
++        const r = await this.playSrc(pre, my, 8000);
++        if (my !== this.token) return;
++        if (r.status === "ok") { rest = []; this.lastPath = "precached"; this.lastProvider = `precached:${providers[0]}`; }
++      }
++      if (rest.length && this.serverTTS) {
+         // 12 พ.ย. 2569: สตรีมเสียงทั้งคำตอบในการเชื่อมต่อเดียว (เริ่มพูดเมื่อได้เสียงชิ้นแรก ไม่มีช่องว่างระหว่างประโยค)
+         // เริ่มไม่ได้ → ใช้วิธีเดิมทีละประโยค · สตรีมขาดกลางทาง → พูดต่อจากประโยคที่น่าจะค้างอยู่
+-        const r = await this.speakStream(text, lang, my);
+-        if (my !== this.token) return;
+-        if (r.status === "ok") rest = [];
+-        else if (r.status === "broken") rest = resumeFrom(rest, r.at);
+-        this.lastPath = r.status === "ok" ? "stream" : `stream-${r.status}`;
+-        if (rest.length) rest = await this.speakServer(rest, lang, my);
++        // Phase 4: ล็อกผู้ให้บริการทีละราย (ตามลำดับ cfg.tts.order) — เปลี่ยนรายได้เฉพาะเมื่อคำตอบนี้ยังไม่มีเสียงออกเลย และไม่วนกลับ
++        const plan = providers.length ? providers : [null];
++        for (let i = 0; i < plan.length && rest.length; i++) {
++          const lock = plan[i];
++          const before = rest.length;
++          this.playedServer = false;
++          const r = await this.speakStream(rest.join(" "), lang, my, lock);
++          if (my !== this.token) return;
++          if (r.status === "ok") rest = [];
++          else if (r.status === "broken") rest = resumeFrom(rest, r.at);
++          this.lastPath = (r.status === "ok" ? "stream" : `stream-${r.status}`) + (lock ? `:${lock}` : "");
++          const streamed = r.status !== "nostart";
++          if (rest.length) rest = await this.speakServer(rest, lang, my, lock);
++          if (my !== this.token) return;
++          if (streamed || this.playedServer || rest.length < before) { this.lastProvider = lock || "server"; break; }   // มีเสียงออกแล้ว: ห้ามเปลี่ยนผู้ให้บริการในคำตอบนี้
++        }
++      }
++      if (rest.length && my === this.token) {
++        this.lastPath = this.lastPath ? this.lastPath + "+browser" : "browser";
++        this.lastProvider = this.lastProvider ? this.lastProvider + "+browser" : "browser";
++        await this.speakBrowser(rest.join(" "), lang, my);
+       }
+-      if (rest.length && my === this.token) { this.lastPath = this.lastPath ? this.lastPath + "+browser" : "browser"; await this.speakBrowser(rest.join(" "), lang, my); }
+     } finally {
+       if (my === this.token) {
+         this.speaking = false;
+@@ -224,7 +274,7 @@
+     // 12 พ.ย. 2569: เตรียมเสียง "ทั้งข้อความ" เก็บแคชที่เซิร์ฟเวอร์ทีละข้อความ (เซิร์ฟเวอร์รอให้งานพูดจริงก่อน) → พอพูดจริงสตรีมจากแคชทันที
+     if (!this.serverTTS) return;
+     this.warmQueue = this.warmQueue || [];
+-    for (const text of texts || []) { const x = String(text || "").trim(); if (x) this.warmQueue.push({ text: x, lang }); }
++    for (const text of texts || []) { const x = speechText(text); if (x) this.warmQueue.push({ text: x, lang }); }   // Phase 4: ข้อความเดียวกับที่จะพูดจริง
+     this.pumpWarm();
+   }
+ 
+@@ -243,13 +293,15 @@
+   }
+ 
+   /** สตรีมเสียงทั้งข้อความ → { status: "ok" | "nostart" | "broken", at: วินาทีที่เล่นไปแล้ว } */
+-  async speakStream(text, lang, my) {
++  async speakStream(text, lang, my, provider = null) {
+     let id;
+     try {
+       const ctl = new AbortController();
+       const timer = setTimeout(() => ctl.abort(), 5000);
++      const payload = { text: text.slice(0, 1500), lang };
++      if (provider) payload.provider = provider;            // Phase 4: ล็อกผู้ให้บริการของคำตอบนี้
+       const r = await fetch("/api/tts/session", { method: "POST", headers: { "Content-Type": "application/json" },
+-        body: JSON.stringify({ text: text.slice(0, 1500), lang }), signal: ctl.signal });
++        body: JSON.stringify(payload), signal: ctl.signal });
+       clearTimeout(timer);
+       if (!r.ok) return { status: "nostart", at: 0 };
+       id = (await r.json()).id;
+@@ -263,14 +315,15 @@
+     // ตอนนี้: เข้าคิว ขอทีละประโยคตามลำดับ (เซิร์ฟเวอร์สร้างพร้อมกันได้ 2 → อีกช่องว่างไว้ให้ประโยคที่กำลังจะพูด)
+     if (!this.serverTTS) return;
+     this.preQueue = this.preQueue || [];
++    const provider = this.providers()[0] || null;          // Phase 4: เตรียมด้วยผู้ให้บริการหลักที่จะล็อกตอนพูด
+     for (const text of texts || []) {
+-      for (const chunk of splitSentences(String(text || "").trim()).slice(0, 2)) {
+-        const key = `${lang}|${chunk}`;
++      for (const chunk of speechChunks(text).slice(0, 2)) {
++        const key = `${provider || ""}|${lang}|${chunk}`;
+         if (!chunk || this.prefetched.has(key)) continue;
+         if (this.prefetched.size > 200) this.prefetched.clear();
+         let resolve;
+         this.prefetched.set(key, new Promise((r) => (resolve = r)));
+-        this.preQueue.push({ key, chunk, lang, resolve });
++        this.preQueue.push({ key, chunk, lang, provider, resolve });
+       }
+     }
+     this.pumpPrefetch();
+@@ -285,7 +338,7 @@
+         if (!this.prefetched.has(job.key)) { job.resolve(null); continue; }   // ถูกพูดไปแล้ว/ล้างแคช
+         const ctl = new AbortController();
+         const timer = setTimeout(() => ctl.abort(), 15000);
+-        const blob = await fetch(`/api/tts?lang=${job.lang}&pre=1&text=${encodeURIComponent(job.chunk)}`, { signal: ctl.signal })
++        const blob = await fetch(`/api/tts?lang=${job.lang}&pre=1${job.provider ? `&provider=${job.provider}` : ""}&text=${encodeURIComponent(job.chunk)}`, { signal: ctl.signal })
+           .then((r) => (r.status === 200 ? r.blob() : null)).then((b) => (b && b.size ? b : null)).catch(() => null);
+         clearTimeout(timer);
+         job.resolve(blob);
+@@ -293,10 +346,11 @@
+     } finally { this.prePumping = false; }
+   }
+ 
+-  async fetchChunk(text, lang, signal) {
+-    const pre = this.prefetched.get(`${lang}|${text}`);
++  async fetchChunk(text, lang, signal, provider = null) {
++    const pkey = `${provider || ""}|${lang}|${text}`;     // Phase 4: เสียงที่เตรียมไว้ใช้ได้เฉพาะผู้ให้บริการเดียวกัน
++    const pre = this.prefetched.get(pkey);
+     if (pre) {
+-      this.prefetched.delete(`${lang}|${text}`);
++      this.prefetched.delete(pkey);
+       // รอเสียงที่เตรียมไว้ไม่เกิน 2.5 วิ (ยังอยู่ในคิว) แล้วขอเองโดยตรง — เซิร์ฟเวอร์รวมคำขอซ้ำให้ ไม่สร้างเสียงสองครั้ง
+       const b = await Promise.race([pre, new Promise((r) => setTimeout(() => r(null), 2500))]);
+       if (b) return b;
+@@ -306,7 +360,7 @@
+     signal.addEventListener("abort", onAbort);
+     const timer = setTimeout(() => ctl.abort(), Math.max(12000, 3000 + text.length * 60));
+     try {
+-      const res = await fetch(`/api/tts?lang=${lang}&text=${encodeURIComponent(text)}`, { signal: ctl.signal });
++      const res = await fetch(`/api/tts?lang=${lang}${provider ? `&provider=${provider}` : ""}&text=${encodeURIComponent(text)}`, { signal: ctl.signal });
+       if (res.status !== 200) return null;
+       const blob = await res.blob();
+       return blob.size > 0 ? blob : null;
+@@ -320,40 +374,46 @@
+       if (this.ctx.state === "suspended") this.ctx.resume().catch(() => {});
+       if (this.ctx.state !== "running") return null;   // ถ้าต่อผ่าน context ที่ถูกระงับ เสียงจะเงียบทั้งที่อวตารขยับปาก (บั๊กเดิม)
+       if (!this.analyser) {
++        // Phase 4: แหล่งเสียง → Analyser → EQ(bass/clarity/treble/lowpass) → Gain(volume) → ลำโพง · สร้างครั้งเดียวต่อหน้า
++        // analyser อยู่ก่อน EQ: ปากอวตารวัดจากเสียงต้นฉบับ (EQ/volume ไม่ทำให้ปากขยับน้อยลง)
+         this.analyser = this.ctx.createAnalyser();
+         this.analyser.fftSize = 256;
+-        this.analyser.connect(this.ctx.destination);
++        this.eq = sharedVoiceEq(this.ctx, this.ctx.destination, eqParams(this.profile));
++        this.analyser.connect(this.eq.input);
+       }
+-      this.ctx.createMediaElementSource(audio).connect(this.analyser);
++      const src = this.ctx.createMediaElementSource(audio);   // หนึ่ง source ต่อหนึ่ง <audio> (เบราว์เซอร์อนุญาตครั้งเดียวต่อ element)
++      src.connect(this.analyser);
++      audio._voraSource = src;                                 // ปลดหลังเล่นจบใน playSrc (กัน audio graph โตขึ้นทุกประโยค)
+       return this.analyser;
+     } catch { return null; }
+   }
+ 
+   /** เสียงจากเซิร์ฟเวอร์ทีละประโยค: ดาวน์โหลดประโยคถัดไประหว่างเล่นประโยคปัจจุบัน (เริ่มพูดเร็ว ไม่ต้องรอทั้งคำตอบ และไม่ถูกตัดที่ 600 ตัวอักษร)
+    *  คืนรายการประโยคที่ยังไม่ได้พูด (ให้เสียงของเบราว์เซอร์พูดต่อ) — ว่าง = พูดครบ */
+-  async speakServer(chunks, lang, my) {
++  async speakServer(chunks, lang, my, provider = null) {
+     const abort = new AbortController();
+     this.abortFetch = abort;
+-    let next = this.fetchChunk(chunks[0], lang, abort.signal);
++    let next = this.fetchChunk(chunks[0], lang, abort.signal, provider);
+     for (let i = 0; i < chunks.length; i++) {
+       let blob = await next;
+       if (my !== this.token) { abort.abort(); return []; }
+       if (!blob && !abort.signal.aborted) {   // 11 พ.ย. 2569: ลองดาวน์โหลดเสียงประโยคนี้ใหม่ 1 ครั้ง ก่อนยอมใช้เสียงเบราว์เซอร์
+         await new Promise((r) => setTimeout(r, 250));
+         if (my !== this.token) { abort.abort(); return []; }
+-        blob = await this.fetchChunk(chunks[i], lang, abort.signal);
++        blob = await this.fetchChunk(chunks[i], lang, abort.signal, provider);
+         if (my !== this.token) { abort.abort(); return []; }
+       }
+       if (!blob) {
+         this.ttsFailures = (this.ttsFailures || 0) + 1;
+         // 11 พ.ย. 2569 (รอบ 4): ไม่มีเสียงผู้หญิงในเบราว์เซอร์ → ข้ามเฉพาะประโยคที่สร้างเสียงไม่ได้ แล้วพูดประโยคถัดไปต่อ
+         // (เดิมยกประโยคที่เหลือทั้งหมดให้เบราว์เซอร์ → เงียบตั้งแต่ประโยคนั้นจนจบ เช่น สรุปผลค้นเว็บพูดไม่ครบ)
+-        if (!this.pickVoice(lang) && i + 1 < chunks.length) { next = this.fetchChunk(chunks[i + 1], lang, abort.signal); continue; }
++        if (!this.pickVoice(lang) && i + 1 < chunks.length) { next = this.fetchChunk(chunks[i + 1], lang, abort.signal, provider); continue; }
+         abort.abort(); return chunks.slice(i);
+       }
+-      next = i + 1 < chunks.length ? this.fetchChunk(chunks[i + 1], lang, abort.signal) : null;
+-      this.lastPath = "server";
++      next = i + 1 < chunks.length ? this.fetchChunk(chunks[i + 1], lang, abort.signal, provider) : null;
++      this.lastPath = provider ? `server:${provider}` : "server";
+       const ok = await this.playBlob(blob, my);
++      if (ok) this.playedServer = true;
+       if (my !== this.token) { abort.abort(); return []; }
+       if (!ok) { abort.abort(); return chunks.slice(i); }   // เล่นไม่ได้ (เช่น ถูกบล็อก autoplay) → เบราว์เซอร์พูดต่อตั้งแต่ประโยคนี้
+     }
+@@ -372,9 +432,11 @@
+     const audio = new Audio();
+     audio.preload = "auto";
+     audio.src = url;
++    if ("preservesPitch" in audio) audio.preservesPitch = true;   // Phase 4: ความเร็วไม่เปลี่ยน pitch (pitch คงที่ 0)
+     audio.playbackRate = this.rate;
+     this.audio = audio;
+     const an = this.attachAnalyser(audio);
++    if (!an) audio.volume = this.profile.volume;            // ไม่ผ่าน Web Audio (context ถูกระงับ) → volume ตาม profile ที่ element
+     const buf = an ? new Uint8Array(an.frequencyBinCount) : null;
+     const tick = () => {
+       if (audio.paused || audio.ended || this.audio !== audio) return;
+@@ -408,6 +470,7 @@
+     const at = audio.currentTime || 0;
+     this.cb.onAudio && this.cb.onAudio(false);
+     if (this.audio === audio) { try { audio.pause(); audio.removeAttribute("src"); audio.load(); } catch { /* */ } this.audio = null; }
++    if (audio._voraSource) { try { audio._voraSource.disconnect(); } catch { /* */ } audio._voraSource = null; }
+     return { status: my === this.token ? status : "ok", at };
+   }
+ 

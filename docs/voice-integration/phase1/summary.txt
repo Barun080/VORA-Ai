@@ -1,0 +1,14 @@
+VORA baseline before voice integration — 2026-11-12
+env: Linux VM, Python 3.12.16, pytest 9.2.0, SQLite temp DB, each test file in its own pytest process, netguard (no external network)
+passed=917 failed=1 skipped=0 errors=0 total=918
+failed tests:
+   tests/test_system.py::test_reports_overview_and_csv
+
+notes:
+- test_system.py::test_reports_overview_and_csv = pre-existing order dependency (needs questions asked by earlier test files).
+  Verified: `pytest tests/test_ai.py tests/test_system.py` in one session -> 36 passed. Not a regression; no code changed yet.
+- Python 3.10 run (first attempt) gave 19 extra failures: scripts/bakeoff_6e0.py line 575 uses a 3.12-only f-string. Environment only.
+- Previous baseline docs/test-results.txt (2026-11-09, Windows, Python 3.12.0, PostgreSQL, single session): 858 tests, 8 failed / 850 passed.
+  Those 8 pass in this environment; whether they still fail on Windows+PostgreSQL is unverified here.
+- netguard blocked 9 connection attempts, all to private/LAN test addresses (10.255.255.255:1, 10.0.0.5, 192.168.1.1) from robot/network tests. No TTS or LLM host was contacted.
+- Project files unchanged by the test run: `sha256sum -c checksums-before.txt` OK.

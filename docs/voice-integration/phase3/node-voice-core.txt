@@ -1,0 +1,124 @@
+TAP version 13
+# Subtest: time range 08:00-16:30 is preserved
+ok 1 - time range 08:00-16:30 is preserved
+  ---
+  duration_ms: 1.259756
+  type: 'test'
+  ...
+# Subtest: dates 12/11/2569 and 2026-11-12 are preserved
+ok 2 - dates 12/11/2569 and 2026-11-12 are preserved
+  ---
+  duration_ms: 0.714302
+  type: 'test'
+  ...
+# Subtest: numbers: phone, decimals, thousands, percent, signs
+ok 3 - numbers: phone, decimals, thousands, percent, signs
+  ---
+  duration_ms: 0.234989
+  type: 'test'
+  ...
+# Subtest: URL and email are preserved exactly
+ok 4 - URL and email are preserved exactly
+  ---
+  duration_ms: 0.170967
+  type: 'test'
+  ...
+# Subtest: meaningful marks kept: parentheses content, e-mail, COVID-19, snake_case, Thai ๆ ฯ
+ok 5 - meaningful marks kept: parentheses content, e-mail, COVID-19, snake_case, Thai ๆ ฯ
+  ---
+  duration_ms: 0.184416
+  type: 'test'
+  ...
+# Subtest: markdown / emoji / ? ! ~ … removed without losing words
+ok 6 - markdown / emoji / ? ! ~ … removed without losing words
+  ---
+  duration_ms: 0.212912
+  type: 'test'
+  ...
+# Subtest: normalization is idempotent
+ok 7 - normalization is idempotent
+  ---
+  duration_ms: 0.247471
+  type: 'test'
+  ...
+# Subtest: profile: VORA is EQ-only, speed 1.0, pitch 0
+ok 8 - profile: VORA is EQ-only, speed 1.0, pitch 0
+  ---
+  duration_ms: 0.141559
+  type: 'test'
+  ...
+# Subtest: character → voice is deterministic; unknown character → VORA (no random)
+ok 9 - character → voice is deterministic; unknown character → VORA (no random)
+  ---
+  duration_ms: 0.90613
+  type: 'test'
+  ...
+# Subtest: no random / no pitch-by-playbackRate in voice core sources
+ok 10 - no random / no pitch-by-playbackRate in voice core sources
+  ---
+  duration_ms: 11.832231
+  type: 'test'
+  ...
+# Subtest: fallback order is fixed
+ok 11 - fallback order is fixed
+  ---
+  duration_ms: 0.304364
+  type: 'test'
+  ...
+# Subtest: browser voice: female only, stable priority, never male
+ok 12 - browser voice: female only, stable priority, never male
+  ---
+  duration_ms: 1.152644
+  type: 'test'
+  ...
+# Subtest: precached lookup finds all 10 phrases (with or without ? ! ~)
+ok 13 - precached lookup finds all 10 phrases (with or without ? ! ~)
+  ---
+  duration_ms: 0.386282
+  type: 'test'
+  ...
+# Subtest: precached lookup: other text / other provider / English → null
+ok 14 - precached lookup: other text / other provider / English → null
+  ---
+  duration_ms: 0.15495
+  type: 'test'
+  ...
+# Subtest: every precached URL points to an existing asset file
+ok 15 - every precached URL points to an existing asset file
+  ---
+  duration_ms: 61.211808
+  type: 'test'
+  ...
+# Subtest: EQ bands match the specified chain
+ok 16 - EQ bands match the specified chain
+  ---
+  duration_ms: 0.335932
+  type: 'test'
+  ...
+# Subtest: EQ chain: source → bass → clarity → treble → lowpass → gain → existing analyser
+ok 17 - EQ chain: source → bass → clarity → treble → lowpass → gain → existing analyser
+  ---
+  duration_ms: 0.422998
+  type: 'test'
+  ...
+# Subtest: EQ live update and safe clamping
+ok 18 - EQ live update and safe clamping
+  ---
+  duration_ms: 0.146418
+  type: 'test'
+  ...
+# Subtest: one shared EQ per analyser (no duplicate pipelines)
+ok 19 - one shared EQ per analyser (no duplicate pipelines)
+  ---
+  duration_ms: 0.148035
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 297.633279

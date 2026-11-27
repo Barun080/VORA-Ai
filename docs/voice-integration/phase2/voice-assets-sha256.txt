@@ -1,0 +1,13 @@
+# Phase 2 voice assets — SHA256 source vs destination (2026-11-12)
+# source: C:\Users\thani\Downloads\voices\voices   destination: frontend/assets/voices/
+MATCH    vora_cam_greet_1.mp3  src=823fa5a20f4be6dd4c3d2126fdb5fa673b3fb58c66a236af33b43e3f7792fbdb  dst=823fa5a20f4be6dd4c3d2126fdb5fa673b3fb58c66a236af33b43e3f7792fbdb
+MATCH    vora_cam_greet_2.mp3  src=7251a8f7e559fb1c6b7725ff7ecc732c8d77710d04f83cf95f14c80e6802795c  dst=7251a8f7e559fb1c6b7725ff7ecc732c8d77710d04f83cf95f14c80e6802795c
+MATCH    vora_click_1.mp3  src=7f70fe9aa1bff65da24d0aa3f97996b3d9cdfcd4ef36e9d8accf4f60125bab92  dst=7f70fe9aa1bff65da24d0aa3f97996b3d9cdfcd4ef36e9d8accf4f60125bab92
+MATCH    vora_click_2.mp3  src=947fd670c3eefb75d4676f024bcc73991e0fac67acfc02e6a39c8fc9cacf6c6c  dst=947fd670c3eefb75d4676f024bcc73991e0fac67acfc02e6a39c8fc9cacf6c6c
+MATCH    vora_headpat_1.mp3  src=d426bfafc5517ba3ef85a194a75aba263b973e196d7334d3afd8f758610071c4  dst=d426bfafc5517ba3ef85a194a75aba263b973e196d7334d3afd8f758610071c4
+MATCH    vora_headpat_2.mp3  src=160602cb4f0a0a5cb85b8aa7f149ebbb27f4846d4d831c8aead99462587267ab  dst=160602cb4f0a0a5cb85b8aa7f149ebbb27f4846d4d831c8aead99462587267ab
+MATCH    vora_preview_th.mp3  src=6fc2ed8f03e8799f1ce7b8e53426405d2e13dea3ac16a117bcf293de3e558954  dst=6fc2ed8f03e8799f1ce7b8e53426405d2e13dea3ac16a117bcf293de3e558954
+MATCH    vora_wake_1.mp3  src=6865fcf78d200ff77c6d4ed5765268d06a02485a853e1332d890af2a2a4f1def  dst=6865fcf78d200ff77c6d4ed5765268d06a02485a853e1332d890af2a2a4f1def
+MATCH    vora_wake_2.mp3  src=4cb634cafa1d38d00e674f6bb3b144c133dd4eb9c6200df10dd3e76ceb49f70a  dst=4cb634cafa1d38d00e674f6bb3b144c133dd4eb9c6200df10dd3e76ceb49f70a
+MATCH    vora_welcome.mp3  src=a508f88f208c4c3ee9b18406963343caa3a59f4216a30511e576a95049115822  dst=a508f88f208c4c3ee9b18406963343caa3a59f4216a30511e576a95049115822
+# result: 10/10 MATCH; extra files in destination: none

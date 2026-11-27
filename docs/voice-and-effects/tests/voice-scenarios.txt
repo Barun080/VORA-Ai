@@ -1,0 +1,16 @@
+PASS V1 เปิดไมค์ → กำลังฟัง (หลังไมค์ทำงานจริง) → ส่งข้อความเข้า AI เดิม → พูดตอบ → กลับว่าง {"starting":"starting","wave0":"none","live":"live","chat":{"text":"มีสาขาอะไรบ้าง","session_id":null,"lang":"th","channel":"kiosk","input_mode":"voice"},"seq":"idle > listening:starting > listening:live > thinking > speaking > idle"}
+PASS V2 ไม่พูดอะไร → ข้อความไม่ได้ยินเสียง → กลับว่าง → กดไมค์ใหม่ได้ทันที {"n2":{"state":"idle","voice":"error","caption":"ไม่ได้ยินเสียง ลองกดไมค์แล้วพูดอีกครั้งนะคะ","wave":"none","n":2,"active":0,"max":1},"after":"live"}
+PASS V3 Root Cause: onend ของรอบเก่าที่มาช้าไม่ทำให้รอบใหม่หลุดเป็นว่าง และไม่ส่งข้อความเก่าไป AI {"afterStaleEnd":{"state":"listening","voice":"live","caption":"พูดได้เลยค่ะ หนูกำลังฟัง…","wave":"wave","n":5,"active":1,"max":1},"chats":["ทดสอบรอบใหม่"]}
+PASS V4 Stop listening: กดไมค์ซ้ำ = จบการฟังแล้วส่งคำที่พูด สมัครเรียนยังไง
+PASS V5 Permission denied / ไม่พบไมค์ → ข้อความชัดเจน → กลับว่าง → ลองใหม่ได้ {"toast5":"ไมโครโฟนยังไม่ได้รับอนุญาต กรุณากดอนุญาตที่แถบที่อยู่ของเบราว์เซอร์","retry":"live","cap6":"ไม่พบไมโครโฟน หรือไมโครโฟนถูกโปรแกรมอื่นใช้อยู่"}
+PASS V6 ไมค์ไม่ตอบสนอง: ระหว่างรอไม่แสดงคลื่นเสียง · 6 วิ แล้วแจ้งและกลับว่าง {"during":["starting","none"],"after":["idle","ไมโครโฟนไม่ตอบสนอง ลองกดไมค์อีกครั้งนะคะ",0]}
+PASS V7 พูดหลายครั้ง + ประโยคยาว: ส่งครบตรงคำ · ไมค์ทำงานพร้อมกันไม่เกิน 1 · สร้างตัวรับเสียง 1 ตัวต่อการกด {"sent":3,"longOk":true,"maxActive":1,"instances":12}
+PASS V8 Interrupt: กดไมค์ขณะ VORA พูด → เสียงหยุดจริง → กำลังฟัง {"state":"listening","cancelled":true}
+PASS V9 ไม่มี JavaScript error ตลอดการทดสอบเสียง []
+PASS T1 เสียง VORA จากเซิร์ฟเวอร์: ทีละประโยค (ไม่ตัดที่ 600 ตัวอักษร) · เล่นทีละเสียงไม่ซ้อน · อวตารพูดระหว่างเสียง แล้วกลับว่าง {"requests":2,"maxLen":93,"audio":{"playing":0,"max":1,"plays":2,"path":"server","browser":0},"avatar":{"talking":true,"state":"speaking"}}
+PASS T2 ทดสอบเสียง ไทย / ไทยปนอังกฤษ / อังกฤษ ผ่านเส้นทางจริง ["th:สวัสดีค่ะ ยินดีต้อ","th:แผนก Computer Tech","en:Hello! Welcome to "]
+PASS T3 TTS ไม่พร้อม → ใช้เสียงเบราว์เซอร์ต่อทันที → กลับว่าง {"path":"browser","spoke":2}
+PASS T4 TTS timeout → เสียงเบราว์เซอร์ภายในเวลาที่กำหนด → ลองใหม่ได้เมื่อบริการกลับมา {"fallbackMs":9706,"retryPath":"server"}
+PASS T5 หยุด/พูดแทรกระหว่างเสียง VORA: เสียงหยุด ไม่ดึงประโยคถัดไป อวตารเลิกขยับปาก {"requestsAfterStop":0,"playing":0,"max":1,"plays":8,"state":"idle","talking":false}
+PASS T6 ไม่มี JavaScript error ตลอดการทดสอบเสียงพูด []
+15/15 passed

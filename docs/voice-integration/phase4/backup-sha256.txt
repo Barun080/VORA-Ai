@@ -1,0 +1,7 @@
+e8d34276e7034aaaed35ee40a697a1bd22c80287c18c635b1403481d36ddb65f  ./backend/app/routers/public.py
+6774ac0e79d76343bbbdcb4c1a27b7182cc57fd6668450c63edfa3c7f1b7bc12  ./backend/app/tts.py
+d6ce44db63915932b3083d0d80f7c78675b12308db7b47aa129b753048c2972f  ./frontend/kiosk/app.js
+fd643a27c30180d95fc8dacff6317302da7528a9c62a308037f7e109c56e6bac  ./frontend/kiosk/voice.js
+98a8a4cce512370768bfee8675ef088bd4e59b892d3b5a11ba9ddde49292bd6b  ./frontend/kiosk/voice/eq.js
+40c37dd5744df5ea8310c44771d3b05e7116f9bfd65997168e0578af4ac9fbac  ./frontend/kiosk/voice/profile.js
+71dfc99606d7366b1b80c07c5c403db46292e08a8d378887b01744f5a4b43f76  ./frontend/tests/voice/voice-core.test.mjs

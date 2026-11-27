@@ -1,0 +1,41 @@
+VORA voice integration — Phase 2 (Voice Assets) — 2026-11-12
+
+done:
+- copied 10 MP3 (byte copy, no re-encode) from C:\Users\thani\Downloads\voices\voices -> frontend/assets/voices/
+- SHA256 source vs destination: 10/10 MATCH (voice-assets-sha256.txt)
+- metadata via local ffprobe (offline): all MP3 MPEG-2 L3, 24 kHz, mono, 64 kbps, 2.3–12.4 s (voice-mapping.txt)
+- mapping voice_01..voice_10 -> expected text + VORA call site; all status UNVERIFIED (no listening/STT done)
+
+checks:
+- phase-1 checksums of 98 code/config/db files: OK
+- source MP3 unchanged since phase 1: OK
+- frontend/kiosk/classic and pastel unchanged: OK
+- files new/changed since phase 1 (excluding docs/voice-integration/phase2):
+    ./data/vora.db-shm
+    ./data/vora.db-wal
+    ./frontend/assets/voices/vora_cam_greet_1.mp3
+    ./frontend/assets/voices/vora_cam_greet_2.mp3
+    ./frontend/assets/voices/vora_click_1.mp3
+    ./frontend/assets/voices/vora_click_2.mp3
+    ./frontend/assets/voices/vora_headpat_1.mp3
+    ./frontend/assets/voices/vora_headpat_2.mp3
+    ./frontend/assets/voices/vora_preview_th.mp3
+    ./frontend/assets/voices/vora_wake_1.mp3
+    ./frontend/assets/voices/vora_wake_2.mp3
+    ./frontend/assets/voices/vora_welcome.mp3
+- integration code (voice.js, app.js, tts.py, config.py, public.py) not touched; profile.js / speech-text.js / eq.js / wake.js not created
+- no database change, no dependency added to the project, no network/TTS/LLM/STT call (ffprobe + sha256sum only)
+
+call-site findings (decisions for Phase 3/4):
+- 3 greeting files (welcome, cam_greet_1, cam_greet_2) but VORA has ONE greeting text (settings greeting_th via POST /api/greet).
+  greeting_th is admin-editable; production value is in PostgreSQL (not readable from here) -> changing it may need a DB setting update, which is out of scope without approval.
+- preview_th fits the staff "ทดสอบเสียง VORA" sample 1 in app.js (text change needed).
+- wake_1 / wake_2: for wake word (OFF by default).
+- click_1/2, headpat_1/2: no VORA feature uses them (stored only).
+- persona wording differs: MP3s use "โวร่า"/"ฉัน"; current VORA text uses "หนู"/"วอร่า".
+
+side effect to note:
+- data/vora.db-shm (32 KB) and data/vora.db-wal (0 bytes) were created at 17:29 by my READ-ONLY sqlite query
+  (checking whether greeting_th is overridden in the settings table; the table has 0 rows).
+  data/vora.db itself is byte-identical (sha256 70b2bb9b... unchanged). Production uses PostgreSQL, not this file.
+  SQLite removes/reuses these side files automatically; they can also be deleted safely while VORA is stopped.

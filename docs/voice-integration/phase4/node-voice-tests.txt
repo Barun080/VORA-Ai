@@ -1,0 +1,262 @@
+TAP version 13
+# Subtest: time range 08:00-16:30 is preserved
+ok 1 - time range 08:00-16:30 is preserved
+  ---
+  duration_ms: 1.215414
+  type: 'test'
+  ...
+# Subtest: dates 12/11/2569 and 2026-11-12 are preserved
+ok 2 - dates 12/11/2569 and 2026-11-12 are preserved
+  ---
+  duration_ms: 0.6234
+  type: 'test'
+  ...
+# Subtest: numbers: phone, decimals, thousands, percent, signs
+ok 3 - numbers: phone, decimals, thousands, percent, signs
+  ---
+  duration_ms: 0.245077
+  type: 'test'
+  ...
+# Subtest: URL and email are preserved exactly
+ok 4 - URL and email are preserved exactly
+  ---
+  duration_ms: 0.175803
+  type: 'test'
+  ...
+# Subtest: meaningful marks kept: parentheses content, e-mail, COVID-19, snake_case, Thai ๆ ฯ
+ok 5 - meaningful marks kept: parentheses content, e-mail, COVID-19, snake_case, Thai ๆ ฯ
+  ---
+  duration_ms: 0.194635
+  type: 'test'
+  ...
+# Subtest: markdown / emoji / ? ! ~ … removed without losing words
+ok 6 - markdown / emoji / ? ! ~ … removed without losing words
+  ---
+  duration_ms: 0.198758
+  type: 'test'
+  ...
+# Subtest: normalization is idempotent
+ok 7 - normalization is idempotent
+  ---
+  duration_ms: 0.301879
+  type: 'test'
+  ...
+# Subtest: profile: VORA is EQ-only, speed 1.0, pitch 0
+ok 8 - profile: VORA is EQ-only, speed 1.0, pitch 0
+  ---
+  duration_ms: 0.148797
+  type: 'test'
+  ...
+# Subtest: character → voice is deterministic; unknown character → VORA (no random)
+ok 9 - character → voice is deterministic; unknown character → VORA (no random)
+  ---
+  duration_ms: 1.731217
+  type: 'test'
+  ...
+# Subtest: no random / no pitch-by-playbackRate in voice core sources
+ok 10 - no random / no pitch-by-playbackRate in voice core sources
+  ---
+  duration_ms: 11.121654
+  type: 'test'
+  ...
+# Subtest: fallback order is fixed
+ok 11 - fallback order is fixed
+  ---
+  duration_ms: 0.263913
+  type: 'test'
+  ...
+# Subtest: browser voice: female only, stable priority, never male
+ok 12 - browser voice: female only, stable priority, never male
+  ---
+  duration_ms: 0.964725
+  type: 'test'
+  ...
+# Subtest: precached lookup finds all 10 phrases (with or without ? ! ~)
+ok 13 - precached lookup finds all 10 phrases (with or without ? ! ~)
+  ---
+  duration_ms: 0.406617
+  type: 'test'
+  ...
+# Subtest: precached lookup: other text / other provider / English → null
+ok 14 - precached lookup: other text / other provider / English → null
+  ---
+  duration_ms: 0.277932
+  type: 'test'
+  ...
+# Subtest: every precached URL points to an existing asset file
+ok 15 - every precached URL points to an existing asset file
+  ---
+  duration_ms: 69.948975
+  type: 'test'
+  ...
+# Subtest: EQ bands match the specified chain
+ok 16 - EQ bands match the specified chain
+  ---
+  duration_ms: 0.273832
+  type: 'test'
+  ...
+# Subtest: EQ chain (Phase 4 order): source → analyser → bass → clarity → treble → lowpass → gain → destination
+ok 17 - EQ chain (Phase 4 order): source → analyser → bass → clarity → treble → lowpass → gain → destination
+  ---
+  duration_ms: 0.452545
+  type: 'test'
+  ...
+# Subtest: EQ live update and safe clamping
+ok 18 - EQ live update and safe clamping
+  ---
+  duration_ms: 0.145542
+  type: 'test'
+  ...
+# Subtest: one shared EQ per destination (no duplicate pipelines)
+ok 19 - one shared EQ per destination (no duplicate pipelines)
+  ---
+  duration_ms: 0.133812
+  type: 'test'
+  ...
+# Subtest: provider lock: whole response uses the locked provider (session carries provider)
+ok 20 - provider lock: whole response uses the locked provider (session carries provider)
+  ---
+  duration_ms: 11.067183
+  type: 'test'
+  ...
+# Subtest: stream broken midway → rest of the same response stays on the same provider (never another server voice)
+ok 21 - stream broken midway → rest of the same response stays on the same provider (never another server voice)
+  ---
+  duration_ms: 4.933544
+  type: 'test'
+  ...
+# Subtest: edge fails mid-response and its sentences fail → remaining goes to browser female voice, NOT google
+ok 22 - edge fails mid-response and its sentences fail → remaining goes to browser female voice, NOT google
+  ---
+  duration_ms: 258.242379
+  type: 'test'
+  ...
+# Subtest: primary gives no audio at all → fallback provider locked from the START of the response, no return to primary
+ok 23 - primary gives no audio at all → fallback provider locked from the START of the response, no return to primary
+  ---
+  duration_ms: 255.951818
+  type: 'test'
+  ...
+# Subtest: old server config (no order) → no provider param sent (legacy behaviour)
+ok 24 - old server config (no order) → no provider param sent (legacy behaviour)
+  ---
+  duration_ms: 4.085755
+  type: 'test'
+  ...
+# Subtest: no random switching: 10 responses in a row use one provider and one browser voice
+ok 25 - no random switching: 10 responses in a row use one provider and one browser voice
+  ---
+  duration_ms: 20.682666
+  type: 'test'
+  ...
+# Subtest: precached MP3: exact text + matching provider → asset played, no server TTS call
+ok 26 - precached MP3: exact text + matching provider → asset played, no server TTS call
+  ---
+  duration_ms: 1.825729
+  type: 'test'
+  ...
+# Subtest: precached MP3 not used for non-matching text, other provider, or when the asset fails
+ok 27 - precached MP3 not used for non-matching text, other provider, or when the asset fails
+  ---
+  duration_ms: 5.913488
+  type: 'test'
+  ...
+# Subtest: Speaker sends normalized text; time/date/phone/URL/decimal/percent preserved
+ok 28 - Speaker sends normalized text; time/date/phone/URL/decimal/percent preserved
+  ---
+  duration_ms: 1.442227
+  type: 'test'
+  ...
+# Subtest: emoji/markdown-only text → nothing spoken, no TTS call
+ok 29 - emoji/markdown-only text → nothing spoken, no TTS call
+  ---
+  duration_ms: 0.641974
+  type: 'test'
+  ...
+# Subtest: prefetch uses the same normalized text as speaking (cache keys match)
+ok 30 - prefetch uses the same normalized text as speaking (cache keys match)
+  ---
+  duration_ms: 20.642143
+  type: 'test'
+  ...
+# Subtest: pipeline: source → analyser → EQ (lowshelf, peaking, highshelf, lowpass) → gain 0.9 → destination
+ok 31 - pipeline: source → analyser → EQ (lowshelf, peaking, highshelf, lowpass) → gain 0.9 → destination
+  ---
+  duration_ms: 1.068229
+  type: 'test'
+  ...
+# Subtest: no audio-graph leak: one AudioContext, one analyser, one EQ across many responses; every source released
+ok 32 - no audio-graph leak: one AudioContext, one analyser, one EQ across many responses; every source released
+  ---
+  duration_ms: 9.392156
+  type: 'test'
+  ...
+# Subtest: mouth level comes from the analyser (before EQ)
+ok 33 - mouth level comes from the analyser (before EQ)
+  ---
+  duration_ms: 1.944378
+  type: 'test'
+  ...
+# Subtest: no pitch manipulation: preservesPitch stays true, playbackRate = speed setting (1.0), no detune
+ok 34 - no pitch manipulation: preservesPitch stays true, playbackRate = speed setting (1.0), no detune
+  ---
+  duration_ms: 11.511122
+  type: 'test'
+  ...
+# Subtest: browser fallback: deterministic female voice; male-only machine → silent, never male
+ok 35 - browser fallback: deterministic female voice; male-only machine → silent, never male
+  ---
+  duration_ms: 1404.359933
+  type: 'test'
+  ...
+# Subtest: stop(): halts playing audio and browser speech, resets state, next speak works
+ok 36 - stop(): halts playing audio and browser speech, resets state, next speak works
+  ---
+  duration_ms: 22.305487
+  type: 'test'
+  ...
+# Subtest: voice command: only "หยุดพูด" (with polite endings) → STOP_SPEAKING
+ok 37 - voice command: only "หยุดพูด" (with polite endings) → STOP_SPEAKING
+  ---
+  duration_ms: 1.40865
+  type: 'test'
+  ...
+# Subtest: app.js: "หยุดพูด" is handled before ask() and does not stop the robot
+ok 38 - app.js: "หยุดพูด" is handled before ask() and does not stop the robot
+  ---
+  duration_ms: 9.656465
+  type: 'test'
+  ...
+# Subtest: wake word OFF: no always-on recognition anywhere in the kiosk; only voice.js creates SpeechRecognition
+ok 39 - wake word OFF: no always-on recognition anywhere in the kiosk; only voice.js creates SpeechRecognition
+  ---
+  duration_ms: 267.44488
+  type: 'test'
+  ...
+# Subtest: Listener unchanged: one recognizer per start, continuous=false, interim results on
+ok 40 - Listener unchanged: one recognizer per start, continuous=false, interim results on
+  ---
+  duration_ms: 0.506125
+  type: 'test'
+  ...
+# Subtest: Speaker public API kept
+ok 41 - Speaker public API kept
+  ---
+  duration_ms: 0.115523
+  type: 'test'
+  ...
+# Subtest: no random voice selection in voice.js (Math.random only drives browser mouth level)
+ok 42 - no random voice selection in voice.js (Math.random only drives browser mouth level)
+  ---
+  duration_ms: 2.682128
+  type: 'test'
+  ...
+1..42
+# tests 42
+# suites 0
+# pass 42
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3182.971689

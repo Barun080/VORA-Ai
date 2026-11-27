@@ -1,0 +1,3 @@
+fatal: not a git repository (or any parent up to mount point /sessions/rcw-011reshnyh6vjjuuke449tkg/mnt)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+(no git repository: C:\VORA_Robot is not under git; backups + checksums used instead)

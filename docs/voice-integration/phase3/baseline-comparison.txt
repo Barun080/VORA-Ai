@@ -1,0 +1,33 @@
+Phase 3 regression vs Phase 1 baseline (same env: Linux VM, Python 3.12.16, SQLite, per-file runs, netguard)
+baseline: {'passed': 917, 'failed': 1, 'skipped': 0} total=918
+after   : {'passed': 940, 'failed': 1, 'skipped': 0} total=941
+per-test ids parsed: baseline 918, after 941
+new tests: 24 (all passed: True)
+   + tests/test_answer_guard.py::test_grd_reject[G7 canary-\u0e23\u0e2b\u0e31\u0e2a VORA-CANARY-6db7d2beac2d-G7_canary] PASSED
+   + tests/test_voice_core.py::test_cache_key_separates_provider_voice_language_text PASSED
+   + tests/test_voice_core.py::test_cache_path_follows_primary_provider PASSED
+   + tests/test_voice_core.py::test_character_to_voice_is_deterministic_and_unknown_maps_to_vora PASSED
+   + tests/test_voice_core.py::test_concurrent_requests_same_text_share_one_generation PASSED
+   + tests/test_voice_core.py::test_edge_config_never_returns_google_cache PASSED
+   + tests/test_voice_core.py::test_edge_config_without_fallback_fails_silent_not_google PASSED
+   + tests/test_voice_core.py::test_fallback_only_before_first_audio PASSED
+   + tests/test_voice_core.py::test_google_config_never_returns_edge_cache PASSED
+   + tests/test_voice_core.py::test_google_config_warm_ignores_edge_cache PASSED
+   + tests/test_voice_core.py::test_google_down_does_not_fall_to_edge PASSED
+   + tests/test_voice_core.py::test_many_messages_same_voice PASSED
+   + tests/test_voice_core.py::test_no_voice_switch_mid_response PASSED
+   + tests/test_voice_core.py::test_old_format_cache_files_are_not_used PASSED
+   + tests/test_voice_core.py::test_provider_lock_keeps_rest_of_response_on_same_voice PASSED
+   + tests/test_voice_core.py::test_provider_order_is_explicit[-none-order5] PASSED
+   + tests/test_voice_core.py::test_provider_order_is_explicit[browser-google-order4] PASSED
+   + tests/test_voice_core.py::test_provider_order_is_explicit[edge-google-order3] PASSED
+   + tests/test_voice_core.py::test_provider_order_is_explicit[edge-none-order2] PASSED
+   + tests/test_voice_core.py::test_provider_order_is_explicit[google-google-order1] PASSED
+   + tests/test_voice_core.py::test_provider_order_is_explicit[google-none-order0] PASSED
+   + tests/test_voice_core.py::test_provider_voice_mapping PASSED
+   + tests/test_voice_core.py::test_tts_error_never_raises PASSED
+   + tests/test_voice_core.py::test_vora_profile_fields_eq_only PASSED
+removed tests: ['tests/test_answer_guard.py::test_grd_reject[G7 canary-\\u0e23\\u0e2b\\u0e31\\u0e2a VORA-CANARY-68f3f107c90c-G7_canary]']
+status changed (existing tests): none
+failed after: ['tests/test_system.py::test_reports_overview_and_csv'] (pre-existing order dependency, same as baseline)
+note: the 'removed'/extra-new pair is the same test (test_answer_guard G7 canary) whose ID embeds a random canary generated per run; PASSED in both runs. Real new tests = 23 (tests/test_voice_core.py).

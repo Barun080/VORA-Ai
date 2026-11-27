@@ -1,0 +1,61 @@
+Phase 4.5 STEP 2 — controlled A/B (Google Translate vs Microsoft Premwadee) — 2026-11-13
+
+texts (normalized like the kiosk): 1 th "สวัสดีค่ะ" · 2 th "วันนี้เปิดไหม" · 3 th "สมัครเรียนยังไง" · 4 th "มีอะไรให้ช่วยไหมคะ"
+                                   5 en "Hello Welcome to VORA. How can I help you today"
+method: GET /api/tts?lang=..&provider=..&text=.. from the built-in browser on the VORA PC, sequential, stop on first non-200.
+        none of the texts were cached before the run (checked) -> each request = 1 real provider call.
+
+A. Google Translate (config unchanged: provider=google, fallback=google, order [google]) — 19:29 local
+   1 th 200 google  12864 B  632 ms
+   2 th 200 google  14784 B  905 ms
+   3 th 200 google  16896 B  655 ms
+   4 th 200 google  19008 B  787 ms
+   5 en 200 google  29184 B  709 ms   (English uses Google's ENGLISH voice, tl=en)
+   result 5/5 success · files copied to raw/google_<n>_<lang>.mp3
+
+.env change for B (backup _backups/voice-ab-20261113-ab/.env, sha256 bda50080…):
+   only 3 lines changed: VORA_TTS_PROVIDER google->edge, VORA_TTS_RATE -5%->+0%, VORA_TTS_FALLBACK google->none
+   CRLF line endings preserved (75/75). test .env sha256 e67f13c8…
+   note: a first write attempt converted CRLF->LF; it was redone byte-exact from the backup before any restart.
+
+--- 2026-11-13 19:31-19:40 local ---
+STEP 2 paused by user after secrets appeared in the session's execution log (diff output). Microsoft not called.
+server restarted by user ~19:31-19:36 while .env held the test values (edge / fallback none / +0%).
+post-restart read-only check: server reachability UNKNOWN (one failed load, not retried); no new cache files; no TTS/LLM calls by Claude.
+PHASE B (19:40): .env restored to production TTS values by editing only 3 lines byte-exact:
+   VORA_TTS_PROVIDER=google · VORA_TTS_RATE=-5% · VORA_TTS_FALLBACK=google
+   CRLF 75/75 kept, line count unchanged, all other lines byte-identical. A running server keeps its startup config until restarted.
+PHASE A: not done by Claude (creating API keys / setting DB passwords is the owner's action). Status: Gemini key and DB passwords
+   PRESENT, not yet rotated. No secret values recorded in this file.
+
+--- 2026-11-16 local (session resumed) ---
+status update: owner reports Gemini key and DB password rotated (not verified by Claude; values never read out).
+read-only check 14:58: .env TTS = google / -5% / google, CRLF 75/75, whole-file sha256 def1cc64...2ea151a (rollback reference; no backup file created).
+.env change for B (18:09, approved): only L49 VORA_TTS_PROVIDER google->edge, L72 VORA_TTS_RATE -5%->+0%, L75 VORA_TTS_FALLBACK google->none.
+   CRLF 75/75, 75 lines, other 72 lines byte-identical, size 5571->5567, test whole-file sha256 66aca1e5...e80e2a35.
+server restarted by owner ~18:12. read-only verification (GET /api/kiosk/config only, no TTS): provider=edge, fallback=none, order [edge],
+   rate +0%, voice_th/en th-TH-PremwadeeNeural. kiosk page not opened. new-format edge cache before run: 0 files.
+
+B. Microsoft Premwadee (edge, rate +0%, fallback none) - 18:13 local - GET /api/tts?lang=..&provider=edge&text=.. sequential, no retry
+   1 th 200 edge  12240 B    762 ms   -> raw/edge_1_th.mp3
+   2 th 204 (no provider header) 0 B  11758 ms   -> STOPPED (first non-200). server tts.last_error = "timeout 8s", cooling_down = true
+   3 th, 4 th, 5 en: NOT SENT
+   result 1/2 sent succeeded; 2 real Microsoft requests made by Claude; no Gemini/LLM call; no retry.
+.env left at test values (edge / +0% / none) as instructed; NOT yet restored to Google.
+
+B (continued, 18:17 local, approved by owner after the stop): texts 2-5 sent sequentially, no client retry. cooling_down=false before start.
+   2 th 200 edge  12528 B   7145 ms   -> raw/edge_2_th.mp3   (second send of text 2; first send = 204 above)
+   3 th 204 (no provider header) 0 B   9883 ms   -> STOPPED (first non-200)
+   4 th, 5 en: NOT SENT
+   totals for Microsoft so far: 4 requests sent by Claude -> 2 x 200, 2 x 204. English not yet tested.
+   note: tts.py _synthesize_now() has its own built-in retry (up to 3 attempts for transient errors, none after a timeout),
+         so the number of calls the server made to Microsoft may be higher than 4. Not measured.
+.env still at test values (edge / +0% / none); NOT restored to Google.
+   error type for text 3 (server tts.last_error after the run): "No audio was received. Please verify that your parameters are correct." (cooling_down=false)
+
+--- 2026-11-16 18:19-18:30 local ---
+owner decision: Microsoft/Edge TTS does NOT pass as VORA's primary provider (HTTP 204/timeouts, high latency, server-side automatic retry
+   in tts.py not matching the A/B conditions). Microsoft testing stopped; texts 3 (resend), 4, 5 not sent.
+.env restored (18:20) by editing only L49/L72/L75 back to google / -5% / google; whole-file sha256 def1cc64...2ea151a (= before the test),
+   CRLF 75/75. No backup file created. Server restarted by owner; live config read 18:29: provider=google, fallback=google.
+follow-up (Thai voice for English text): see ../thai-voice-for-english/summary.txt; sample raw/google_5_en_thvoice.mp3.

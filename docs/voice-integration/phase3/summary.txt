@@ -1,0 +1,48 @@
+VORA voice integration — Phase 3 (Voice Core) — 2026-11-12
+
+files added:
+  backend/app/voice_profiles.py          VoiceProfile (character_id, voice_id, language, speaking_style, speed 1.0, pitch 0, volume 0.9, preset eq_only)
+                                         provider_voice(), provider_order() = explicit fallback order (no random)
+  frontend/kiosk/voice/profile.js        same profile for the kiosk + FALLBACK_ORDER + female-only browser voice picker + precached map (normalized lookup)
+  frontend/kiosk/voice/speech-text.js    normalizeForSpeech(): strips markdown/emoji/? ! ~ … ; keeps times, dates, phones, URLs, emails, numbers
+  frontend/kiosk/voice/eq.js             VoiceEq: source -> lowshelf 260 -> peaking 2400 Q1.1 -> highshelf 5500 -> lowpass 11200 -> gain -> existing analyser
+                                         one shared chain per analyser; no playbackRate / detune
+  backend/tests/test_voice_core.py       23 tests (pytest, fake providers)
+  frontend/tests/voice/voice-core.test.mjs  19 tests (node --test, no deps; outside the served kiosk folder)
+
+files modified:
+  backend/app/tts.py  (diff: tts.py.diff; backup: _backups/voice-integration-20261112-phase1/backend/app/tts.py)
+    - ROOT CAUSE fixed: stream() checked the Microsoft/edge cache before looking at the configured provider
+      -> with VORA_TTS_PROVIDER=google, phrases cached earlier by edge still played in the Microsoft voice.
+      warm() had the same check -> it skipped preparing Google audio. Now each provider only reads its own cache.
+    - cache key = character + voice_id + provider + provider voice + language + rate/pitch + whitespace-normalized text;
+      files named edge-<sha1>.mp3 / google-<sha1>.mp3. Old-format files are no longer read (pruned oldest-first as before).
+    - synthesize()/stream(): same provider order as before, now from voice_profiles.provider_order();
+      optional provider= lock and info= (which provider answered) for Phase 4. Defaults = previous behavior.
+    - once the first audio chunk of a response is sent, no switch to another provider (was already true; now tested).
+
+files untouched (verified by sha256 against phase-1 checksums):
+  voice.js, app.js, index.html, classic/, pastel/, config.py, public.py, routers, ai/ (router/RAG), db/models/schema, robot/, seed, services,
+  requirements.txt, .env, .env.example, all MP3 assets. No wake word, no microphone, no greeting change, no UI.
+
+tests:
+  new: pytest 23/23 passed · node 19/19 passed
+  TTS-related: test_tts 11/11 · test_site_apply_tts 21/21
+  full regression: 940 passed / 1 failed / 0 skipped / 941 total
+  baseline (phase 1): 917 passed / 1 failed / 0 skipped / 918 total
+  -> +23 new tests, all passing; no existing test changed status; the 1 failure is the same pre-existing
+     order-dependent test_system.py::test_reports_overview_and_csv. Details: baseline-comparison.txt
+
+integrity:
+  no network (netguard: only the same 9 LAN test addresses as baseline were blocked; no TTS/LLM host)
+  no real TTS, no LLM, no DB migration, no new dependency (node:test is built into Node)
+
+remaining risks:
+  - after deploy, all phrases miss the cache once (new key format) -> first play of each phrase calls the configured provider (Google today).
+    This is normal runtime use, not a test call. ~97 old cache files stay on disk until pruned.
+  - with VORA_TTS_PROVIDER=edge + VORA_TTS_FALLBACK=google, different RESPONSES can still be in different voices when Microsoft fails
+    (configured fallback). Current .env uses google only, so this does not apply today.
+  - the kiosk still splits a broken stream into per-sentence /api/tts requests that are not provider-locked yet (Phase 4 needs an
+    additive API change to pass the lock — requires approval).
+  - frontend modules are not wired yet; EQ/normalization have no audible effect until Phase 4.
+  - phase-2 MP3 content still UNVERIFIED.

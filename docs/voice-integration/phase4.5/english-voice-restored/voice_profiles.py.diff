@@ -1,0 +1,15 @@
+--- backend/app/voice_profiles.py	2026-11-16 11:30:24.246824900 +0000
++++ _backups/voice-thai-voice-20261116/backend/app/voice_profiles.py	2026-11-16 11:30:09.685132000 +0000
+@@ -63,9 +63,9 @@
+ 
+ 
+ def google_voice(lang: str, text: str = "") -> str:
+-    """Google Translate TTS มีเสียงเดียวต่อภาษา · 16 พ.ย. 2569: ใช้เสียงไทยกับทุกภาษา (เสียงเดียวทั้งไทย/อังกฤษ)
+-    เดิม: ข้อความอังกฤษล้วนใช้เสียงอังกฤษ (google-translate-en) → เสียงไทย/อังกฤษไม่ตรงกัน"""
+-    return "google-translate-th"
++    """Google Translate TTS มีเสียงเดียวต่อภาษา · ข้อความอังกฤษที่มีตัวอักษรไทยปนใช้เสียงไทย (เหมือนเดิม)"""
++    tl = "en" if _lang(lang) == "en" and not re.search(r"[฀-๿]", text or "") else "th"
++    return f"google-translate-{tl}"
+ 
+ 
+ def provider_voice(provider: str, lang: str, text: str = "") -> str:

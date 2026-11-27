@@ -1,0 +1,20 @@
+Phase 4.5 — Real Kiosk Voice Verification — part 1 (2026-11-12 ~18:30 local) — verification only, no code/config changed
+
+preflight: phase-4 files sha256 = phase4/checksums-after.txt OK · only the 4 approved files differ from phase 1 · MP3 assets = originals ·
+           .env mtime 2026-11-12 13:08 local (before this work) · regression/targeted results from phase 4 still valid (files unchanged)
+
+voice_rate (live server /api/kiosk/config, value comes from settings in the production PostgreSQL via all_settings): 1.0
+           default (services.py): 1.0  -> same as profile speed 1.0
+tts config (live): provider=google, fallback=google, voice_th/en=th-TH-PremwadeeNeural (only used by edge), rate -5%, pitch +0Hz
+ai (live): provider=gemini enabled -> kiosk chat NOT used in this phase (would call the real LLM)
+
+backend: ONLINE at http://localhost:8000 but running PRE-PHASE-4 code (config has no tts.order/tts.profile;
+         uvicorn started before the edits and has no --reload). Restart required to test provider lock.
+kiosk (built-in browser pane, Chromium; Ctrl+F5 done): page loads; console: no messages at all
+         modules: /app.js /voice.js /voice/commands.js /voice/profile.js /voice/speech-text.js /voice/eq.js all HTTP 200
+         speaker: serverTTS=true rate=1 profile vora/vora_female_th speed 1 pitch 0 volume 0.9 eq_only · order=[] (old backend -> legacy mode)
+         listener: supported=true active=false (no always-on listening)
+         browser Thai voices on this machine: only "Microsoft Pattara - Thai (Thailand)" (male) -> pickVoice('th') = null (correctly blocked;
+         browser fallback on this machine = silent + caption)
+         camera/microphone: blocked inside the browser pane (pane policy) -> real mic test not possible here (and real STT is not allowed anyway)
+MP3: 10/10 HTTP 200 audio/mpeg, sha256 MATCH, decode OK (2.33–12.41 s) · current greeting_th and voice sample 1 match no MP3 = expected (greeting on hold)

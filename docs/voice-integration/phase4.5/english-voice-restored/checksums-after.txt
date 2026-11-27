@@ -1,0 +1,3 @@
+e16af3e82781772f992cfabab045fca36b2e05c8e4f124672569baa2d14c27ac  backend/app/tts.py
+1e00e2ec7f991ee8d7c3407cfd153bd1dda7d2eb255e9d41fc05e0d8b71b5819  backend/app/voice_profiles.py
+217d38efd03871b5fe035b5e704e59dc115a1a9a4131f2cba63841f084dc3cd7  backend/tests/test_voice_core.py

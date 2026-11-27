@@ -1,0 +1,19 @@
+Audio-pipeline verification — Phase 4 (2026-11-12)
+
+Graph (built once per page in Speaker.attachAnalyser):
+  <audio> -> MediaElementSource -> Analyser (mouth level) -> lowshelf 260Hz -> peaking 2400Hz Q1.1 -> highshelf 5500Hz -> lowpass 11200Hz -> Gain 0.9 -> speakers
+  AudioContext suspended -> plain <audio> playback with element volume 0.9 (no EQ), as before
+
+  ok 10 - no random / no pitch-by-playbackRate in voice core sources
+  ok 16 - EQ bands match the specified chain
+  ok 17 - EQ chain (Phase 4 order): source → analyser → bass → clarity → treble → lowpass → gain → destination
+  ok 18 - EQ live update and safe clamping
+  ok 19 - one shared EQ per destination (no duplicate pipelines)
+  ok 25 - no random switching: 10 responses in a row use one provider and one browser voice
+  ok 31 - pipeline: source → analyser → EQ (lowshelf, peaking, highshelf, lowpass) → gain 0.9 → destination
+  ok 32 - no audio-graph leak: one AudioContext, one analyser, one EQ across many responses; every source released
+  ok 33 - mouth level comes from the analyser (before EQ)
+  ok 34 - no pitch manipulation: preservesPitch stays true, playbackRate = speed setting (1.0), no detune
+  ok 35 - browser fallback: deterministic female voice; male-only machine → silent, never male
+  ok 36 - stop(): halts playing audio and browser speech, resets state, next speak works
+  ok 42 - no random voice selection in voice.js (Math.random only drives browser mouth level)

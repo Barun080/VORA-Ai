@@ -1,0 +1,44 @@
+--- _backups/voice-integration-20261112-phase4/frontend/kiosk/app.js	2026-11-12 10:56:02.542801800 +0000
++++ frontend/kiosk/app.js	2026-11-12 11:01:24.964717000 +0000
+@@ -15,6 +15,7 @@
+ import { InteractionManager } from "./interaction/InteractionManager.js";
+ import { KIOSK_CONFIG } from "./kiosk-config.js";
+ import { Listener, Speaker } from "./voice.js";
++import { parseVoiceCommand } from "./voice/commands.js";   // Phase 4: คำสั่งเสียง "หยุดพูด" เท่านั้น
+ import { ExperienceOrchestrator } from "./experience/ExperienceOrchestrator.js";
+ import { PresentationView } from "./experience/PresentationView.js";
+ import { SECTIONS, SpatialMenu } from "./experience/SpatialMenu.js";
+@@ -526,6 +527,16 @@
+   setTimeout(() => { if (avatar.bubbleText === t("stopped")) setCaption(""); }, 2500);
+ }
+ 
++/** Phase 4: คำสั่งเสียง "หยุดพูด" — หยุดเสียงที่เล่นอยู่ (ไฟล์/สตรีม/เสียงเบราว์เซอร์) และคืนสถานะ Speaker
++ *  ไม่ส่งคำว่า "หยุดพูด" ไปถาม AI · ไม่สั่งหุ่นยนต์ (ต่างจาก stopAll ที่เป็นปุ่มหยุดฉุกเฉิน) · ไม่เริ่มประกาศทันทีหลังหยุด */
++function stopSpeaking() {
++  S.quietUntil = Date.now() + 5000;
++  speaker.stop();
++  if (S.state === "listening" || S.state === "speaking") setState("idle");
++  setCaption(t("stopped"));
++  setTimeout(() => { if (avatar.bubbleText === t("stopped")) setCaption(""); }, 2500);
++}
++
+ // ====================================================================== ประชาสัมพันธ์อัตโนมัติ
+ function enqueue(item) {
+   S.queue.push(item);
+@@ -1097,7 +1108,7 @@
+     onAudioStart: () => { if (S.state === "listening") { setVoice("live"); setCaption(t("vLive"), true); } },
+     onSpeechEnd: () => { if (S.state === "listening") { setVoice("transcribing"); if (!S.partial) setCaption(t("vTranscribing"), true); } },
+     onPartial: (txt) => { S.partial = txt; if (S.state === "listening") { if ($("app").dataset.voice === "starting") setVoice("live"); setCaption(txt || "…", true); } },
+-    onFinal: (txt) => { S.partial = ""; setVoice(""); ask(txt, "voice"); },
++    onFinal: (txt) => { S.partial = ""; setVoice(""); if (parseVoiceCommand(txt) === "STOP_SPEAKING") { stopSpeaking(); return; } ask(txt, "voice"); },
+     onError: (code) => { S.partial = ""; onVoiceError(code); },
+     onEnd: () => { S.partial = ""; if (S.state === "listening") onVoiceError("no-speech"); },
+   });
+@@ -1119,6 +1130,7 @@
+   if (S.cfg) {
+     speaker.serverTTS = !!S.cfg.server_tts;
+     speaker.rate = S.cfg.voice_rate || 1;
++    speaker.order = (S.cfg.tts && Array.isArray(S.cfg.tts.order)) ? S.cfg.tts.order : [];   // Phase 4: ลำดับผู้ให้บริการสำหรับล็อกเสียงต่อคำตอบ
+     if (!S.cfg.languages.includes(S.lang)) S.lang = "th";
+     $("qrMini").innerHTML = qrSvg(mobileUrl(), 4);
+   }

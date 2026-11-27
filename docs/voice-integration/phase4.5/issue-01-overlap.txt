@@ -1,0 +1,18 @@
+Phase 4.5 — issue 01: "เสียงซ้อน" reported by user at 18:52 during program presentation (user's Chrome kiosk tab)
+
+finding (verified from the test tab's own Resource Timing, no code changed):
+- Two kiosk clients were open at the same time: the user's Chrome tab (presenting "เทคโนโลยีคอมพิวเตอร์")
+  and the verification tab opened by Claude in the Claude desktop browser pane (http://localhost:8000/?debug=1, opened ~18:43).
+- The verification tab was in attract mode and spoke announcements by itself: /api/tts/session + stream at
+  page-seconds 96, 243, 363, 456 (aborted), 553. Page-second 553 ≈ 18:52 = the moment of the reported overlap.
+- Its AudioContext was "running" (audio audible on the same speakers).
+=> most likely root cause: two kiosk pages speaking simultaneously (test setup), not the Phase 4 Speaker.
+   Within one page, Speaker.speak() always stops the previous audio first (token check) — covered by tests.
+
+action taken: closed the verification tab at ~18:55 (test artifact only; no code/config/cache changed).
+
+side effect to disclose: the verification tab made ~5 real Google TTS requests via the server (attract-mode announcements)
+  that were not planned. No LLM call (attract mode uses stored announcement text), no STT (mic blocked in the pane).
+
+still open: needs user re-check with ONLY the Chrome kiosk tab open. If overlap still happens with a single tab, it is a real
+  issue and must be investigated before any fix.

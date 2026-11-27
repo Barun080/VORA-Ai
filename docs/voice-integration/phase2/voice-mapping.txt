@@ -1,0 +1,80 @@
+# VORA voice asset mapping — Phase 2 (2026-11-12)
+# Location: frontend/assets/voices/  (served at /assets/voices/<file>)
+# Expected text = the key that maps to this file in VOICE_CONFIG.precachedPhrases of the supplied code.
+# It is what the file is EXPECTED to say. It has NOT been verified by listening or STT (no online STT used).
+# chars/sec = rough plausibility only (Google TTS Thai is typically ~6-10 chars/sec incl. pauses); it does not prove content.
+# All files: MP3 (MPEG-2 Layer III), 24000 Hz, mono, 64 kbps, no ID3 tag — same encoding as VORA's Google cache files (data/tts_cache/g-*.mp3).
+#
+# Verification status values: UNVERIFIED | VERIFIED BY USER | MISMATCH (user: write what it actually says)
+
+voice_01  vora_welcome.mp3
+  size: 99264 bytes   duration: 12.408 s   expected-text length: 112 chars   ~9.0 chars/sec
+  expected text: สวัสดีค่ะ! ยินดีต้อนรับสู่ VORA หุ่นยนต์ประชาสัมพันธ์อัจฉริยะ ของวิทยาลัยเทคนิคน่าน มีอะไรให้ช่วยสอบถามได้เลยค่ะ
+  VORA call site: CANDIDATE: auto greeting — app.js greet() -> POST /api/greet (public.py) -> settings greeting_th (default in services.py; production value lives in PostgreSQL, not readable here). Current text differs: 'สวัสดีค่ะ หนูชื่อวอร่า หุ่นยนต์ประชาสัมพันธ์ของวิทยาลัย ...'
+  status: UNVERIFIED
+
+voice_02  vora_cam_greet_1.mp3
+  size: 62016 bytes   duration: 7.752 s   expected-text length: 62 chars   ~8.0 chars/sec
+  expected text: สวัสดีค่ะ! ยินดีต้อนรับนะคะ มีอะไรให้โวร่าช่วย สอบถามได้เลยค่ะ
+  VORA call site: CANDIDATE: same camera auto-greeting path as voice_01 (only one greeting_th text exists today; 3 greeting files compete for 1 slot -> decision needed)
+  status: UNVERIFIED
+
+voice_03  vora_cam_greet_2.mp3
+  size: 74112 bytes   duration: 9.264 s   expected-text length: 76 chars   ~8.2 chars/sec
+  expected text: สวัสดีค่ะ! ดีใจที่ได้พบกันนะคะ วันนี้มีเรื่องอะไรอยากให้โวร่าช่วยแนะนำมั้ยคะ
+  VORA call site: CANDIDATE: same as voice_02
+  status: UNVERIFIED
+
+voice_04  vora_preview_th.mp3
+  size: 68928 bytes   duration: 8.616 s   expected-text length: 82 chars   ~9.5 chars/sec
+  expected text: สวัสดีค่ะ ฉันคือโวร่า ผู้ช่วยเอไอส่วนตัวของคุณ มีอะไรให้ฉันช่วยดูแลในวันนี้มั้ยคะ?
+  VORA call site: CANDIDATE: staff diagnostics 'ทดสอบเสียง VORA' sample 1 — app.js voiceSamples[0] (line 131), current text 'สวัสดีค่ะ ยินดีต้อนรับสู่ VORA มีอะไรให้หนูช่วยค้นหาข้อมูลไหมคะ'
+  status: UNVERIFIED
+
+voice_05  vora_wake_1.mp3
+  size: 47808 bytes   duration: 5.976 s   expected-text length: 42 chars   ~7.0 chars/sec
+  expected text: คะ มีอะไรให้โวร่าช่วยมั้ยคะ ถามมาได้เลยค่ะ
+  VORA call site: PLANNED: wake-word acknowledgement (wake.js, Phase 4). Wake word OFF by default -> not played until enabled. Note: requirement text says 'คะ มีอะไรให้ช่วยมั้ยคะ ถามมาได้เลยค่ะ' (no 'โวร่า'); the MP3 key uses 'ให้โวร่าช่วย'
+  status: UNVERIFIED
+
+voice_06  vora_wake_2.mp3
+  size: 42432 bytes   duration: 5.304 s   expected-text length: 39 chars   ~7.4 chars/sec
+  expected text: คะ โวร่าอยู่นี่ค่ะ พร้อมฟังคำถามแล้วค่ะ
+  VORA call site: PLANNED: wake-word acknowledgement #2 (OFF by default). If used, choice between wake_1/wake_2 must be deterministic or explicitly approved
+  status: UNVERIFIED
+
+voice_07  vora_click_1.mp3
+  size: 18624 bytes   duration: 2.328 s   expected-text length: 20 chars   ~8.6 chars/sec
+  expected text: มีอะไรให้ช่วยมั้ยคะ?
+  VORA call site: NO CALL SITE: VORA has no avatar click/tap reaction feature. Adding one = new UI feature (out of scope). Asset stored, not referenced
+  status: UNVERIFIED
+
+voice_08  vora_click_2.mp3
+  size: 19392 bytes   duration: 2.424 s   expected-text length: 21 chars   ~8.7 chars/sec
+  expected text: เอ๊~ มีอะไรรึเปล่าคะ?
+  VORA call site: NO CALL SITE: same as voice_07
+  status: UNVERIFIED
+
+voice_09  vora_headpat_1.mp3
+  size: 22080 bytes   duration: 2.760 s   expected-text length: 25 chars   ~9.1 chars/sec
+  expected text: กำลังสนุกอยู่หรือเปล่าคะ?
+  VORA call site: NO CALL SITE: VORA has no head-pat interaction. Asset stored, not referenced
+  status: UNVERIFIED
+
+voice_10  vora_headpat_2.mp3
+  size: 21312 bytes   duration: 2.664 s   expected-text length: 22 chars   ~8.3 chars/sec
+  expected text: ต้องการแค่นี้เองหรอคะ?
+  VORA call site: NO CALL SITE: same as voice_09
+  status: UNVERIFIED
+
+# ---------------- checklist for the user (listen to each file in frontend/assets/voices/) ----------------
+[ ] voice_01 vora_welcome.mp3 -> ข้อความที่คาดว่าเป็น: สวัสดีค่ะ! ยินดีต้อนรับสู่ VORA หุ่นยนต์ประชาสัมพันธ์อัจฉริยะ ของวิทยาลัยเทคนิคน่าน มีอะไรให้ช่วยสอบถามได้เลยค่ะ   สถานะ: UNVERIFIED
+[ ] voice_02 vora_cam_greet_1.mp3 -> ข้อความที่คาดว่าเป็น: สวัสดีค่ะ! ยินดีต้อนรับนะคะ มีอะไรให้โวร่าช่วย สอบถามได้เลยค่ะ   สถานะ: UNVERIFIED
+[ ] voice_03 vora_cam_greet_2.mp3 -> ข้อความที่คาดว่าเป็น: สวัสดีค่ะ! ดีใจที่ได้พบกันนะคะ วันนี้มีเรื่องอะไรอยากให้โวร่าช่วยแนะนำมั้ยคะ   สถานะ: UNVERIFIED
+[ ] voice_04 vora_preview_th.mp3 -> ข้อความที่คาดว่าเป็น: สวัสดีค่ะ ฉันคือโวร่า ผู้ช่วยเอไอส่วนตัวของคุณ มีอะไรให้ฉันช่วยดูแลในวันนี้มั้ยคะ?   สถานะ: UNVERIFIED
+[ ] voice_05 vora_wake_1.mp3 -> ข้อความที่คาดว่าเป็น: คะ มีอะไรให้โวร่าช่วยมั้ยคะ ถามมาได้เลยค่ะ   สถานะ: UNVERIFIED
+[ ] voice_06 vora_wake_2.mp3 -> ข้อความที่คาดว่าเป็น: คะ โวร่าอยู่นี่ค่ะ พร้อมฟังคำถามแล้วค่ะ   สถานะ: UNVERIFIED
+[ ] voice_07 vora_click_1.mp3 -> ข้อความที่คาดว่าเป็น: มีอะไรให้ช่วยมั้ยคะ?   สถานะ: UNVERIFIED
+[ ] voice_08 vora_click_2.mp3 -> ข้อความที่คาดว่าเป็น: เอ๊~ มีอะไรรึเปล่าคะ?   สถานะ: UNVERIFIED
+[ ] voice_09 vora_headpat_1.mp3 -> ข้อความที่คาดว่าเป็น: กำลังสนุกอยู่หรือเปล่าคะ?   สถานะ: UNVERIFIED
+[ ] voice_10 vora_headpat_2.mp3 -> ข้อความที่คาดว่าเป็น: ต้องการแค่นี้เองหรอคะ?   สถานะ: UNVERIFIED

@@ -1,0 +1,84 @@
+--- _backups/voice-integration-20261112-phase4/backend/app/routers/public.py	2026-11-12 10:56:02.650867700 +0000
++++ backend/app/routers/public.py	2026-11-12 11:01:22.942365300 +0000
+@@ -340,22 +340,39 @@
+ class TTSIn(BaseModel):
+     text: str = Field(..., max_length=2000)
+     lang: str = "th"
++    provider: Optional[str] = Field(None, max_length=16)   # Phase 4 (ไม่บังคับ): ล็อกผู้ให้บริการเสียงของคำตอบนี้
+ 
+ 
+-_tts_sessions: dict[str, tuple[float, str, str]] = {}
++_tts_sessions: dict[str, tuple[float, str, str, Optional[str]]] = {}   # id → (เวลา, ข้อความ, ภาษา, ผู้ให้บริการที่ล็อก)
++
++
++def _tts_lock(provider: Optional[str]) -> Optional[str]:
++    """Phase 4: ค่า provider ที่ส่งมา → ผู้ให้บริการที่ล็อก (None = หน้าจอรุ่นเก่า ทำงานแบบเดิม) · ค่าที่ไม่ได้เปิดใช้ = 400"""
++    try:
++        return tts.resolve_provider(provider)
++    except ValueError:
++        raise HTTPException(400, "unknown or disabled tts provider")
++
++
++def _tts_headers(base: dict, info: dict, lock: Optional[str]) -> dict:
++    """เพิ่ม X-VORA-TTS-Provider = ผู้ให้บริการที่ให้เสียงจริง (Phase 4)"""
++    used = info.get("provider") or lock or ""
++    return {**base, "X-VORA-TTS-Provider": used} if used else base
+ 
+ 
+ @router.post("/tts/session")
+ def tts_session(body: TTSIn):
+-    """12 พ.ย. 2569: ลงทะเบียนข้อความที่จะพูด (ข้อความยาวใส่ใน URL ไม่ได้) → id สำหรับ /api/tts/stream/{id} (หมดอายุ 5 นาที)"""
++    """12 พ.ย. 2569: ลงทะเบียนข้อความที่จะพูด (ข้อความยาวใส่ใน URL ไม่ได้) → id สำหรับ /api/tts/stream/{id} (หมดอายุ 5 นาที)
++    Phase 4: provider (ไม่บังคับ) = ล็อกผู้ให้บริการของคำตอบนี้ตั้งแต่ต้น — สตรีมและแคชใช้เฉพาะผู้ให้บริการนี้"""
+     now = time.time()
+     for k in [k for k, v in _tts_sessions.items() if now - v[0] > 300]:
+         _tts_sessions.pop(k, None)
++    lock = _tts_lock(body.provider)
+     if not tts.available() or not body.text.strip():
+         raise HTTPException(503, "server tts unavailable")
+     sid = secrets.token_urlsafe(9)
+-    _tts_sessions[sid] = (now, body.text[:1500], "en" if body.lang == "en" else "th")
+-    return {"id": sid, "cached": tts.cache_path(body.text[:1500], body.lang).exists()}
++    _tts_sessions[sid] = (now, body.text[:1500], "en" if body.lang == "en" else "th", lock)
++    return {"id": sid, "cached": tts.cache_path(body.text[:1500], body.lang, lock).exists(), "provider": lock}
+ 
+ 
+ @router.get("/tts/stream/{sid}")
+@@ -364,7 +381,9 @@
+     item = _tts_sessions.get(sid)
+     if not item:
+         raise HTTPException(404, "unknown tts session")
+-    gen = tts.stream(item[1], item[2])
++    lock = item[3] if len(item) > 3 else None
++    info: dict = {}
++    gen = tts.stream(item[1], item[2], provider=lock, info=info)
+     try:
+         first = await gen.__anext__()
+     except StopAsyncIteration:
+@@ -374,7 +393,7 @@
+         yield first
+         async for chunk in gen:
+             yield chunk
+-    return StreamingResponse(body(), media_type="audio/mpeg", headers={"Cache-Control": "no-store"})
++    return StreamingResponse(body(), media_type="audio/mpeg", headers=_tts_headers({"Cache-Control": "no-store"}, info, lock))
+ 
+ 
+ @router.post("/tts/warm")
+@@ -413,11 +432,14 @@
+ 
+ 
+ @router.get("/tts")
+-async def text_to_speech(text: str, lang: str = "th", pre: int = 0):
+-    audio = await tts.synthesize(text[:600], lang, prefetch=bool(pre))
++async def text_to_speech(text: str, lang: str = "th", pre: int = 0, provider: Optional[str] = None):
++    """Phase 4: provider (ไม่บังคับ) = ใช้เฉพาะผู้ให้บริการนี้ (ประโยคต่อไปของคำตอบเดิมเป็นเสียงเดียวกัน) · ไม่ได้เสียง = 204"""
++    lock = _tts_lock(provider)
++    info: dict = {}
++    audio = await tts.synthesize(text[:600], lang, prefetch=bool(pre), provider=lock, info=info)
+     if not audio:
+         return Response(status_code=204)
+-    return Response(content=audio, media_type="audio/mpeg", headers={"Cache-Control": "max-age=86400"})
++    return Response(content=audio, media_type="audio/mpeg", headers=_tts_headers({"Cache-Control": "max-age=86400"}, info, lock))
+ 
+ 
+ @router.post("/kiosk/state")

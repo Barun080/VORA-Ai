@@ -1,0 +1,11 @@
+--- backend/app/tts.py	2026-11-16 11:30:24.229853200 +0000
++++ _backups/voice-thai-voice-20261116/backend/app/tts.py	2026-11-16 11:30:09.661175100 +0000
+@@ -393,7 +393,7 @@
+     if f.exists():
+         yield f.read_bytes()
+         return
+-    tl = "th"   # 16 พ.ย. 2569: ทุกภาษาใช้เสียงไทยของ Google (เดิม: อังกฤษล้วน → tl=en = อีกเสียงหนึ่ง → เสียงไทย/อังกฤษไม่ตรงกัน)
++    tl = "en" if lang == "en" and not re.search(r"[\u0E00-\u0E7F]", text) else "th"
+     pieces = _google_pieces(text)
+     audio = bytearray()
+     try:
