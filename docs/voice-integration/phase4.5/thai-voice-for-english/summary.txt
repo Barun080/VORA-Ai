@@ -1,0 +1,27 @@
+Phase 4.5 — one voice for Thai and English (Google) — 2026-11-16 ~18:30 local
+request (owner): Thai and English answers sounded like two different voices; use the Thai-speaking voice for both. Approved 18:29.
+
+cause: Google Translate TTS has one voice per language; VORA sent tl=en for English-only text -> a different (English) voice.
+
+files modified (diffs in this folder; backups + SHA256SUMS in _backups/voice-thai-voice-20261116/):
+  backend/app/tts.py              google_stream(): tl is always "th" (was: "en" for English-only text with lang=en)
+  backend/app/voice_profiles.py   google_voice(): always "google-translate-th" (cache key -> English answers get new cache files;
+                                  old English-voice cache files are no longer read, not deleted)
+  backend/tests/test_voice_core.py  1 assertion updated + 1 new test (real google_stream with a fake httpx client: tl == th for th and en)
+not touched: .env (whole-file sha256 def1cc64...2ea151a), frontend, greeting, EQ, playbackRate/pitch, cache files, edge provider, DB.
+
+tests (Linux VM, Python 3.12.15, SQLite temp DB, netguard, one pytest process per file — same method as phase 1):
+  targeted: voice_core 24 + voice_integration 14 + tts 11 + site_apply_tts 21 = 70/70 passed
+  full regression: 955 passed / 1 failed / 0 skipped / 956  (phase 4: 954 / 1 / 955) -> +1 new test; no existing test changed status;
+                   the 1 failure is the known order-dependent tests/test_system.py::test_reports_overview_and_csv
+  mutation check (scratch copy outside the project): restoring tl=en for English makes the new test fail -> not vacuous
+  netguard: only LAN test addresses blocked (10.255.255.255:1 x9, 10.0.0.5, 192.168.1.1); no TTS/LLM host contacted by tests
+
+listening sample (1 real Google request, before the code change, server on Google config):
+  GET /api/tts?lang=th&provider=google, text 5 "Hello Welcome to VORA. How can I help you today"
+  200 google 50496 B 989 ms -> ab-test/raw/google_5_en_thvoice.mp3   (same text with the English voice: google_5_en.mp3, 29184 B)
+  -> the Thai voice takes about 1.7x as long for this sentence (by file size at the same bitrate). Sound quality NOT judged here: owner listens.
+
+status: code changed on disk; the running server still has the old code until start.bat is restarted by the owner.
+rollback: copy the 3 files back from _backups/voice-thai-voice-20261116/ (sha256 in SHA256SUMS.txt) and restart.
+not verified: the changed code against real Google after restart; long English answers; English inside the kiosk flow.

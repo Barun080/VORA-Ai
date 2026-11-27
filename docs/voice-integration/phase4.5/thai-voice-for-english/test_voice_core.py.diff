@@ -1,0 +1,57 @@
+--- ../_backups/voice-thai-voice-20261116/backend/tests/test_voice_core.py	2026-11-16 11:30:09.712734000 +0000
++++ tests/test_voice_core.py	2026-11-16 11:33:05.709127400 +0000
+@@ -92,7 +92,7 @@
+     assert voice_profiles.provider_voice("edge", "th") == "th-TH-PremwadeeNeural"
+     assert voice_profiles.provider_voice("edge", "en") == "th-TH-PremwadeeNeural"     # เสียงเดียวทุกภาษา (ค่าเดิม)
+     assert voice_profiles.provider_voice("google", "th") == "google-translate-th"
+-    assert voice_profiles.provider_voice("google", "en", "Hello") == "google-translate-en"
++    assert voice_profiles.provider_voice("google", "en", "Hello") == "google-translate-th"     # 16 พ.ย. 2569: เสียงไทยทุกภาษา
+     assert voice_profiles.provider_voice("google", "en", "แผนก IT") == "google-translate-th"
+     assert tts.voice_for("th") == voice_profiles.edge_voice("th")                     # voice_for เดิมยังให้ค่าเดิม
+     with pytest.raises(ValueError):
+@@ -241,3 +241,45 @@
+         return await asyncio.gather(*[tts.synthesize("พร้อมกันค่ะ") for _ in range(5)])
+     out = asyncio.run(many())
+     assert all(o == b"EDGE1EDGE2" for o in out) and len(FakeEdge.calls) == 1
++
++
++# ---------------------------------------------------------------- 16 พ.ย. 2569: เสียงไทยกับทุกภาษา (Google)
++def test_google_uses_thai_voice_for_english_text(monkeypatch, tmp_path):
++    """ข้อความอังกฤษล้วน lang=en → ส่ง tl=th ให้ Google (เสียงเดียวกับภาษาไทย) · ใช้ google_stream ตัวจริงกับ httpx จำลอง"""
++    import httpx
++
++    sent = []
++
++    class Resp:
++        content = b"MP3"
++        headers = {"content-type": "audio/mpeg"}
++
++        def raise_for_status(self):
++            return None
++
++    class Client:
++        def __init__(self, *a, **k):
++            pass
++
++        async def __aenter__(self):
++            return self
++
++        async def __aexit__(self, *a):
++            return False
++
++        async def get(self, url, params=None):
++            sent.append(dict(params))
++            return Resp()
++
++    monkeypatch.setattr(httpx, "AsyncClient", Client)
++    monkeypatch.setattr(tts, "CACHE_DIR", tmp_path)
++    monkeypatch.setattr(tts, "_g_state", {"fail_until": 0.0, "last_error": ""})
++    monkeypatch.setattr(tts, "record_event", lambda *a, **k: None)
++
++    async def run(text, lang):
++        return b"".join([c async for c in tts.google_stream(text, lang)])
++
++    assert asyncio.run(run("Hello Welcome to VORA", "en")) == b"MP3"
++    assert asyncio.run(run("สวัสดีค่ะ", "th")) == b"MP3"
++    assert [p["tl"] for p in sent] == ["th", "th"]
++    assert tts._gpath("Hello", "en") != tts._gpath("Hello", "th")      # แคชยังแยกตามภาษาของคำตอบ

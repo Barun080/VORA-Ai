@@ -1,0 +1,58 @@
+Phase 4.5 — voice tuning analysis (2026-11-13) — analysis only; no production file, config, cache or provider changed; no provider called
+
+user listening result: speed slightly slow · naturalness FAIL (sounds clearly like AI)
+
+1. current provider / voice (verified)
+   - live config: VORA_TTS_PROVIDER=google, VORA_TTS_FALLBACK=google -> order ["google"]; server restarted on phase-4 code
+     (new-format cache: google-*.mp3 = 11, edge-*.mp3 = 0)
+   - engine: unofficial Google Translate TTS (translate.google.com/translate_tts, client=tw-ob), text split into <=180-char pieces
+   - voice: the single Thai voice of Google Translate (tl=th). No voice selection exists on this endpoint.
+   - NOTE: config/diag shows voice_th = th-TH-PremwadeeNeural, but that value is used ONLY by the edge provider; it is not the voice heard.
+   - precached MP3s (assets/voices) = same Google Translate voice (same encoding 24 kHz mono 64 kbps).
+
+2. speed controls actually available
+   - Google Translate endpoint: only a normal/slow switch (ttsspeed); VORA sends none -> normal. Cannot go faster than normal.
+   - VORA_TTS_RATE (-5%) and VORA_TTS_PITCH apply ONLY to edge (edge-tts prosody). They do nothing for Google.
+   - profile speed=1.0 (profile.js / voice_profiles.py) is metadata only: not sent to any provider, not applied anywhere.
+   - playback: audio.playbackRate = voice_rate (admin setting, live value 1.0) -> no change. playbackRate/pitch manipulation not allowed.
+   => with the current provider there is NO provider-side way to speak faster.
+
+3. measurements (ffmpeg silencedetect -38 dB / 0.18 s, offline on cached files)
+   Google (current): internal pauses 0.2-0.9 s every ~3-5 s, even inside one piece; ~0.76 s trailing silence per piece;
+                     long answer 47.4 s had 15 pauses, 6.7 s silence (14%). Known-text MP3s: ~7-9.5 chars/s incl. pauses.
+   Microsoft Premwadee (old edge cache): no internal pause > 0.18 s over 12 s of speech (continuous phrasing);
+                     only edge padding (0.24 s lead, ~1.0 s tail).
+
+4. likely causes of "sounds like AI" (most -> least likely)
+   a. voice/provider (main): Google Translate TTS is a basic dictionary-reading voice: flat intonation, pauses at every
+      space between Thai phrases, no sentence-level prosody. EQ or text cleanup cannot fix timbre/prosody.
+   b. prosody from piece splitting: each <=180-char piece is synthesized separately -> intonation restarts + ~0.8 s gap at joins.
+   c. text normalization: small. ? ! ~ ... become spaces (Thai already uses spaces); can add a pause only where no space existed.
+   d. EQ (+2 / +1.5 / +1 dB, volume 0.9): small, cannot create a robotic sound; can make it slightly brighter. A/B possible
+      without code change (DevTools: VORA.speaker.eq.update({bassDb:0,clarityDb:0,trebleDb:0,volume:1}) on ?debug=1; not persistent).
+
+5. proposed trial speeds (NOT applied)
+   - edge (Microsoft): native prosody rate, no playbackRate:
+       current VORA_TTS_RATE=-5% (0.95x of normal)
+       trial A "+0%"  ≈ 1.05x current   · trial B "+5%" ≈ 1.10x current
+   - Google Cloud TTS (official): AudioConfig.speakingRate 1.05 / 1.10
+   - Google Translate (current): not possible (normal is the maximum)
+
+6. options
+   1) Microsoft neural via existing edge provider (th-TH-PremwadeeNeural), rate +0% / +5%
+      cost: 0 · code: none (config VORA_TTS_PROVIDER=edge, VORA_TTS_FALLBACK=none, VORA_TTS_RATE) · reversible: restore .env + restart
+      risk: unofficial endpoint; on 2026-11-12 the college network got "No audio was received" almost every time (reason Google was chosen);
+            fallback on this PC is silent (only male Thai browser voice) -> must test reliability on the real network first.
+            precached Google MP3s automatically stop being used (provider mismatch) -> one voice only.
+   2) official cloud neural TTS (new provider adapter in tts.py; httpx already present, no new package)
+      a) Google Cloud TTS Chirp 3: HD (th-TH supported): first 1M chars/month free, then US$30 / 1M chars; speakingRate supported
+      b) Azure AI Speech, th-TH-PremwadeeNeural (official): 0.5M chars/month free (F0), then ~US$15-16 / 1M chars
+      risk: needs billing account + API key (secret handling), code + tests, network allowance; cost if usage exceeds free tier
+   3) keep Google Translate, reduce artifacts (larger pieces where possible, trim silence at joins)
+      cost: 0 · gain: small (fewer gaps); timbre/intonation and max speed unchanged · needs audio processing code
+
+7. recommended next tests (need approval: real provider calls)
+   - blind A/B on the kiosk speakers: same 4 short phrases + 1 long answer; current Google vs Microsoft +0% vs +5% (and EQ on/off)
+   - reliability of Microsoft on the college network: e.g. 10 short requests, count failures/latency
+   - measure chars/s and pauses of each candidate with the same ffmpeg method
+   - all trials reversible: .env backup + restart; caches are separated per provider (edge-*/google-*), nothing deleted
