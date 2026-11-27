@@ -1,0 +1,40 @@
+/* 27 พ.ย. 2569: ป๊อปอัปประกาศประชาสัมพันธ์กลางจอ + การ์ดหมุนเวียนช่วงหน้าจอว่าง */
+.apop { position: fixed; inset: 0; z-index: 47; display: grid; place-items: center; padding: clamp(16px, 4vw, 70px); cursor: pointer; }
+.apop .ap-backdrop { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 45%, rgba(255, 43, 58, .16), rgba(4, 5, 8, .8) 62%); opacity: 0; transition: opacity .3s; }
+.apop .ap-card { position: relative; width: min(1100px, 92vw); max-height: 88vh; display: grid; grid-template-columns: 1.35fr 1fr; overflow: hidden;
+  border-radius: 28px; background: var(--panel-strong, rgba(14, 14, 18, .96)); color: var(--text, #fff); border: 2px solid var(--accent, #FF2B3A);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, .55), 0 0 40px rgba(255, 43, 58, .35); transform: translateY(24px) scale(.94); opacity: 0;
+  transition: transform .38s cubic-bezier(.2, 1.3, .4, 1), opacity .3s; }
+.apop.in .ap-backdrop { opacity: 1; }
+.apop.in .ap-card { transform: none; opacity: 1; }
+.apop.out .ap-card { transform: scale(.96); opacity: 0; }
+.apop.out .ap-backdrop { opacity: 0; }
+.apop .ap-media { position: relative; background: #000; min-height: min(56vh, 560px); display: grid; place-items: center; }
+.apop .ap-media img, .apop .ap-media video { width: 100%; height: 100%; max-height: 88vh; object-fit: contain; display: block; }
+.apop .ap-noimg { width: 100%; height: 100%; min-height: min(56vh, 560px); display: grid; place-items: center; font-size: 7rem;
+  background: linear-gradient(150deg, var(--accent-strong, #D9142A), #5c0710); }
+.apop .ap-sound { position: absolute; right: 14px; bottom: 14px; background: rgba(0, 0, 0, .65); color: #fff; border-radius: 999px; padding: 6px 12px; font-size: 1.3rem; }
+.apop .ap-info { padding: clamp(18px, 2.4vw, 36px); display: flex; flex-direction: column; gap: 12px; overflow: auto; }
+.apop .ap-kind { align-self: flex-start; background: var(--accent-strong, #D9142A); color: #fff; font-weight: 800; border-radius: 999px; padding: 6px 16px; font-size: 1.05rem; }
+.apop .ap-title { margin: 0; font-size: clamp(1.6rem, 2.6vw, 2.6rem); line-height: 1.25; }
+.apop .ap-body { margin: 0; font-size: clamp(1.05rem, 1.4vw, 1.4rem); line-height: 1.7; color: var(--text-dim, #C8CAD1); white-space: pre-line; }
+.apop .ap-hint { margin-top: auto; opacity: .6; }
+.apop .ap-textonly { grid-template-columns: 1fr 1.6fr; }
+@media (max-aspect-ratio: 1/1) { .apop .ap-card { grid-template-columns: 1fr; } .apop .ap-media { max-height: 50vh; } }
+
+/* การ์ดหมุนเวียน (ไม่พูด) — มุมขวาของเวทีช่วงหน้าจอว่าง */
+.promo-card { position: fixed; right: clamp(16px, 2vw, 40px); top: 50%; transform: translateY(-50%); z-index: 12; width: clamp(240px, 22vw, 360px);
+  border-radius: 20px; overflow: hidden; background: var(--panel-strong, rgba(14, 14, 18, .94)); color: var(--text, #fff);
+  border: 1.5px solid var(--border, rgba(255, 58, 72, .55)); box-shadow: 0 14px 36px rgba(0, 0, 0, .35); cursor: pointer; transition: opacity .5s, transform .5s; padding: 0; font: inherit; font-size: 1rem; text-align: left; }
+.promo-card[hidden] { display: none; }
+.promo-card.fade { opacity: 0; transform: translateY(-46%); }
+.promo-card .pc-pic { aspect-ratio: 16 / 9; background: linear-gradient(150deg, var(--accent-strong, #D9142A), #5c0710) center / cover; display: grid; place-items: center; font-size: 3.4rem; }
+.promo-card .pc-t { padding: 12px 14px 14px; display: grid; gap: 4px; }
+.promo-card .pc-kind { font-size: .8rem; font-weight: 800; color: var(--accent, #FF2B3A); }
+.promo-card b { line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.app:not([data-phase="attract"]) ~ .promo-card { display: none; }
+
+/* ประกาศที่รอคุยจบ: กล่องข้อความเงียบในแชท */
+.msg.announce-wait { border-left: 3px dashed var(--accent, #FF2B3A) !important; opacity: .92; }
+.msg.announce-wait .aw-tag { display: block; font-size: .78rem; font-weight: 800; color: var(--accent, #FF2B3A); margin-bottom: 4px; }
+@media (prefers-reduced-motion: reduce) { .apop .ap-card, .apop .ap-backdrop, .promo-card { transition: none; } }

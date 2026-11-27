@@ -1,0 +1,56 @@
+/* VORA — ฟอนต์และโทเคนการออกแบบที่ใช้ร่วมกัน (ฟอนต์ฝังในเครื่อง ใช้งานออฟไลน์ได้) */
+/* Phase 6 · Gate 6B — Unified Design System: token --vora-* และคอมโพเนนต์ .vora-* (ชื่อใหม่ทั้งหมด ไม่เปลี่ยนหน้าตาของหน้าเดิม) */
+@import url("/shared/tokens.css");
+@import url("/shared/components.css");
+@font-face { font-family: "Mitr"; font-weight: 400; font-display: swap; src: url(/assets/vendor/fonts/mitr-thai-400-normal.woff2) format("woff2"); unicode-range: U+0E01-0E5B, U+200C-200D, U+25CC; }
+@font-face { font-family: "Mitr"; font-weight: 500; font-display: swap; src: url(/assets/vendor/fonts/mitr-thai-500-normal.woff2) format("woff2"); unicode-range: U+0E01-0E5B, U+200C-200D, U+25CC; }
+@font-face { font-family: "Mitr"; font-weight: 600; font-display: swap; src: url(/assets/vendor/fonts/mitr-thai-600-normal.woff2) format("woff2"); unicode-range: U+0E01-0E5B, U+200C-200D, U+25CC; }
+@font-face { font-family: "Mitr"; font-weight: 400; font-display: swap; src: url(/assets/vendor/fonts/mitr-latin-400-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+2000-206F, U+20AC, U+2122; }
+@font-face { font-family: "Mitr"; font-weight: 500; font-display: swap; src: url(/assets/vendor/fonts/mitr-latin-500-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+2000-206F, U+20AC, U+2122; }
+@font-face { font-family: "Mitr"; font-weight: 600; font-display: swap; src: url(/assets/vendor/fonts/mitr-latin-600-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+2000-206F, U+20AC, U+2122; }
+@font-face { font-family: "Anuphan"; font-weight: 400; font-display: swap; src: url(/assets/vendor/fonts/anuphan-thai-400-normal.woff2) format("woff2"); unicode-range: U+0E01-0E5B, U+200C-200D, U+25CC; }
+@font-face { font-family: "Anuphan"; font-weight: 500; font-display: swap; src: url(/assets/vendor/fonts/anuphan-thai-500-normal.woff2) format("woff2"); unicode-range: U+0E01-0E5B, U+200C-200D, U+25CC; }
+@font-face { font-family: "Anuphan"; font-weight: 600; font-display: swap; src: url(/assets/vendor/fonts/anuphan-thai-600-normal.woff2) format("woff2"); unicode-range: U+0E01-0E5B, U+200C-200D, U+25CC; }
+@font-face { font-family: "Anuphan"; font-weight: 700; font-display: swap; src: url(/assets/vendor/fonts/anuphan-thai-700-normal.woff2) format("woff2"); unicode-range: U+0E01-0E5B, U+200C-200D, U+25CC; }
+@font-face { font-family: "Anuphan"; font-weight: 400; font-display: swap; src: url(/assets/vendor/fonts/anuphan-latin-400-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+2000-206F, U+20AC, U+2122; }
+@font-face { font-family: "Anuphan"; font-weight: 500; font-display: swap; src: url(/assets/vendor/fonts/anuphan-latin-500-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+2000-206F, U+20AC, U+2122; }
+@font-face { font-family: "Anuphan"; font-weight: 600; font-display: swap; src: url(/assets/vendor/fonts/anuphan-latin-600-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+2000-206F, U+20AC, U+2122; }
+@font-face { font-family: "Anuphan"; font-weight: 700; font-display: swap; src: url(/assets/vendor/fonts/anuphan-latin-700-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+2000-206F, U+20AC, U+2122; }
+
+:root {
+  /* โทนสีจากโลกของงานช่าง: น้ำเงินแบบพิมพ์เขียว เหลืองเครื่องหมายความปลอดภัย และแสงฟ้าของจอหุ่นยนต์ */
+  --ink: #0f2740;          /* ตัวอักษรหลัก น้ำเงินหมึก */
+  --blueprint: #1d5aa6;    /* สีหลักของแบรนด์ */
+  --blueprint-deep: #133f78;
+  --hazard: #ffc93c;       /* เหลืองความปลอดภัย ใช้เป็นจุดเน้น */
+  --glow: #3cc8f5;         /* แสงหน้าจอ/ตาหุ่นยนต์ */
+  --paper: #eef3f9;        /* พื้นหลัง กระดาษพิมพ์เขียวสว่าง */
+  --surface: #ffffff;
+  --line: #c9d6e6;
+  --muted: #5b6f86;
+  --ok: #1f9d63;
+  --warn: #e08a00;
+  --danger: #d64545;
+  --listen: #1f9d63;
+  --think: #8a63d2;
+  --speak: #1d5aa6;
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --radius-sm: 8px;
+  --font-display: "Mitr", "Leelawadee UI", "Tahoma", sans-serif;
+  --font-body: "Anuphan", "Leelawadee UI", "Tahoma", sans-serif;
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; }
+body { font-family: var(--font-body); color: var(--ink); background: var(--paper); -webkit-font-smoothing: antialiased; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--hazard); outline-offset: 2px; }
+img { max-width: 100%; display: block; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+[hidden] { display: none !important; }

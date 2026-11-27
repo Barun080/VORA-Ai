@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>VORA หุ่นยนต์ประชาสัมพันธ์อัจฉริยะ</title>
+  <meta name="theme-color" content="#08090C">
+  <!-- 27 พ.ย. 2569: แท็บเล็ต/ไอแพด — เพิ่มลงหน้าจอโฮม (Add to Home Screen) แล้วเปิดแบบเต็มจอ ไม่มีแถบเบราว์เซอร์ -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="VORA">
+  <link rel="apple-touch-icon" href="/assets/icon.svg">
+  <link rel="icon" href="/assets/icon.svg">
+  <link rel="stylesheet" href="/shared/base.css">
+  <link rel="stylesheet" href="kiosk.css">
+  <!-- 8 พ.ย. 2569: เลย์เอาต์ตามภาพ Reference + ธีมมืด (ดำ-แดง) / สว่าง (ฟ้า-ขาว-แดง) — ซ้อนทับ kiosk.css เดิม ถอดไฟล์นี้ออก = กลับเป็นดีไซน์ดำ-เหลือง -->
+  <link rel="stylesheet" href="kiosk-reference.css">
+  <!-- 17 พ.ย. 2569: VORA Guide (แนะนำการใช้งานแบบ Spotlight) — ถอดบรรทัดนี้ + ปุ่ม #vgBtn ออก = ไม่มี Guide -->
+  <link rel="stylesheet" href="guide/guide.css">
+  <link rel="stylesheet" href="experience/vision-popup.css">
+  <link rel="stylesheet" href="experience/announce-popup.css">
+  <script>
+    // ตั้งธีมก่อนวาดหน้า (ไม่กะพริบ) — ค่าที่ผู้ใช้เลือกเก็บใน localStorage "vora.theme" · ค่าเริ่มต้น = มืด
+    (function () { var t = "dark"; try { t = localStorage.getItem("vora.theme") || "dark"; } catch (e) {} if (t !== "light") t = "dark"; document.documentElement.setAttribute("data-vora-theme", t); })();
+  </script>
+</head>
+<body>
+  <!-- VORA Robot Kiosk — ธีม BLACK × YELLOW (31 ต.ค. 2569)
+       ดีไซน์ก่อนหน้า: /pastel/ (ม่วงพาสเทล) และ /classic/ (พิมพ์เขียว) ยังเปิดใช้ได้
+       โครงสร้าง: avatar/ (อวตาร) · camera/ (กล้อง+ผู้เข้าชม) · interaction/ (ลำดับความสำคัญ) · app.js (ตัวประสานงาน) -->
+  <div class="app is-active" id="app" data-state="idle" data-phase="attract" data-avatar="idle">
+
+    <!-- ===================== Header -->
+    <header class="hdr">
+      <div class="logo">
+        <svg class="logo-mark" viewBox="0 0 64 48" aria-hidden="true"><path d="M2 4h14l16 26L48 4h14L36 46h-8Z" fill="currentColor"/><path d="M18 4h8l6 10-4 7Z" fill="#08090C" opacity=".55"/></svg>
+        <span class="logo-text"><span class="logo-word">VORA</span><small class="logo-sub" lang="en">Vocational Image Intelligence Platform</small></span>
+      </div>
+      <div class="hdr-title">
+        <div class="hdr-school" id="schoolName">—</div>
+        <div class="hdr-sub"><span id="robotLine">หุ่นยนต์ประชาสัมพันธ์อัจฉริยะ</span> · <span lang="en">Vocational Image Intelligence Platform</span></div>
+      </div>
+      <div class="hdr-right">
+        <div class="pill sys" id="sysPill" role="status" aria-live="polite">
+          <span class="dot" id="sysDot"></span>
+          <span class="pill-text"><b id="sysText">กำลังตรวจสอบระบบ…</b><small id="sysSub">VORA</small></span>
+        </div>
+        <button class="pill cam-pill" id="camPill" title="สถานะกล้อง" aria-pressed="false">
+          <span class="dot rec" id="camDot"></span>
+          <svg class="cam-pause-ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1.2" fill="currentColor"/></svg>
+          <span class="pill-text"><b id="camText">กล้อง</b><small id="camSub">กำลังเริ่ม</small></span>
+        </button>
+        <div class="pill clock">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <span class="pill-text"><b id="clockTime">--:--</b><small id="clockDate"></small></span>
+        </div>
+        <div class="lang" role="group" aria-label="เลือกภาษา">
+          <button data-lang="th" aria-pressed="true"><span class="flag" aria-hidden="true">TH</span>ไทย</button>
+          <button data-lang="en" aria-pressed="false"><span class="flag" aria-hidden="true">EN</span>English</button>
+        </div>
+        <button type="button" class="hdr-ico vg-launch" id="vgBtn" aria-label="VORA Guide" title="VORA Guide"><span class="vg-launch-ico" aria-hidden="true">✦</span></button>
+        <!-- ตั้งค่า = ปุ่มเครื่องมือเดิม (#toolsBtn ย้ายมาไว้หัวจอตามภาพ Reference: ธีม เต็มจอ กล้อง ทักทาย ฯลฯ) -->
+        <button class="hdr-ico" id="toolsBtn" aria-haspopup="dialog" aria-label="ตั้งค่าและเครื่องมือ" data-aria-th="ตั้งค่าและเครื่องมือ" data-aria-en="Settings and tools" title="ตั้งค่า">
+          <svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path fill="currentColor" d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3.3h-4l-.4 2.6a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.2 1.6 2 3.5 2.5-1a7.4 7.4 0 0 0 1.7 1l.4 2.6h4l.4-2.6a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.5ZM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z" transform="translate(-1 0)"/></svg>
+        </button>
+        <button class="hdr-ico" id="fsBtn" aria-label="เต็มจอ" data-aria-th="เต็มจอ" data-aria-en="Fullscreen" title="เต็มจอ">
+          <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/><path d="M9 9l-4.5-4.5M15 9l4.5-4.5M9 15l-4.5 4.5M15 15l4.5 4.5" opacity=".55"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ===================== Left sidebar -->
+    <aside class="left panel-l rail" aria-label="แถบเมนูหลัก">
+      <!-- Edge Toolbar ซ้าย (ตามภาพ Reference): หน้าหลัก + ปุ่มหมวดชุดเดิมของ SpatialMenu (ใส่ใน #railMenu โดย app.js) + สแกน QR -->
+      <button type="button" class="rail-btn" id="homeBtn" aria-current="true">
+        <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M3 11 12 3l9 8v10h-6v-6H9v6H3Z" fill="currentColor"/></svg>
+        <span data-th="หน้าหลัก" data-en="Home">หน้าหลัก</span>
+      </button>
+      <div class="rail-menu" id="railMenu"></div>
+      <button class="card qr-card rail-btn" id="qrBtn" aria-label="สแกน QR เพื่อถามต่อบนมือถือ" data-aria-th="สแกน QR เพื่อถามต่อบนมือถือ" data-aria-en="Scan the QR to continue on your phone">
+        <svg class="qr-ico" viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M8 9h8M8 12h8M8 15h5"/></svg>
+        <span class="qr-mini" id="qrMini" aria-hidden="true"></span>
+        <span class="qr-text">
+          <b data-th="สแกน QR" data-en="Scan QR">สแกน QR</b>
+          <span data-th="ถามต่อบนมือถือ" data-en="Continue on your phone">ถามต่อบนมือถือ</span>
+        </span>
+        <i class="go" aria-hidden="true"></i>
+      </button>
+    </aside>
+
+    <!-- ===================== Center avatar stage -->
+    <div class="ambient" aria-hidden="true"></div>
+    <main class="stage" id="stage" aria-label="เวทีอวตาร VORA">
+      <div class="holo" aria-hidden="true">
+        <div class="holo-v"><svg viewBox="0 0 64 48"><path d="M2 4h14l16 26L48 4h14L36 46h-8Z" fill="currentColor"/></svg></div>
+        <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+        <div class="beam"></div>
+        <div class="floor"><i></i><i></i><i></i></div>
+        <div class="rails"><i></i><i></i></div>
+      </div>
+      <div class="avatar" id="avatar"></div>
+      <div class="bubble" id="bubble" aria-live="polite" hidden>
+        <p id="caption"></p>
+      </div>
+      <div class="state-chip" id="stateChip" aria-hidden="true"><span class="eq"><i></i><i></i><i></i><i></i></span><span class="sc-txt"><span id="stateText">พร้อมใช้งาน</span><small class="ver" lang="en">VORA v1.0.0</small></span></div>
+      <figure class="cam-preview" id="camPreview" aria-hidden="true">
+        <video id="camVideo" muted playsinline></video>
+        <figcaption><span class="dot rec"></span><span data-th="ภาพประมวลผลในเครื่อง ไม่บันทึก" data-en="Processed on-device · not recorded">ภาพประมวลผลในเครื่อง ไม่บันทึก</span></figcaption>
+      </figure>
+      <div class="gesture-pop" id="gesturePop" hidden>
+        <h3 data-th="ท่าทางที่ VORA เข้าใจ" data-en="Gestures VORA understands">ท่าทางที่ VORA เข้าใจ</h3>
+        <ul id="gestureList"></ul>
+      </div>
+    </main>
+
+    <!-- ขอบขวา: แชท (11 พ.ย. 2569: ตัดเมนูเพิ่มเติม · สถานะระบบย้ายไปหน้าตั้งค่า) — ซ่อนไว้ เลื่อนเมาส์มาที่ขอบขวา แตะปุ่ม หรือกด Tab แล้วแสดง (ไม่บังอวตารตอนไม่ใช้) -->
+    <div class="edge-zone" aria-hidden="true"></div>
+    <button type="button" class="edge-hint" id="edgeHint" aria-controls="rightPanel" aria-expanded="false">
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="7" y="3" width="10" height="16" rx="5"/><path d="M12 6v4"/><path d="M3 8 1.5 6.5M3.5 4 2.5 2.5M6 2.5 5.5 1" opacity=".7"/></svg>
+      <span data-th="แตะหรือเลื่อนเมาส์เพื่อดูแชท" data-en="Tap or move the mouse here for the chat">แตะหรือเลื่อนเมาส์เพื่อดูแชท</span>
+    </button>
+
+    <aside class="right panel-r" id="rightPanel" aria-label="แชทกับ VORA">
+
+
+
+      <section class="card chat" aria-labelledby="chatTitle">
+        <h2 class="chat-tab" id="chatTitle">
+          <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 3C6.5 3 2 6.6 2 11c0 2.4 1.3 4.5 3.4 6L4.5 21l4.4-2.3c1 .2 2 .3 3.1.3 5.5 0 10-3.6 10-8s-4.5-8-10-8Z" fill="currentColor"/><circle cx="8" cy="11" r="1.4" fill="#08090C"/><circle cx="12" cy="11" r="1.4" fill="#08090C"/><circle cx="16" cy="11" r="1.4" fill="#08090C"/></svg>
+          <span data-th="คุยกับ VORA" data-en="Chat with VORA">คุยกับ VORA</span>
+        </h2>
+        <div class="messages" id="messages" aria-live="polite"></div>
+        <div class="media" id="media" hidden></div>
+        <div class="suggest">
+          <h3><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7Z" fill="currentColor"/></svg><span data-th="คำถามแนะนำ" data-en="Suggested">คำถามแนะนำ</span></h3>
+          <div class="quick">
+            <button class="qbtn" data-nav="about"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M12 2 2 7v2h20V7ZM4 10v8h3v-8Zm6.5 0v8h3v-8ZM17 10v8h3v-8ZM2 20h20v2H2Z" fill="currentColor"/></svg><span data-th="ข้อมูลวิทยาลัย" data-en="College info">ข้อมูลวิทยาลัย</span></button>
+            <button class="qbtn" data-nav="programs"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M2 5c3-1.3 6.3-1 9 1v14c-2.7-2-6-2.3-9-1Zm20 0c-3-1.3-6.3-1-9 1v14c2.7-2 6-2.3 9-1Z" fill="currentColor"/></svg><span data-th="สาขาวิชา" data-en="Programs">สาขาวิชา</span></button>
+            <button class="qbtn" data-ask="มีข่าวอะไรบ้าง" data-ask-en="Latest news"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M3 10v4h3l8 5V5L6 10Zm14-2.5a6 6 0 0 1 0 9l-1.4-1.4a4 4 0 0 0 0-6.2Z" fill="currentColor"/></svg><span data-th="ข่าวล่าสุด" data-en="Latest news">ข่าวล่าสุด</span></button>
+            <button class="qbtn" data-ask="เธอทำอะไรได้บ้าง" data-ask-en="What can you do?"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M9.3 9.2a2.8 2.8 0 1 1 3.8 2.6c-.7.3-1.1.8-1.1 1.6v.5M12 17h.01" stroke="#08090C" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg><span data-th="ถามอะไรก็ได้" data-en="Ask anything">ถามอะไรก็ได้</span></button>
+          </div>
+          <div class="chips" id="chips"></div>
+        </div>
+
+        <!-- ลิ้นชักข้อมูล (เปิดจากเมนู) ซ้อนเฉพาะในแผงขวา ไม่บังอวตาร -->
+        <section class="drawer" id="drawer" hidden aria-labelledby="drawerTitle">
+          <header><h2 id="drawerTitle"></h2><button class="x" id="drawerClose" aria-label="ปิด">×</button></header>
+          <div class="drawer-body" id="drawerBody"></div>
+        </section>
+      </section>
+
+
+      <button type="button" class="edge-close" id="edgeClose" aria-label="ปิดแชท" data-aria-th="ปิดแชท" data-aria-en="Close the chat">×</button>
+    </aside>
+
+    <!-- ===================== Presentation Mode (VORA NEXT Phase 1) — ข้อมูลจริงจาก API เท่านั้น -->
+    <section class="present" id="present" hidden aria-labelledby="presentTitle">
+      <header class="present-hdr">
+        <button type="button" class="ghost present-back" hidden>
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M15 5 8 12l7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>กลับ</span>
+        </button>
+        <div class="present-head">
+          <h2 class="present-title" id="presentTitle" tabindex="-1"></h2>
+          <p class="present-lead"></p>
+        </div>
+        <button type="button" class="ghost present-resume" hidden>
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 12h12M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span></span>
+        </button>
+        <button type="button" class="primary present-close">
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg><span>ปิด</span>
+        </button>
+      </header>
+      <div class="present-body" aria-live="polite"></div>
+    </section>
+
+    <!-- ===================== Bottom -->
+    <div class="tagline" aria-hidden="true">
+      <b>VORA</b><span>Your Smart Guide</span>
+      <small id="privacyNote" data-th="กล้องใช้ตรวจจับผู้มาใช้งาน ประมวลผลในเครื่อง ไม่บันทึกภาพ" data-en="Camera detects visitors on-device. No images are saved.">กล้องใช้ตรวจจับผู้มาใช้งาน ประมวลผลในเครื่อง ไม่บันทึกภาพ</small>
+    </div>
+
+    <footer class="dock">
+      <div class="bar">
+        <button class="tool" id="camBtn" aria-pressed="false" aria-label="แสดงภาพจากกล้อง" data-aria-th="แสดงภาพจากกล้อง" data-aria-en="Show camera view">
+          <svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M9 4 7.5 6H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3.5L15 4Z" fill="currentColor"/><circle cx="12" cy="13" r="4" fill="var(--cam-hole, #14161B)"/><circle cx="12" cy="13" r="2.3" fill="currentColor"/></svg>
+          <span data-th="กล้อง" data-en="Camera">กล้อง</span>
+        </button>
+        <button class="mic" id="micBtn" aria-label="แตะแล้วพูด" data-aria-th="แตะแล้วพูด" data-aria-en="Tap and speak">
+          <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        </button>
+        <!-- สถานะเสียง: แท่งเสียงขยับเมื่อกำลังฟัง/พูด (ตาม data-state ของหน้าจอ) · ข้อความสถานะอยู่มุมซ้ายล่าง -->
+        <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        <form class="ask" id="askForm" autocomplete="off">
+          <label class="sr-only" for="askInput">พิมพ์คำถาม</label>
+          <input id="askInput" maxlength="300" placeholder="พิมพ์คำถาม หรือกดไมค์เพื่อพูดคุย…">
+          <button type="submit" class="send" id="sendBtn" aria-label="ส่งคำถาม">
+            <svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 20 21 12 3 4l2.5 8Z" fill="currentColor"/><path d="M5.5 12H13" stroke="#FFD400" stroke-width="2"/></svg>
+          </button>
+        </form>
+        <button class="stop" id="stopBtn" aria-label="หยุดพูด" title="หยุดพูดและหยุดหุ่นยนต์ (Esc)">
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2.5" fill="currentColor"/></svg>
+          <span data-th="หยุด" data-en="Stop">หยุด</span>
+        </button>
+      </div>
+      <button class="tool" id="gestureBtn" aria-pressed="false">
+        <svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M8 11V5a1.5 1.5 0 0 1 3 0v5-7a1.5 1.5 0 0 1 3 0v7-5a1.5 1.5 0 0 1 3 0v6-3a1.5 1.5 0 0 1 3 0v6c0 4.4-3 8-7.5 8-3.5 0-5-1.6-7-4.6L3.3 13a1.5 1.5 0 0 1 2.4-1.8L8 14Z" fill="currentColor"/></svg>
+        <span data-th="ท่าทาง" data-en="Gestures">ท่าทาง</span>
+      </button>
+      <button class="tool" id="textMenuBtn" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M2 19 7.5 5h2L15 19h-2.4l-1.3-3.6H5.7L4.4 19Zm4.4-5.6h4.2L8.5 7.6Z" fill="currentColor"/><path d="M15.5 19l3.2-8.5h1.6L23.5 19h-1.8l-.8-2.2h-3.5l-.8 2.2Zm2.8-3.8h2.4l-1.2-3.4Z" fill="currentColor"/></svg>
+        <span data-th="ตัวอักษรใหญ่" data-en="Large text">ตัวอักษรใหญ่</span>
+      </button>
+    </footer>
+
+    <!-- Phase 2: ป้ายสถานะกล้อง + ปุ่มพักกล้อง แสดงในโหมดหน้าจอว่าง (โหมดใช้งานใช้ป้ายกล้องที่หัวจอ) -->
+    <button type="button" class="cam-badge" id="camBadge" hidden>
+      <span class="cb-dot" aria-hidden="true"></span><span class="cb-txt"><b class="cb-t"></b><small class="cb-a"></small></span>
+    </button>
+
+    <!-- ข้อความแนะนำขนาดเล็ก แสดงเฉพาะโหมดหน้าจอว่าง (ปิดได้ที่ kiosk-config.js → ui.idleHint) -->
+    <p class="idle-hint" id="idleHint" aria-hidden="true"><span class="pulse"></span><span data-th="แตะหน้าจอ หรือพูดกับ VORA ได้เลย" data-en="Tap the screen or talk to VORA">แตะหน้าจอ หรือพูดกับ VORA ได้เลย</span></p>
+  </div>
+
+  <!-- ===================== Dialogs -->
+  <dialog class="sheet" id="rateSheet" aria-labelledby="rateTitle">
+    <h2 id="rateTitle">วอร่าช่วยคุณได้แค่ไหน</h2>
+    <div class="stars" id="stars" role="radiogroup" aria-label="ให้คะแนน 1 ถึง 5"></div>
+    <textarea id="rateComment" rows="2" maxlength="300" placeholder="อยากบอกอะไรเพิ่มเติม (ไม่บังคับ)"></textarea>
+    <div class="sheet-actions">
+      <button class="ghost" id="rateSkip">ข้าม</button>
+      <button class="primary" id="rateSend" disabled>ส่งความคิดเห็น</button>
+    </div>
+  </dialog>
+
+  <!-- เมนูตัวอักษรใหญ่ (ผู้สูงอายุ/สายตาไม่ดี) — หมวดเดียวกับ Orbital Menu แต่เป็นข้อความล้วนขนาดใหญ่ -->
+  <dialog class="sheet text-menu" id="textMenu" aria-labelledby="textMenuTitle">
+    <h2 id="textMenuTitle" data-th="เลือกเรื่องที่สนใจ" data-en="Choose a topic">เลือกเรื่องที่สนใจ</h2>
+    <div class="text-menu-list" id="textMenuList"></div>
+    <div class="sheet-actions"><button class="ghost" id="textMenuClose" data-th="ปิด" data-en="Close">ปิด</button></div>
+  </dialog>
+
+  <dialog class="sheet" id="qrSheet" aria-labelledby="qrTitle">
+    <h2 id="qrTitle">ดูข้อมูลต่อบนมือถือ</h2>
+    <div class="qr" id="qrBox"></div>
+    <p class="qr-url" id="qrUrl"></p>
+    <div class="sheet-actions"><button class="primary" id="qrClose">ปิด</button></div>
+  </dialog>
+
+  <dialog class="sheet tools-sheet" id="toolsSheet" aria-labelledby="toolsTitle">
+    <h2 id="toolsTitle" data-th="ตั้งค่าและเครื่องมือ" data-en="Settings &amp; tools">ตั้งค่าและเครื่องมือ</h2>
+    <h3 id="themeTitle" data-th="ธีมหน้าจอ" data-en="Screen theme">ธีมหน้าจอ</h3>
+    <div class="theme-pick" role="radiogroup" aria-labelledby="themeTitle">
+      <button type="button" class="theme-opt" data-theme="dark" role="radio" aria-checked="true"><i class="sw sw-dark" aria-hidden="true"></i><span data-th="มืด · ดำ-แดง" data-en="Dark · black &amp; red">มืด · ดำ-แดง</span></button>
+      <button type="button" class="theme-opt" data-theme="light" role="radio" aria-checked="false"><i class="sw sw-light" aria-hidden="true"></i><span data-th="สว่าง · ฟ้า-ขาว" data-en="Light · sky &amp; white">สว่าง · ฟ้า-ขาว</span></button>
+    </div>
+    <h3 data-th="หน้าจอ" data-en="Screen">หน้าจอ</h3>
+    <div class="tool-grid">
+      <button class="ghost" id="tPanels" data-th="โหมดหน้าจอว่าง (ซ่อนแผง)" data-en="Idle mode (hide panels)">โหมดหน้าจอว่าง (ซ่อนแผง)</button>
+      <button class="ghost" id="tFullscreen" data-th="เต็มจอ" data-en="Fullscreen">เต็มจอ</button>
+      <button class="ghost" id="tGreet" data-th="ทดสอบการทักทาย" data-en="Test greeting">ทดสอบการทักทาย</button>
+      <button class="ghost" id="tReset" data-th="เริ่มบทสนทนาใหม่" data-en="New conversation">เริ่มบทสนทนาใหม่</button>
+      <button class="ghost" id="tVoice" data-th="ทดสอบเสียง VORA" data-en="Test VORA voice">ทดสอบเสียง VORA</button>
+    </div>
+    <h3 id="statusTitle" data-th="สถานะระบบ" data-en="System status">สถานะระบบ</h3>
+    <ul class="status-list" id="statusList">
+          <li data-k="ai"><span class="ico"></span><span class="lbl" data-th="AI ตอบคำถาม" data-en="AI">AI ตอบคำถาม</span><span class="val">…</span></li>
+          <li data-k="db"><span class="ico"></span><span class="lbl" data-th="ฐานข้อมูล" data-en="Database">ฐานข้อมูล</span><span class="val">…</span></li>
+          <li data-k="net"><span class="ico"></span><span class="lbl" data-th="อินเทอร์เน็ต" data-en="Internet">อินเทอร์เน็ต</span><span class="val">…</span></li>
+          <li data-k="cam"><span class="ico"></span><span class="lbl" data-th="กล้อง" data-en="Camera">กล้อง</span><span class="val">…</span></li>
+          <li data-k="mic"><span class="ico"></span><span class="lbl" data-th="ไมโครโฟน" data-en="Microphone">ไมโครโฟน</span><span class="val">…</span></li>
+          <li data-k="robot"><span class="ico"></span><span class="lbl" data-th="หุ่นยนต์ VORA" data-en="VORA robot">หุ่นยนต์ VORA</span><span class="val">…</span></li>
+        </ul>
+    <h3 data-th="สำหรับเจ้าหน้าที่: กล้องและการตรวจจับ" data-en="Staff: camera &amp; detection">สำหรับเจ้าหน้าที่: กล้องและการตรวจจับ</h3>
+    <p class="staff-note" id="camStaffText"></p>
+    <dl class="diag" id="diag"></dl>
+    <div class="sheet-actions">
+      <button class="danger-btn" id="tCamToggle">ปิดกล้องและหยุดตรวจจับ</button>
+      <button class="primary" id="toolsClose" data-th="ปิด" data-en="Close">ปิด</button>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="alert" hidden></div>
+  <div class="flash" id="flash" hidden></div>
+
+  <script src="/assets/vendor/qrcode.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+/* VORA Unified Design Tokens (Phase 6 · Gate 6B)
+ *
+ * ทุกตัวแปรขึ้นต้น --vora-* เท่านั้น (ไม่ชนกับตัวแปรเดิม --glow/--surface/--line ฯลฯ ของ base.css, kiosk.css, pastel, classic)
+ * โหลดผ่าน /shared/base.css (@import) — การประกาศตัวแปรอย่างเดียวไม่เปลี่ยนหน้าตาหน้าใด
+ * หน้าจอจะใช้ token เมื่อถึง Gate ของตัวเอง (6F Mobile/Admin, 6G Kiosk) โดยใส่ data-vora-theme="light|dark" ที่ element ราก
+ *
+ * แบรนด์: ดำ-เหลืองของ Kiosk เป็นค่าตั้งต้น (D5 ยังไม่ final — เปลี่ยนค่าได้ที่ไฟล์นี้ที่เดียว)
+ * ฟอนต์หลัก: Anuphan (D6 · ผู้ใช้ 1 พ.ย. 2569) — @font-face อยู่ใน base.css (ไฟล์ในเครื่อง /assets/vendor/fonts)
+ */
+
+:root {
+  /* ---------- Brand (เหมือนกันทุกธีม) ---------- */
+  --vora-brand: #FFD400;
+  --vora-brand-strong: #E6BE00;
+  --vora-brand-soft: #FFEA70;
+  --vora-on-brand: #0B0B0D;           /* ตัวอักษรบนพื้นเหลือง */
+  --vora-ink: #0B0B0D;
+  --vora-on-ink: #FFFFFF;              /* ตัวอักษรบนพื้นดำ (toast) */
+  --vora-qr-bg: #FFFFFF;               /* QR ต้องพื้นขาวเสมอเพื่อให้สแกนได้ */
+
+  /* ---------- Typography ---------- */
+  --vora-font-body: "Anuphan", "Leelawadee UI", "Tahoma", sans-serif;
+  --vora-font-display: "Anuphan", "Leelawadee UI", "Tahoma", sans-serif;
+  --vora-font-mono: ui-monospace, "Consolas", "Menlo", monospace;
+  --vora-fw-regular: 400;
+  --vora-fw-medium: 500;
+  --vora-fw-semibold: 600;
+  --vora-fw-bold: 700;
+  --vora-scale: 1;                    /* Kiosk ขยายได้ (เช่น 1.25) โดยไม่ต้องเปลี่ยนค่าขนาดแต่ละตัว */
+  --vora-fs-xs: calc(0.75rem * var(--vora-scale));
+  --vora-fs-sm: calc(0.875rem * var(--vora-scale));
+  --vora-fs-md: calc(1rem * var(--vora-scale));
+  --vora-fs-lg: calc(1.2rem * var(--vora-scale));
+  --vora-fs-xl: calc(1.44rem * var(--vora-scale));
+  --vora-fs-2xl: calc(1.728rem * var(--vora-scale));
+  --vora-fs-3xl: calc(2.074rem * var(--vora-scale));
+  --vora-lh-tight: 1.25;
+  --vora-lh-body: 1.6;
+
+  /* ---------- Space / Radius / Size ---------- */
+  --vora-space-1: 4px;
+  --vora-space-2: 8px;
+  --vora-space-3: 12px;
+  --vora-space-4: 16px;
+  --vora-space-5: 24px;
+  --vora-space-6: 32px;
+  --vora-space-7: 48px;
+  --vora-space-8: 64px;
+  --vora-radius-sm: 8px;
+  --vora-radius-md: 14px;
+  --vora-radius-lg: 20px;
+  --vora-radius-pill: 999px;
+  --vora-tap-min: 44px;               /* Mobile/Admin · Kiosk ใช้ --vora-tap-kiosk */
+  --vora-tap-kiosk: 64px;
+
+  /* ---------- Motion ---------- */
+  --vora-dur-fast: 120ms;
+  --vora-dur-base: 200ms;
+  --vora-dur-slow: 400ms;
+  --vora-ease: cubic-bezier(.2, .9, .3, 1);
+
+  /* ---------- Light (ค่าตั้งต้นของตัวแปรสี — ไม่มีผลจนกว่าจะมีคอมโพเนนต์ใช้) ---------- */
+  --vora-bg: #F7F7F5;
+  --vora-surface-1: #FFFFFF;
+  --vora-surface-2: #F0F0EC;
+  --vora-surface-3: #E4E4DE;
+  --vora-border: #D6D6CF;
+  --vora-border-strong: #0B0B0D;
+  --vora-text: #14161B;
+  --vora-text-muted: #55585F;
+  --vora-text-accent: #6B5000;        /* เหลืองเข้มสำหรับตัวอักษร (เหลืองสดบนพื้นขาวอ่านไม่ออก) */
+  --vora-link: #6B5000;
+  --vora-ok: #157347;
+  --vora-warn: #8A5A00;
+  --vora-danger: #B42318;
+  --vora-on-danger: #FFFFFF;
+  --vora-info: #1D4F91;
+  --vora-ok-soft: #E3F4EA;
+  --vora-warn-soft: #FFF3D6;
+  --vora-danger-soft: #FDE7E5;
+  --vora-info-soft: #E3EDFA;
+  --vora-state-listen: #157347;
+  --vora-state-think: #5B3FB0;
+  --vora-state-speak: #6B5000;
+  --vora-shadow-1: 0 1px 2px rgba(11, 11, 13, .08), 0 2px 8px rgba(11, 11, 13, .06);
+  --vora-shadow-2: 0 10px 30px rgba(11, 11, 13, .12);
+  --vora-focus-ring: 0 0 0 3px #0B0B0D, 0 0 0 6px #FFD400;
+}
+
+/* ธีมสว่าง — Mobile / Admin (6F) */
+[data-vora-theme="light"] {
+  color-scheme: light;
+  --vora-bg: #F7F7F5;
+  --vora-surface-1: #FFFFFF;
+  --vora-surface-2: #F0F0EC;
+  --vora-surface-3: #E4E4DE;
+  --vora-border: #D6D6CF;
+  --vora-border-strong: #0B0B0D;
+  --vora-text: #14161B;
+  --vora-text-muted: #55585F;
+  --vora-text-accent: #6B5000;
+  --vora-link: #6B5000;
+  --vora-ok: #157347;
+  --vora-warn: #8A5A00;
+  --vora-danger: #B42318;
+  --vora-on-danger: #FFFFFF;
+  --vora-info: #1D4F91;
+  --vora-ok-soft: #E3F4EA;
+  --vora-warn-soft: #FFF3D6;
+  --vora-danger-soft: #FDE7E5;
+  --vora-info-soft: #E3EDFA;
+  --vora-state-listen: #157347;
+  --vora-state-think: #5B3FB0;
+  --vora-state-speak: #6B5000;
+  --vora-shadow-1: 0 1px 2px rgba(11, 11, 13, .08), 0 2px 8px rgba(11, 11, 13, .06);
+  --vora-shadow-2: 0 10px 30px rgba(11, 11, 13, .12);
+  --vora-focus-ring: 0 0 0 3px #0B0B0D, 0 0 0 6px #FFD400;
+}
+
+/* ธีมมืด — Kiosk (6G) · ค่าตาม kiosk.css ปัจจุบัน */
+[data-vora-theme="dark"] {
+  color-scheme: dark;
+  --vora-bg: #08090C;
+  --vora-surface-1: #14161B;
+  --vora-surface-2: #20232A;
+  --vora-surface-3: #2A2E37;
+  --vora-border: rgba(255, 255, 255, .12);
+  --vora-border-strong: rgba(255, 212, 0, .55);
+  --vora-text: #FFFFFF;
+  --vora-text-muted: #B8BBC3;
+  --vora-text-accent: #FFD400;
+  --vora-link: #FFEA70;
+  --vora-ok: #4ADE80;
+  --vora-warn: #FBBF24;
+  --vora-danger: #F87171;
+  --vora-on-danger: #0B0B0D;
+  --vora-info: #7CC4FF;
+  --vora-ok-soft: rgba(74, 222, 128, .14);
+  --vora-warn-soft: rgba(251, 191, 36, .14);
+  --vora-danger-soft: rgba(248, 113, 113, .14);
+  --vora-info-soft: rgba(124, 196, 255, .14);
+  --vora-state-listen: #4ADE80;
+  --vora-state-think: #C4B5FD;
+  --vora-state-speak: #FFD400;
+  --vora-shadow-1: 0 0 0 1px rgba(255, 212, 0, .10), 0 0 18px rgba(255, 212, 0, .16);
+  --vora-shadow-2: 0 10px 30px rgba(0, 0, 0, .35);
+  --vora-focus-ring: 0 0 0 3px #FFD400, 0 0 0 6px rgba(255, 212, 0, .35);
+}

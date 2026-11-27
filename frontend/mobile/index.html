@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>คุยกับวอร่า</title>
+  <meta name="theme-color" content="#07070A">
+  <link rel="icon" href="/assets/icon.svg">
+  <link rel="stylesheet" href="/shared/base.css">
+  <script>
+    // ธีมตามหน้าจอหุ่นยนต์ (ค่าจริงจาก /api/kiosk/config) — ใช้ค่าล่าสุดที่จำไว้ก่อน กันหน้ากระพริบ
+    (function () { var t = "dark"; try { t = localStorage.getItem("vora.m.theme") || "dark"; } catch (e) {} document.documentElement.setAttribute("data-vora-theme", t === "light" ? "light" : "dark"); })();
+  </script>
+  <style>
+    /* VORA Mobile (25 พ.ย. 2569 รอบ 2) — ธีมเดียวกับหน้าจอหุ่นยนต์ · หน้าแรกแบบฟีด · สาขาแบบละเอียด · แบบทดสอบ · ข่าวการ์ดภาพใหญ่ */
+    :root, :root[data-vora-theme="dark"] {
+      --accent: #FF2B3A; --accent-strong: #D9142A; --on-accent: #fff;
+      --text: #FFFFFF; --text-dim: #C8CAD1; --bg-base: #07070A;
+      --panel: rgba(20, 20, 26, .88); --panel-strong: rgba(14, 14, 18, .97); --panel-2: rgba(44, 44, 54, .92);
+      --border: rgba(255, 58, 72, .55); --border-soft: rgba(255, 255, 255, .13); --glow-c: rgba(255, 43, 58, .38);
+      --bg-img: url("/assets/backgrounds/vora-bg-dark.webp");
+      --bg-overlay: linear-gradient(180deg, rgba(4, 4, 7, .82), rgba(4, 4, 7, .9));
+      --sorry-bg: rgba(252, 211, 77, .12); --sorry-line: rgba(252, 211, 77, .45); --shadow: 0 8px 24px rgba(0, 0, 0, .45);
+      color-scheme: dark;
+    }
+    :root[data-vora-theme="light"] {
+      --accent: #E01F30; --accent-strong: #D11A2B; --on-accent: #fff;
+      --text: #0B1A2E; --text-dim: #4A5B70; --bg-base: #F3F6FA;
+      --panel: rgba(255, 255, 255, .94); --panel-strong: rgba(255, 255, 255, .98); --panel-2: #FCECEE;
+      --border: rgba(224, 31, 48, .42); --border-soft: rgba(11, 26, 46, .12); --glow-c: rgba(224, 31, 48, .2);
+      --bg-img: url("/assets/backgrounds/vora-bg-light.webp");
+      --bg-overlay: linear-gradient(180deg, rgba(255, 255, 255, .82), rgba(255, 255, 255, .9));
+      --sorry-bg: #FFF4E0; --sorry-line: #F0C27A; --shadow: 0 8px 22px rgba(20, 40, 80, .12);
+      color-scheme: light;
+    }
+    * { -webkit-tap-highlight-color: transparent; }
+    html, body { background: var(--bg-base); color: var(--text); }
+    body { min-height: 100dvh; display: flex; flex-direction: column; font-size: 16px; font-family: "Anuphan", "Inter", "Leelawadee UI", "Tahoma", sans-serif;
+      background: var(--bg-overlay), var(--bg-img) center / cover fixed, var(--bg-base); }
+    button { font: inherit; color: inherit; cursor: pointer; }
+    header { background: var(--panel-strong); border-bottom: 2px solid var(--accent); padding: 10px 14px; display: flex; align-items: center; gap: 12px;
+      position: sticky; top: 0; z-index: 5; backdrop-filter: blur(10px); box-shadow: 0 4px 18px var(--glow-c); }
+    .logo { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: linear-gradient(160deg, var(--accent-strong), var(--accent));
+      color: #fff; font-weight: 800; font-size: 1.3rem; box-shadow: 0 0 14px var(--glow-c); flex: none; }
+    header h1 { font-weight: 700; font-size: 1.1rem; margin: 0; line-height: 1.2; }
+    header p { margin: 0; font-size: .78rem; color: var(--text-dim); }
+    header .lang { margin-left: auto; border: 1.5px solid var(--border); background: transparent; border-radius: 999px; padding: 5px 14px; font-weight: 700; }
+    main { flex: 1; padding: 14px 14px calc(150px + env(safe-area-inset-bottom)); }
+    main.nochat { padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
+    .fade { animation: fade .28s ease both; }
+    @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    /* แถบเมนูล่าง */
+    .tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; display: grid; grid-template-columns: repeat(5, 1fr); background: var(--panel-strong);
+      border-top: 1px solid var(--border-soft); padding: 6px 4px calc(6px + env(safe-area-inset-bottom)); backdrop-filter: blur(12px); }
+    .tabbar button { border: 0; background: transparent; display: grid; justify-items: center; gap: 2px; padding: 4px 0; color: var(--text-dim); font-size: .72rem; font-weight: 600; border-radius: 12px; }
+    .tabbar button i { font-style: normal; font-size: 1.35rem; line-height: 1; transition: transform .2s; }
+    .tabbar button[aria-selected="true"] { color: var(--accent); }
+    .tabbar button[aria-selected="true"] i { transform: translateY(-2px) scale(1.12); filter: drop-shadow(0 0 6px var(--glow-c)); }
+    /* ช่องพิมพ์ (เฉพาะหน้าแชท) */
+    form { position: fixed; left: 0; right: 0; bottom: calc(60px + env(safe-area-inset-bottom)); z-index: 5; display: flex; gap: 8px; padding: 8px 12px;
+      background: var(--panel-strong); border-top: 1px solid var(--border-soft); backdrop-filter: blur(10px); }
+    form[hidden] { display: none; }
+    form input { flex: 1; min-width: 0; border: 1.5px solid var(--border-soft); border-radius: 999px; padding: 12px 16px; background: var(--panel-2); color: var(--text); }
+    form input:focus { outline: none; border-color: var(--accent); }
+    form button { border: 0; background: var(--accent-strong); color: #fff; border-radius: 999px; padding: 0 18px; font-weight: 700; }
+    form .mic { width: 46px; padding: 0; font-size: 1.2rem; background: var(--panel-2); color: var(--accent); border: 1.5px solid var(--border); }
+    form .mic.on { background: var(--accent-strong); color: #fff; animation: pulse 1.1s infinite; }
+    @keyframes pulse { 50% { box-shadow: 0 0 0 8px var(--glow-c); } }
+    /* ส่วนประกอบทั่วไป */
+    h2.sec { display: flex; align-items: center; justify-content: space-between; font-size: 1.08rem; margin: 20px 2px 10px; }
+    h2.sec button { border: 0; background: transparent; color: var(--accent); font-size: .85rem; font-weight: 700; }
+    .card { background: var(--panel); border: 1px solid var(--border-soft); border-radius: 18px; box-shadow: var(--shadow); }
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+    .chips button, .chip { border: 1.5px solid var(--border); background: var(--panel); border-radius: 999px; padding: 7px 13px; font-size: .92rem; }
+    .chips button[aria-pressed="true"] { background: var(--accent-strong); border-color: var(--accent-strong); color: #fff; }
+    .hscroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 2px 2px 10px; margin: 0 -14px; padding-left: 14px; scrollbar-width: none; }
+    .hscroll::-webkit-scrollbar { display: none; }
+    .hscroll > * { scroll-snap-align: start; flex: none; }
+    .badge { display: inline-block; font-size: .72rem; font-weight: 700; padding: 2px 9px; border-radius: 999px; background: var(--accent-strong); color: #fff; }
+    .badge.soft { background: var(--panel-2); color: var(--text); border: 1px solid var(--border-soft); }
+    .muted { color: var(--text-dim); font-size: .85rem; }
+    .btn { border: 0; background: var(--accent-strong); color: #fff; border-radius: 999px; padding: 12px 18px; font-weight: 700; box-shadow: 0 4px 14px var(--glow-c); }
+    .btn.ghost { background: var(--panel); color: var(--text); border: 1.5px solid var(--border); box-shadow: none; }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; }
+    /* หน้าแรก */
+    .hero { position: relative; overflow: hidden; padding: 18px; border-radius: 22px; background: linear-gradient(150deg, var(--accent-strong), #7a0a16);
+      color: #fff; box-shadow: 0 10px 30px var(--glow-c); }
+    .hero::after { content: ""; position: absolute; right: -40px; top: -40px; width: 170px; height: 170px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.25), transparent 70%); }
+    .hero b { font-size: 1.35rem; display: block; line-height: 1.3; }
+    .hero p { margin: 6px 0 14px; opacity: .92; line-height: 1.55; }
+    .hero .wave { display: inline-block; animation: wave 2.2s ease-in-out infinite; transform-origin: 70% 70%; }
+    @keyframes wave { 0%, 60%, 100% { transform: rotate(0); } 10%, 30% { transform: rotate(14deg); } 20% { transform: rotate(-8deg); } }
+    .hero .ask { display: flex; align-items: center; gap: 10px; width: 100%; border: 0; border-radius: 999px; padding: 12px 16px; background: rgba(255,255,255,.95); color: #333; text-align: left; }
+    .quizban { display: flex; align-items: center; gap: 14px; padding: 16px; margin-top: 14px; border-radius: 20px; border: 1.5px dashed var(--border); background: var(--panel); width: 100%; text-align: left; }
+    .quizban .ico { font-size: 2.2rem; animation: bob 2.6s ease-in-out infinite; }
+    @keyframes bob { 50% { transform: translateY(-5px) rotate(-6deg); } }
+    .quizban b { display: block; font-size: 1.02rem; }
+    .pcard { width: 150px; overflow: hidden; border-radius: 18px; background: var(--panel); border: 1px solid var(--border-soft); text-align: left; padding: 0; box-shadow: var(--shadow); }
+    .pcard .pic { height: 96px; display: grid; place-items: center; font-size: 2.6rem; background-size: cover; background-position: center; }
+    .pcard div { padding: 9px 11px 12px; }
+    .pcard b { display: block; font-size: .9rem; line-height: 1.3; min-height: 2.6em; }
+    .ncard { width: 260px; overflow: hidden; border-radius: 18px; padding: 0; text-align: left; background: var(--panel); border: 1px solid var(--border-soft); box-shadow: var(--shadow); }
+    .ncard .pic { height: 140px; background: var(--panel-2) center / cover; position: relative; }
+    .ncard .pic .badge { position: absolute; left: 10px; top: 10px; }
+    .ncard div.t { padding: 10px 12px 14px; }
+    .ncard b { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.35; }
+    /* สาขา */
+    .search { width: 100%; border: 1.5px solid var(--border-soft); border-radius: 999px; padding: 11px 16px; background: var(--panel); color: var(--text); }
+    .pgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .pgrid .pcard { width: auto; }
+    .pdetail .cover { height: 210px; border-radius: 22px; overflow: hidden; position: relative; display: grid; place-items: center; font-size: 5rem; background-size: cover; background-position: center; box-shadow: var(--shadow); }
+    .pdetail .cover .dots { position: absolute; bottom: 10px; left: 0; right: 0; display: flex; justify-content: center; gap: 6px; }
+    .pdetail .cover .dots i { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,.5); }
+    .pdetail .cover .dots i.on { background: #fff; width: 18px; border-radius: 4px; }
+    .pdetail h2 { margin: 14px 2px 4px; font-size: 1.45rem; line-height: 1.25; }
+    .info { margin-top: 12px; padding: 14px 16px; }
+    .info h3 { margin: 0 0 6px; font-size: 1rem; display: flex; gap: 8px; align-items: center; }
+    .info h3 i { font-style: normal; width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; background: var(--panel-2); }
+    .info p { margin: 0; line-height: 1.7; }
+    .info .note { margin-top: 6px; }
+    .careers { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+    .careers span { padding: 6px 12px; border-radius: 12px; background: var(--panel-2); border: 1px solid var(--border-soft); font-size: .92rem; }
+    .sticky-cta { position: sticky; bottom: calc(66px + env(safe-area-inset-bottom)); display: flex; gap: 10px; margin: 16px -14px 0; padding: 10px 14px; background: var(--panel-strong); border-top: 1px solid var(--border-soft); backdrop-filter: blur(10px); }
+    .sticky-cta .btn { flex: 1; }
+    /* แบบทดสอบ */
+    .quiz .bar { height: 8px; border-radius: 99px; background: var(--panel-2); overflow: hidden; margin: 6px 0 16px; }
+    .quiz .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--accent-strong), var(--accent)); transition: width .3s; }
+    .quiz h2 { font-size: 1.3rem; margin: 0 0 14px; line-height: 1.35; }
+    .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .opts button { border: 1.5px solid var(--border-soft); background: var(--panel); border-radius: 18px; padding: 16px 10px; display: grid; gap: 6px; justify-items: center; text-align: center; box-shadow: var(--shadow); transition: transform .15s; }
+    .opts button:active { transform: scale(.96); border-color: var(--accent); }
+    .opts button i { font-style: normal; font-size: 2.1rem; }
+    .result .top { text-align: center; padding: 22px 16px; }
+    .result .top .big { font-size: 4rem; animation: pop .5s cubic-bezier(.2, 1.6, .4, 1) both; }
+    @keyframes pop { from { transform: scale(.3); opacity: 0; } }
+    .confetti { position: fixed; inset: 0; pointer-events: none; z-index: 9; overflow: hidden; }
+    .confetti i { position: absolute; top: -12px; width: 8px; height: 14px; border-radius: 2px; animation: fall 1.8s linear forwards; }
+    @keyframes fall { to { transform: translateY(105vh) rotate(540deg); } }
+    /* ข่าว */
+    .nbig { overflow: hidden; margin-bottom: 14px; padding: 0; width: 100%; text-align: left; border-radius: 20px; }
+    .nbig .pic { height: 190px; background: var(--panel-2) center / cover; position: relative; display: grid; place-items: center; font-size: 3rem; }
+    .nbig .pic .badge { position: absolute; left: 12px; top: 12px; }
+    .nbig .pic .date { position: absolute; right: 12px; top: 12px; background: rgba(0,0,0,.6); color: #fff; border-radius: 12px; padding: 4px 10px; font-size: .78rem; font-weight: 700; }
+    .nbig .t { padding: 12px 14px 16px; }
+    .nbig b { font-size: 1.05rem; line-height: 1.4; display: block; }
+    .nbig p { margin: 6px 0 0; color: var(--text-dim); font-size: .9rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .ndetail img, .ndetail video { width: 100%; border-radius: 18px; display: block; }
+    .ndetail h2 { font-size: 1.35rem; margin: 14px 2px 6px; line-height: 1.35; }
+    .ndetail .body { line-height: 1.75; white-space: pre-line; }
+    .event { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 10px 0; padding: 12px; border-radius: 14px; background: var(--panel-2); }
+    .event dt { opacity: .75; } .event dd { margin: 0; font-weight: 600; } .event a { color: var(--accent); }
+    .gal { display: flex; gap: 8px; overflow-x: auto; margin-top: 10px; scrollbar-width: none; }
+    .gal img { width: 160px; height: 110px; object-fit: cover; border-radius: 12px; flex: none; }
+    /* แชท */
+    .msg { max-width: 86%; padding: 11px 15px; border-radius: 18px; margin: 8px 0; line-height: 1.6; animation: fade .25s ease both; }
+    .user { margin-left: auto; background: var(--accent-strong); color: var(--on-accent); border-bottom-right-radius: 6px; }
+    .bot { background: var(--panel); border: 1px solid var(--border-soft); border-left: 3px solid var(--accent); border-bottom-left-radius: 6px; }
+    .bot.sorry { background: var(--sorry-bg); border-color: var(--sorry-line); }
+    .bot .acts { display: flex; gap: 6px; margin-top: 8px; }
+    .bot .acts button { border: 1px solid var(--border-soft); background: var(--panel-2); border-radius: 999px; padding: 2px 10px; }
+    .bot .acts button[aria-pressed="true"] { background: var(--accent-strong); color: #fff; border-color: var(--accent-strong); }
+    .bot img { border-radius: 10px; margin-top: 8px; max-width: 100%; }
+    .typing span { display: inline-block; width: 7px; height: 7px; margin-right: 4px; border-radius: 50%; background: var(--accent); animation: blink 1s infinite; }
+    .typing span:nth-child(2) { animation-delay: .15s; } .typing span:nth-child(3) { animation-delay: .3s; }
+    @keyframes blink { 50% { opacity: .2; transform: translateY(-3px); } }
+    .ctxbar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 14px; background: var(--panel-2); margin-bottom: 8px; font-size: .88rem; }
+    .ctxbar button { margin-left: auto; border: 0; background: transparent; color: var(--accent); font-weight: 700; }
+    .back { border: 0; background: transparent; color: var(--accent); font-weight: 700; padding: 2px 0 10px; }
+    /* ให้คะแนน */
+    .rate { padding: 18px; }
+    .rate h2 { font-size: 1.2rem; margin: 0 0 12px; }
+    .stars { display: flex; gap: 8px; margin-bottom: 12px; }
+    .stars button { flex: 1; font-size: 1.8rem; padding: 10px 0; border-radius: 14px; border: 1.5px solid var(--border-soft); background: var(--panel-2); transition: transform .15s; }
+    .stars button[aria-checked="true"] { border-color: var(--accent); background: var(--accent-strong); transform: scale(1.08); }
+    .rate textarea { width: 100%; border: 1.5px solid var(--border-soft); border-radius: 12px; padding: 10px; background: var(--panel-2); color: var(--text); }
+    .rate .btn { width: 100%; margin-top: 10px; }
+    .rate .btn:disabled { opacity: .5; }
+    .sheet { position: fixed; inset: 0; z-index: 10; display: grid; place-items: end center; background: rgba(0,0,0,.5); }
+    .sheet[hidden] { display: none; }
+    .sheet .card { width: min(520px, 100%); border-radius: 22px 22px 0 0; padding: 20px 18px calc(20px + env(safe-area-inset-bottom)); }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="logo" aria-hidden="true">V</span>
+    <div><h1 id="title">คุยกับวอร่า</h1><p id="school"></p></div>
+    <button class="lang" id="langBtn">EN</button>
+  </header>
+  <main id="main"></main>
+  <form id="form" autocomplete="off" hidden>
+    <input id="input" maxlength="300" placeholder="พิมพ์คำถาม" aria-label="พิมพ์คำถาม">
+    <button type="button" class="mic" id="mic" hidden aria-label="พูดคำถาม">🎤</button>
+    <button id="send">ส่ง</button>
+  </form>
+  <nav class="tabbar" role="tablist">
+    <button role="tab" data-tab="home" id="tHome"><i>🏠</i><span>หน้าแรก</span></button>
+    <button role="tab" data-tab="chat" id="tChat"><i>💬</i><span>ถามวอร่า</span></button>
+    <button role="tab" data-tab="programs" id="tProg"><i>🎓</i><span>สาขา</span></button>
+    <button role="tab" data-tab="news" id="tNews"><i>📰</i><span>ข่าว</span></button>
+    <button role="tab" data-tab="rate" id="tRate"><i>⭐</i><span>ให้คะแนน</span></button>
+  </nav>
+  <div class="sheet" id="micSheet" hidden><div class="card">
+    <h2 style="margin:0 0 8px">🎤 <span id="msT">พูดถามวอร่า</span></h2>
+    <p id="msP" style="line-height:1.7;margin:0 0 14px"></p>
+    <div class="row"><a class="btn" id="msGo" style="flex:1;text-align:center;text-decoration:none">ไปต่อ</a><button class="btn ghost" id="msNo" style="flex:1">ไว้ทีหลัง</button></div>
+  </div></div>
+<script type="module">
+import { api, esc } from "/shared/api.js";
+const $ = (id) => document.getElementById(id);
+const L = {
+  th: { title: "คุยกับวอร่า", home: "หน้าแรก", chat: "ถามวอร่า", prog: "สาขา", news: "ข่าว", rate: "ให้คะแนน", ph: "พิมพ์คำถาม", send: "ส่ง", back: "กลับ",
+        hello: "สวัสดีค่ะ ถามวอร่าเรื่องสาขาเรียน การสมัคร หรือกิจกรรมของวิทยาลัยได้เลยค่ะ", rateH: "วอร่าช่วยคุณได้แค่ไหน", rateSend: "ส่งความคิดเห็น",
+        thanks: "ขอบคุณสำหรับความคิดเห็นค่ะ 💖", comment: "ข้อเสนอแนะ (ไม่บังคับ)", err: "ส่งไม่สำเร็จ ลองใหม่อีกครั้ง",
+        chips: ["มีสาขาอะไรบ้าง", "สมัครเรียนยังไง", "มีทุนไหม", "ติดต่อวิทยาลัย"],
+        heroH: "สวัสดีค่ะ หนูชื่อวอร่า", heroP: "หุ่นยนต์ประชาสัมพันธ์ของวิทยาลัย อยากรู้เรื่องไหน ถามหนูได้เลย!", heroAsk: "พิมพ์ถามวอร่า…",
+        popular: "คำถามยอดฮิต", progs: "สาขาที่น่าสนใจ", latest: "ข่าวและกิจกรรมล่าสุด", all: "ดูทั้งหมด ›", quizH: "สาขาไหนใช่ฉัน?",
+        quizP: "ตอบ 6 ข้อสนุก ๆ แล้ววอร่าจะแนะนำสาขาให้", allGroups: "ทั้งหมด", search: "ค้นหาสาขา เช่น คอม รถ อาหาร",
+        learn: "เรียนอะไร", suits: "เหมาะกับใคร", careers: "จบไปทำอะไรได้", levels: "ระดับที่เปิดสอน", people: "ครูประจำแผนก", activity: "กิจกรรมและผลงาน",
+        other: "ข้อมูลเพิ่มเติม", askThis: "💬 ถามวอร่าเรื่องสาขานี้", apply: "📝 สมัครเรียน", guide: "คำแนะนำแนะแนว (ไม่ใช่หลักสูตรทางการ)",
+        about: "คุยเรื่อง", clear: "เลิกคุยเรื่องนี้", empty: "ยังไม่มีข้อมูล", newsAll: "ทั้งหมด", kNews: "ข่าว", kAct: "กิจกรรม", kAdm: "รับสมัคร",
+        share: "🔗 แชร์", copied: "คัดลอกลิงก์แล้ว", date: "วันที่", time: "เวลา", place: "สถานที่", map: "เปิดแผนที่",
+        qOf: (i, n) => `ข้อ ${i} จาก ${n}`, resH: "สาขาที่น่าจะใช่คุณ", resNote: "เป็นคำแนะนำเบื้องต้นเพื่อความสนุก ลองอ่านรายละเอียดและคุยกับครูแนะแนวด้วยนะคะ",
+        again: "เล่นอีกครั้ง", see: "ดูสาขานี้ ›", micT: "พูดถามวอร่า", micP: "การใช้ไมค์ต้องเปิดหน้านี้แบบปลอดภัย (https) ครั้งแรกมือถืออาจขึ้นหน้าเตือน ให้กด “ขั้นสูง” แล้ว “ดำเนินการต่อ” ครั้งเดียวเท่านั้นค่ะ",
+        micGo: "ไปต่อ", micNo: "ไว้ทีหลัง" },
+  en: { title: "Chat with VORA", home: "Home", chat: "Ask", prog: "Programs", news: "News", rate: "Rate", ph: "Type a question", send: "Send", back: "Back",
+        hello: "Hi! Ask me about programs, admission or activities at our college.", rateH: "How helpful was VORA?", rateSend: "Send feedback",
+        thanks: "Thank you for your feedback! 💖", comment: "Suggestions (optional)", err: "Couldn't send. Please try again.",
+        chips: ["What programs do you offer?", "How do I apply?", "Is there a scholarship?", "Contact the college"],
+        heroH: "Hi, I'm VORA", heroP: "The college's PR robot. Ask me anything!", heroAsk: "Ask VORA…",
+        popular: "Popular questions", progs: "Programs", latest: "Latest news & events", all: "See all ›", quizH: "Which program fits me?",
+        quizP: "Answer 6 fun questions and VORA will suggest programs", allGroups: "All", search: "Search programs",
+        learn: "What you learn", suits: "Who it suits", careers: "Careers", levels: "Levels offered", people: "Teachers", activity: "Activities & awards",
+        other: "More info", askThis: "💬 Ask VORA about this", apply: "📝 Apply", guide: "Guidance description (not the official curriculum)",
+        about: "Talking about", clear: "Clear", empty: "No information yet", newsAll: "All", kNews: "News", kAct: "Events", kAdm: "Admission",
+        share: "🔗 Share", copied: "Link copied", date: "Date", time: "Time", place: "Location", map: "Open map",
+        qOf: (i, n) => `Question ${i} of ${n}`, resH: "Programs that may fit you", resNote: "Just a fun first suggestion — read the details and talk to a counsellor too.",
+        again: "Play again", see: "See program ›", micT: "Speak to VORA", micP: "The microphone needs the secure (https) version of this page. The first time, your phone may show a warning — tap “Advanced” then “Proceed” once.",
+        micGo: "Continue", micNo: "Later" },
+};
+let lang = "th", tab = "home", sid = null, log = [], cfg = {}, ctxProg = null, progCache = null;
+try { lang = localStorage.getItem("vora.m.lang") || "th"; sid = sessionStorage.getItem("vora.m.sid"); } catch {}
+const t = (k) => L[lang][k];
+const EN = () => lang === "en";
+
+// ไอคอน/สีของสาขา (ใช้เมื่อยังไม่มีรูป) — จับจากรหัสหรือชื่อสาขา
+const ICONS = [["AUTO", "ยนต์", "🚗"], ["EV", "ยานยนต์ไฟฟ้า", "🔋"], ["MACHINE", "กลโรงงาน", "⚙️"], ["WELD", "เชื่อม", "🔥"], ["POWER", "ไฟฟ้ากำลัง", "⚡"],
+  ["ELEC", "อิเล็กทรอนิกส์", "📟"], ["CONST", "ก่อสร้าง", "🏗️"], ["COMPUTER", "คอมพิวเตอร์", "💻"], ["MECHA", "เมคคา", "🤖"], ["BASIC", "พื้นฐาน", "🛠️"],
+  ["INDUS", "อุตสาหกรรม", "🏭"], ["MARKET", "การตลาด", "📣"], ["OFFICE", "สำนักงาน", "🗂️"], ["ACCOUNT", "บัญชี", "🧮"], ["DIGIBIZ", "ธุรกิจดิจิทัล", "🛒"],
+  ["IT", "สารสนเทศ", "🌐"], ["FOOD", "อาหาร", "🍳"]];
+const GRAD = ["#D9142A,#7a0a16", "#e8590c,#9c2f00", "#7048e8,#3b1f9e", "#1c7ed6,#0b4a8a", "#0ca678,#066649", "#c2255c,#7a0e35", "#f08c00,#a35d00"];
+function keyOf(p) {
+  const code = String(p.code || "").toUpperCase().replace(/^VTCN-/, "");
+  const name = p.name_th || p.title || "";
+  const hit = ICONS.find(([c]) => c === code) || ICONS.find(([, w]) => name.includes(w));
+  return hit ? hit[0] : "";
+}
+function iconOf(p) { const k = keyOf(p); return (ICONS.find(([c]) => c === k) || [0, 0, "🎓"])[2]; }
+function gradOf(p) { const s = String(p.code || p.id || ""); let h = 0; for (const ch of s) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return GRAD[h % GRAD.length]; }
+function picStyle(p, img) {
+  return img ? `background-image:url('${esc(img)}')` : `background:linear-gradient(150deg,${gradOf(p).split(",")[0]},${gradOf(p).split(",")[1]})`;
+}
+const titleOf = (p) => (EN() && p.name_en ? p.name_en : p.name_th) || p.title || "";
+
+// ------------------------------------------------------------------ ทั่วไป
+function labels() {
+  document.documentElement.lang = lang;
+  $("title").textContent = t("title"); $("input").placeholder = t("ph"); $("send").textContent = t("send");
+  $("langBtn").textContent = lang === "th" ? "EN" : "ไทย";
+  [["tHome", "home"], ["tChat", "chat"], ["tProg", "prog"], ["tNews", "news"], ["tRate", "rate"]].forEach(([id, k]) => ($(id).querySelector("span").textContent = t(k)));
+  $("mic").setAttribute("aria-label", EN() ? "Speak your question" : "พูดคำถาม");
+  $("msT").textContent = t("micT"); $("msP").textContent = t("micP"); $("msGo").textContent = t("micGo"); $("msNo").textContent = t("micNo");
+}
+function setTab(name, { keepScroll = false } = {}) {
+  tab = name;
+  document.querySelectorAll(".tabbar button").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.tab === name)));
+  $("form").hidden = name !== "chat";
+  $("main").classList.toggle("nochat", name !== "chat");
+  render();
+  if (!keepScroll && name !== "chat") window.scrollTo(0, 0);
+}
+async function programs() {
+  if (!progCache) progCache = await api(`/api/programs?lang=${lang}`);
+  return progCache;
+}
+const thDate = (s) => {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s || ""));
+  if (!m) return "";
+  return new Intl.DateTimeFormat(EN() ? "en-GB" : "th-TH", { day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])));
+};
+const KIND = () => ({ news: t("kNews"), activity: t("kAct"), admission: t("kAdm") });
+
+// ------------------------------------------------------------------ หน้าแรก
+async function renderHome() {
+  const m = $("main");
+  m.innerHTML = `<section class="hero fade"><b><span class="wave">👋</span> ${esc(t("heroH"))}</b><p>${esc(t("heroP"))}</p>
+      <button class="ask" id="hAsk">💬 <span>${esc(t("heroAsk"))}</span></button></section>
+    <h2 class="sec">${esc(t("popular"))}</h2><div class="chips" id="hChips">${t("chips").map((c) => `<button>${esc(c)}</button>`).join("")}</div>
+    <button class="quizban fade" id="hQuiz"><span class="ico">🎯</span><span><b>${esc(t("quizH"))}</b><span class="muted">${esc(t("quizP"))}</span></span></button>
+    <h2 class="sec">${esc(t("progs"))} <button id="hAllP">${esc(t("all"))}</button></h2><div class="hscroll" id="hProg"><span class="muted">…</span></div>
+    <h2 class="sec">${esc(t("latest"))} <button id="hAllN">${esc(t("all"))}</button></h2><div class="hscroll" id="hNews"><span class="muted">…</span></div>`;
+  $("hAsk").onclick = () => { setTab("chat"); setTimeout(() => $("input").focus(), 50); };
+  m.querySelectorAll("#hChips button").forEach((b) => (b.onclick = () => { setTab("chat"); ask(b.textContent); }));
+  $("hQuiz").onclick = () => renderQuiz(0, {});
+  $("hAllP").onclick = () => setTab("programs");
+  $("hAllN").onclick = () => setTab("news");
+  try {
+    const ps = await programs();
+    $("hProg").innerHTML = ps.map((p) => progCard(p)).join("") || `<span class="muted">${esc(t("empty"))}</span>`;
+    $("hProg").querySelectorAll("[data-p]").forEach((b) => (b.onclick = () => renderProgram(+b.dataset.p)));
+  } catch { $("hProg").innerHTML = ""; }
+  try {
+    const ns = await api(`/api/news?lang=${lang}&limit=8`);
+    $("hNews").innerHTML = ns.map((n) => `<button class="ncard" data-n="${n.id}"><div class="pic" style="${n.image ? `background-image:url('${esc(n.image)}')` : ""}">
+        <span class="badge">${esc(KIND()[n.kind] || t("kNews"))}</span></div><div class="t"><b>${esc(n.title)}</b><span class="muted">${esc(thDate(n.event_date || n.publish_at))}</span></div></button>`).join("")
+      || `<span class="muted">${esc(t("empty"))}</span>`;
+    $("hNews").querySelectorAll("[data-n]").forEach((b) => (b.onclick = () => renderNews(+b.dataset.n)));
+  } catch { $("hNews").innerHTML = ""; }
+}
+function progCard(p) {
+  return `<button class="pcard" data-p="${p.id}"><div class="pic" style="${picStyle(p, p.image)}">${p.image ? "" : iconOf(p)}</div>
+    <div><b>${esc(titleOf(p))}</b>${p.level ? `<span class="badge soft">${esc(p.level)}</span>` : ""}</div></button>`;
+}
+
+// ------------------------------------------------------------------ สาขา
+let progFilter = { group: "", q: "" };
+async function renderPrograms() {
+  const m = $("main");
+  const ps = await programs();
+  const groups = [...new Set(ps.map((p) => p.department).filter(Boolean))];
+  m.innerHTML = `<button class="quizban fade" id="pQuiz" style="margin-top:0"><span class="ico">🎯</span><span><b>${esc(t("quizH"))}</b><span class="muted">${esc(t("quizP"))}</span></span></button>
+    <input class="search" id="pSearch" placeholder="${esc(t("search"))}" value="${esc(progFilter.q)}" style="margin-top:14px">
+    <div class="chips"><button data-g="" aria-pressed="${!progFilter.group}">${esc(t("allGroups"))}</button>${groups.map((g) => `<button data-g="${esc(g)}" aria-pressed="${progFilter.group === g}">${esc(g.replace(/^กลุ่ม/, ""))}</button>`).join("")}</div>
+    <div class="pgrid" id="pGrid"></div>`;
+  const draw = () => {
+    const q = progFilter.q.trim().toLowerCase();
+    const list = ps.filter((p) => (!progFilter.group || p.department === progFilter.group)
+      && (!q || `${p.name_th} ${p.name_en} ${p.suits_th || ""}`.toLowerCase().includes(q)));
+    $("pGrid").innerHTML = list.map(progCard).join("") || `<p class="muted">${esc(t("empty"))}</p>`;
+    $("pGrid").querySelectorAll("[data-p]").forEach((b) => (b.onclick = () => renderProgram(+b.dataset.p)));
+  };
+  $("pQuiz").onclick = () => renderQuiz(0, {});
+  $("pSearch").oninput = (e) => { progFilter.q = e.target.value; draw(); };
+  m.querySelectorAll("[data-g]").forEach((b) => (b.onclick = () => { progFilter.group = b.dataset.g; m.querySelectorAll("[data-g]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); draw(); }));
+  draw();
+}
+const MORE_ICON = { learn: "📘", level: "🎓", people: "👩‍🏫", activity: "🏆", other: "ℹ️" };
+const MORE_LABEL = () => ({ learn: t("learn"), level: t("levels"), people: t("people"), activity: t("activity"), other: t("other") });
+async function renderProgram(id) {
+  const m = $("main");
+  window.scrollTo(0, 0);
+  const [x, more] = await Promise.all([api(`/api/programs/${id}`), api(`/api/programs/${id}/more`).catch(() => [])]);
+  const imgs = [x.image, ...(x.gallery || [])].filter(Boolean);
+  const name = EN() && x.name_en ? x.name_en : x.name_th;
+  const desc = EN() ? x.description_en : x.description_th;
+  const suits = EN() ? x.suits_en : x.suits_th;
+  const careers = (EN() ? x.careers_en : x.careers_th) || "";
+  const careerList = careers.split(/[,،、\n]| และ |, /).map((s) => s.trim().replace(/\.$/, "")).filter((s) => s && s.length < 60);
+  const sec = (icon, title, body, note = "") => body ? `<section class="card info fade"><h3><i>${icon}</i>${esc(title)}</h3>${body}${note ? `<p class="muted note">${esc(note)}</p>` : ""}</section>` : "";
+  const moreBy = Object.fromEntries((more || []).map((r) => [r.topic, r]));
+  const learnKB = moreBy.learn ? `<p>${esc(EN() && moreBy.learn.answer_en ? moreBy.learn.answer_en : moreBy.learn.answer_th)}</p>` : "";
+  m.innerHTML = `<button class="back" id="pBack">← ${esc(t("back"))}</button>
+    <article class="pdetail">
+      <div class="cover fade" id="pCover" style="${picStyle(x, imgs[0])}">${imgs.length ? "" : iconOf(x)}${imgs.length > 1 ? `<div class="dots">${imgs.map((_, i) => `<i class="${i ? "" : "on"}"></i>`).join("")}</div>` : ""}</div>
+      <h2>${esc(name)}</h2>
+      <div class="row">${x.level ? `<span class="badge">${esc(x.level)}</span>` : ""}${x.department ? `<span class="badge soft">${esc(x.department)}</span>` : ""}</div>
+      ${learnKB ? sec(MORE_ICON.learn, t("learn"), learnKB) : sec(MORE_ICON.learn, t("learn"), desc ? `<p>${esc(desc)}</p>` : "", t("guide"))}
+      ${learnKB && desc ? sec("🧩", EN() ? "In short" : "โดยสรุป", `<p>${esc(desc)}</p>`, t("guide")) : ""}
+      ${sec("🙋", t("suits"), suits ? `<p>${esc(suits)}</p>` : "")}
+      ${sec("💼", t("careers"), careerList.length ? `<div class="careers">${careerList.map((c) => `<span>${esc(c)}</span>`).join("")}</div>` : "")}
+      ${["level", "activity", "people", "other"].map((k) => moreBy[k] ? sec(MORE_ICON[k], MORE_LABEL()[k], `<p>${esc(EN() && moreBy[k].answer_en ? moreBy[k].answer_en : moreBy[k].answer_th)}</p>`) : "").join("")}
+      ${x.video ? `<section class="card info fade"><video src="${esc(x.video)}" controls playsinline style="width:100%;border-radius:12px"></video></section>` : ""}
+      <div class="sticky-cta"><button class="btn" id="pAsk">${esc(t("askThis"))}</button><a class="btn ghost" href="/m/apply.html" style="text-align:center;text-decoration:none">${esc(t("apply"))}</a></div>
+    </article>`;
+  $("pBack").onclick = () => render();
+  $("pAsk").onclick = () => { ctxProg = { id: x.id, name }; setTab("chat"); setTimeout(() => $("input").focus(), 50); };
+  if (imgs.length > 1) {      // สไลด์ภาพบรรยากาศ
+    let i = 0;
+    const cover = $("pCover");
+    const timer = setInterval(() => {
+      if (!document.body.contains(cover)) return clearInterval(timer);
+      i = (i + 1) % imgs.length;
+      cover.style.backgroundImage = `url('${imgs[i]}')`;
+      cover.querySelectorAll(".dots i").forEach((d, k) => d.classList.toggle("on", k === i));
+    }, 3500);
+  }
+}
+
+// ------------------------------------------------------------------ แบบทดสอบ "สาขาไหนใช่ฉัน" (คำแนะนำเบื้องต้น เพื่อความสนุก)
+const QUIZ = [
+  { th: "เวลาว่างชอบทำอะไรที่สุด?", en: "What do you love doing in free time?", o: [
+    ["🔧", "แกะ/ซ่อมของ", "Fixing things", ["AUTO", "MACHINE", "ELEC", "POWER"]], ["💻", "เล่นคอม/เกม", "Computers & games", ["COMPUTER", "IT", "DIGIBIZ"]],
+    ["🍳", "ทำอาหาร/ขนม", "Cooking & baking", ["FOOD"]], ["🛍️", "ขายของ/คุยกับคน", "Selling & chatting", ["MARKET", "DIGIBIZ"]]] },
+  { th: "วิชาที่ชอบที่สุด?", en: "Favourite subject?", o: [
+    ["🧮", "คณิต/ตัวเลข", "Maths", ["ACCOUNT", "CONST", "ELEC"]], ["🔬", "วิทย์/ทดลอง", "Science", ["ELEC", "POWER", "MECHA"]],
+    ["🎨", "ศิลปะ/ออกแบบ", "Art & design", ["CONST", "DIGIBIZ", "FOOD"]], ["🗣️", "ภาษา/สื่อสาร", "Languages", ["MARKET", "OFFICE"]]] },
+  { th: "ถ้าได้ของเล่นใหม่ อยากได้อะไร?", en: "Pick a new toy!", o: [
+    ["🤖", "หุ่นยนต์", "A robot", ["MECHA", "COMPUTER"]], ["🏎️", "รถบังคับ", "An RC car", ["AUTO", "EV"]],
+    ["🧱", "ตัวต่อบ้าน", "Building blocks", ["CONST", "WELD"]], ["📱", "แอปใหม่ ๆ", "A new app", ["IT", "DIGIBIZ"]]] },
+  { th: "ชอบทำงานแบบไหน?", en: "How do you like to work?", o: [
+    ["✋", "ลงมือทำด้วยมือ", "Hands-on", ["WELD", "MACHINE", "AUTO", "BASIC"]], ["🗂️", "จัดระบบ/เอกสาร", "Organising", ["OFFICE", "ACCOUNT"]],
+    ["🧠", "คิดแก้ปัญหา", "Problem solving", ["COMPUTER", "IT", "ELEC"]], ["🤝", "เจอผู้คน", "Meeting people", ["MARKET", "FOOD"]]] },
+  { th: "เทคโนโลยีไหนว้าวที่สุด?", en: "Which tech wows you most?", o: [
+    ["🔋", "รถไฟฟ้า/พลังงาน", "EVs & energy", ["EV", "POWER"]], ["🌐", "อินเทอร์เน็ต/AI", "Internet & AI", ["IT", "COMPUTER"]],
+    ["🏭", "โรงงานอัตโนมัติ", "Smart factories", ["MECHA", "INDUS", "MACHINE"]], ["🛒", "ธุรกิจออนไลน์", "Online business", ["DIGIBIZ", "MARKET"]]] },
+  { th: "ฝันอยากเป็นอะไร?", en: "Dream job?", o: [
+    ["👷", "ช่าง/วิศวกร", "Technician/engineer", ["POWER", "CONST", "MACHINE", "WELD"]], ["👨‍💻", "โปรแกรมเมอร์", "Programmer", ["IT", "COMPUTER"]],
+    ["👨‍🍳", "เชฟ/เจ้าของร้าน", "Chef/shop owner", ["FOOD", "MARKET"]], ["💼", "งานออฟฟิศ/บัญชี", "Office/accounting", ["ACCOUNT", "OFFICE"]]] },
+];
+function renderQuiz(i, score) {
+  window.scrollTo(0, 0);
+  const m = $("main");
+  if (i >= QUIZ.length) return renderQuizResult(score);
+  const q = QUIZ[i];
+  m.innerHTML = `<section class="quiz fade"><button class="back" id="qBack">← ${esc(t("back"))}</button>
+    <div class="muted">${esc(t("qOf")(i + 1, QUIZ.length))}</div><div class="bar"><i style="width:${(i / QUIZ.length) * 100}%"></i></div>
+    <h2>${esc(EN() ? q.en : q.th)}</h2>
+    <div class="opts">${q.o.map((o, k) => `<button data-k="${k}"><i>${o[0]}</i><span>${esc(EN() ? o[2] : o[1])}</span></button>`).join("")}</div></section>`;
+  $("qBack").onclick = () => (i ? renderQuiz(i - 1, score) : render());
+  m.querySelectorAll("[data-k]").forEach((b) => (b.onclick = () => {
+    const next = { ...score };
+    q.o[+b.dataset.k][3].forEach((c, rank) => (next[c] = (next[c] || 0) + (rank === 0 ? 3 : 2)));
+    renderQuiz(i + 1, next);
+  }));
+}
+async function renderQuizResult(score) {
+  const ps = await programs();
+  const ranked = ps.map((p) => ({ p, s: score[keyOf(p)] || 0 })).filter((x) => x.s > 0).sort((a, b) => b.s - a.s).slice(0, 3);
+  const m = $("main");
+  m.innerHTML = `<section class="result fade"><div class="card top"><div class="big">${ranked[0] ? iconOf(ranked[0].p) : "🎓"}</div>
+      <h2 style="margin:8px 0 4px">${esc(t("resH"))}</h2><p class="muted" style="margin:0">${esc(t("resNote"))}</p></div>
+    ${ranked.map(({ p }, k) => `<button class="card nbig fade" data-p="${p.id}" style="margin-top:12px;animation-delay:${k * .12}s">
+      <div class="pic" style="${picStyle(p, p.image)};height:120px">${p.image ? "" : iconOf(p)}<span class="badge">#${k + 1}</span></div>
+      <div class="t"><b>${esc(titleOf(p))}</b><p>${esc((EN() ? p.suits_en : p.suits_th) || "")}</p><span style="color:var(--accent);font-weight:700">${esc(t("see"))}</span></div></button>`).join("")}
+    <div class="row" style="margin-top:14px"><button class="btn ghost" id="qAgain" style="flex:1">🔁 ${esc(t("again"))}</button></div></section>`;
+  m.querySelectorAll("[data-p]").forEach((b) => (b.onclick = () => renderProgram(+b.dataset.p)));
+  $("qAgain").onclick = () => renderQuiz(0, {});
+  confetti();
+}
+function confetti() {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const box = document.createElement("div"); box.className = "confetti";
+  const colors = ["#FF2B3A", "#FFD43B", "#4DABF7", "#69DB7C", "#fff"];
+  box.innerHTML = Array.from({ length: 60 }, (_, i) => `<i style="left:${Math.random() * 100}%;background:${colors[i % colors.length]};animation-delay:${Math.random() * .6}s;animation-duration:${1.4 + Math.random()}s"></i>`).join("");
+  document.body.appendChild(box); setTimeout(() => box.remove(), 2800);
+}
+
+// ------------------------------------------------------------------ ข่าว
+let newsKind = "";
+async function renderNewsList() {
+  const m = $("main");
+  const items = await api(`/api/news?lang=${lang}&limit=30`);
+  const kinds = [...new Set(items.map((n) => n.kind))];
+  m.innerHTML = `<div class="chips"><button data-k="" aria-pressed="${!newsKind}">${esc(t("newsAll"))}</button>${kinds.map((k) => `<button data-k="${k}" aria-pressed="${newsKind === k}">${esc(KIND()[k] || k)}</button>`).join("")}</div><div id="nList"></div>`;
+  const draw = () => {
+    const list = items.filter((n) => !newsKind || n.kind === newsKind);
+    $("nList").innerHTML = list.map((n, k) => `<button class="card nbig fade" data-n="${n.id}" style="animation-delay:${Math.min(k, 6) * .05}s">
+      <div class="pic" style="${n.image ? `background-image:url('${esc(n.image)}')` : ""}">${n.image ? "" : "📰"}<span class="badge">${esc(KIND()[n.kind] || t("kNews"))}</span>
+      ${thDate(n.event_date || n.publish_at) ? `<span class="date">${esc(thDate(n.event_date || n.publish_at))}</span>` : ""}</div>
+      <div class="t"><b>${esc(n.title)}</b><p>${esc((EN() && n.body_en ? n.body_en : n.body_th) || "")}</p></div></button>`).join("") || `<p class="muted">${esc(t("empty"))}</p>`;
+    $("nList").querySelectorAll("[data-n]").forEach((b) => (b.onclick = () => renderNews(+b.dataset.n)));
+  };
+  m.querySelectorAll("[data-k]").forEach((b) => (b.onclick = () => { newsKind = b.dataset.k; m.querySelectorAll("[data-k]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); draw(); }));
+  draw();
+}
+function eventInfo(x) {
+  if (!x.event_date && !x.location_type) return "";
+  const m = /^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?/.exec(String(x.event_date || ""));
+  const date = m ? new Intl.DateTimeFormat(EN() ? "en-GB" : "th-TH", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })
+    .format(new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]))) : (EN() ? "Date not set" : "ไม่ระบุวันที่");
+  const time = m && m[4] && !(m[4] === "00" && m[5] === "00") ? (EN() ? `${m[4]}:${m[5]}` : `${m[4]}:${m[5]} น.`) : (EN() ? "Time not specified" : "ไม่ระบุเวลา");
+  const types = EN() ? { campus: "On campus", external: "Off campus", online: "Online" } : { campus: "ภายในวิทยาลัย", external: "ภายนอกวิทยาลัย", online: "ออนไลน์" };
+  const ty = types[x.location_type];
+  const place = !x.location_type ? (EN() ? "Location not specified" : "ไม่ระบุสถานที่")
+    : x.location_type === "online" ? (x.location ? `${ty} · ${x.location}` : ty) : `${x.location || ""} (${ty})`;
+  const map = x.location_map_url && x.location_type !== "online" && /^https:\/\//i.test(x.location_map_url)
+    ? ` <a href="${esc(x.location_map_url)}" target="_blank" rel="noopener">${esc(t("map"))}</a>` : "";
+  return `<dl class="event"><dt>📅 ${esc(t("date"))}</dt><dd>${esc(date)}</dd><dt>⏰ ${esc(t("time"))}</dt><dd>${esc(time)}</dd>
+    <dt>📍 ${esc(t("place"))}</dt><dd>${esc(place)}${map}</dd></dl>`;
+}
+async function renderNews(id) {
+  window.scrollTo(0, 0);
+  const m = $("main");
+  const x = await api(`/api/news/${id}`);
+  const title = EN() && x.title_en ? x.title_en : x.title_th;
+  const body = EN() && x.body_en ? x.body_en : x.body_th;
+  m.innerHTML = `<button class="back" id="nBack">← ${esc(t("back"))}</button><article class="ndetail fade">
+    ${x.video ? `<video src="${esc(x.video)}" controls playsinline></video>` : x.image ? `<img src="${esc(x.image)}" alt="">` : ""}
+    <div class="row" style="margin-top:12px"><span class="badge">${esc(KIND()[x.kind] || t("kNews"))}</span></div>
+    <h2>${esc(title)}</h2>${eventInfo(x)}<div class="body">${esc(body)}</div>
+    ${(x.gallery || []).length ? `<div class="gal">${x.gallery.map((g) => `<img src="${esc(g)}" alt="" loading="lazy">`).join("")}</div>` : ""}
+    <div class="row" style="margin-top:16px"><button class="btn ghost" id="nShare">${esc(t("share"))}</button></div></article>`;
+  $("nBack").onclick = () => render();
+  $("nShare").onclick = async () => {
+    const url = `${location.origin}/m/?news=${x.id}`;
+    try { if (navigator.share) await navigator.share({ title, url }); else { await navigator.clipboard.writeText(url); alert(t("copied")); } } catch {}
+  };
+}
+
+// ------------------------------------------------------------------ แชท
+function renderChat() {
+  const m = $("main");
+  const items = log.length ? log : [{ role: "bot", text: t("hello") }];
+  m.innerHTML = (ctxProg ? `<div class="ctxbar">🎓 ${esc(t("about"))} <b>${esc(ctxProg.name)}</b><button id="ctxX">${esc(t("clear"))}</button></div>` : "")
+    + items.map((x, i) => x.role === "user" ? `<div class="msg user">${esc(x.text)}</div>` :
+    x.typing ? `<div class="msg bot typing"><span></span><span></span><span></span></div>` :
+    `<div class="msg bot ${x.answered === false ? "sorry" : ""}">${esc(x.text)}${x.image ? `<img src="${esc(x.image)}" alt="">` : ""}
+     ${x.mid ? `<div class="acts"><button data-i="${i}" data-r="1" aria-pressed="${x.fb === 1}">👍</button><button data-i="${i}" data-r="-1" aria-pressed="${x.fb === -1}">👎</button></div>` : ""}</div>`).join("")
+    + `<div class="chips">${(log.length ? (log[log.length - 1].sugg || []) : t("chips")).map((c) => `<button>${esc(c)}</button>`).join("")}</div>`;
+  $("ctxX") && ($("ctxX").onclick = () => { ctxProg = null; renderChat(); });
+  m.querySelectorAll(".chips button").forEach((b) => (b.onclick = () => ask(b.textContent)));
+  m.querySelectorAll(".acts button").forEach((b) => (b.onclick = async () => {
+    const x = log[+b.dataset.i]; const r = +b.dataset.r;
+    try { await api("/api/feedback", { method: "POST", body: { session_id: sid || "", message_id: x.mid, kind: r > 0 ? "thumb" : "wrong_answer", rating: r, channel: "mobile" } }); x.fb = r; renderChat(); } catch (e) { alert(e.message); }
+  }));
+  window.scrollTo(0, document.body.scrollHeight);
+}
+async function ask(text) {
+  text = String(text || "").trim(); if (!text) return;
+  log.push({ role: "user", text }); log.push({ role: "bot", typing: true }); renderChat();
+  try {
+    const body = { text, session_id: sid, lang, channel: "mobile", input_mode: "text" };
+    if (ctxProg) body.context_program_id = ctxProg.id;
+    const r = await api("/api/chat", { method: "POST", body });
+    sid = r.session_id; try { sessionStorage.setItem("vora.m.sid", sid); } catch {}
+    log[log.length - 1] = { role: "bot", text: r.text, answered: r.answered, mid: r.message_id, image: r.media && r.media.image, sugg: r.suggestions };
+  } catch (e) { log[log.length - 1] = { role: "bot", text: e.message, answered: false }; }
+  if (tab === "chat") renderChat();
+}
+
+// ------------------------------------------------------------------ ให้คะแนน
+function renderRate() {
+  let score = 0;
+  $("main").innerHTML = `<section class="card rate fade"><h2>${esc(t("rateH"))}</h2><div class="stars" role="radiogroup">${["😞", "🙁", "😐", "🙂", "😍"].map((e, i) => `<button role="radio" aria-checked="false" aria-label="${i + 1}" data-v="${i + 1}">${e}</button>`).join("")}</div>
+    <textarea id="cm" rows="3" maxlength="500" placeholder="${esc(t("comment"))}"></textarea><button class="btn" id="rs" disabled>${esc(t("rateSend"))}</button><p class="muted" id="rn"></p></section>`;
+  document.querySelectorAll(".stars button").forEach((b) => (b.onclick = () => {
+    score = +b.dataset.v; document.querySelectorAll(".stars button").forEach((x) => x.setAttribute("aria-checked", String(x === b))); $("rs").disabled = false;
+  }));
+  $("rs").onclick = async () => {
+    try { await api("/api/feedback", { method: "POST", body: { session_id: sid || "", kind: "survey", rating: score, comment: $("cm").value, channel: "mobile" } }); $("rn").textContent = t("thanks"); $("rs").disabled = true; confetti(); }
+    catch { $("rn").textContent = t("err"); }
+  };
+}
+function render() {
+  const fail = (e) => ($("main").innerHTML = `<p class="muted">${esc(e.message || t("err"))}</p>`);
+  if (tab === "home") renderHome().catch(fail);
+  else if (tab === "chat") renderChat();
+  else if (tab === "rate") renderRate();
+  else if (tab === "programs") renderPrograms().catch(fail);
+  else renderNewsList().catch(fail);
+}
+
+// ------------------------------------------------------------------ เริ่มต้น
+document.querySelectorAll(".tabbar button").forEach((b) => (b.onclick = () => setTab(b.dataset.tab)));
+$("form").onsubmit = (e) => { e.preventDefault(); const v = $("input").value; $("input").value = ""; ask(v); };
+$("langBtn").onclick = () => { lang = lang === "th" ? "en" : "th"; progCache = null; try { localStorage.setItem("vora.m.lang", lang); } catch {} labels(); render(); };
+api("/api/kiosk/config").then((c) => {
+  cfg = c || {};
+  $("school").textContent = EN() ? c.school_name_en : c.school_name_th;
+  const th = c.theme === "light" ? "light" : "dark";           // ธีมเดียวกับหน้าจอหุ่นยนต์
+  document.documentElement.setAttribute("data-vora-theme", th);
+  document.querySelector('meta[name="theme-color"]').setAttribute("content", th === "light" ? "#FFFFFF" : "#07070A");
+  try { localStorage.setItem("vora.m.theme", th); } catch {}
+  setupMic();
+}).catch(() => setupMic());
+// ไมค์: หน้านี้เปิดผ่าน http (คิวอาร์ไม่มีหน้าเตือน) → กดไมค์แล้วพาไปหน้า https ก่อน (เตือนครั้งเดียว) · เปิดผ่าน https อยู่แล้ว = พูดได้เลย
+function setupMic() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const btn = $("mic");
+  if (window.isSecureContext && SR) {
+    btn.hidden = false;
+    let rec = null;
+    btn.onclick = () => {
+      if (rec) { rec.stop(); return; }
+      rec = new SR(); rec.lang = EN() ? "en-US" : "th-TH"; rec.interimResults = true;
+      btn.classList.add("on");
+      rec.onresult = (e) => { const r = e.results[e.results.length - 1]; $("input").value = r[0].transcript; if (r.isFinal) { const v = $("input").value; $("input").value = ""; ask(v); } };
+      rec.onerror = () => {}; rec.onend = () => { btn.classList.remove("on"); rec = null; };
+      try { rec.start(); } catch { btn.classList.remove("on"); rec = null; }
+    };
+  } else if (!window.isSecureContext && cfg.mobile_https_url) {
+    btn.hidden = false;
+    btn.onclick = () => {
+      $("msGo").href = `${cfg.mobile_https_url}?tab=chat&lang=${lang}`;
+      $("micSheet").hidden = false;
+    };
+    $("msNo").onclick = () => ($("micSheet").hidden = true);
+    $("micSheet").onclick = (e) => { if (e.target === $("micSheet")) $("micSheet").hidden = true; };
+  }
+}
+labels();
+// ลิงก์ตรง: ?program=รหัส (คิวอาร์เส้นทางสมัคร) · ?news=รหัส (ปฏิทินกิจกรรม) · ?tab=chat · ?lang=en
+(() => {
+  const qs = new URLSearchParams(location.search);
+  if (qs.get("lang") === "en" || qs.get("lang") === "th") { lang = qs.get("lang"); labels(); }
+  const pid = Number(qs.get("program")), nid = Number(qs.get("news"));
+  const mark = (name) => { tab = name; document.querySelectorAll(".tabbar button").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.tab === name))); $("main").classList.add("nochat"); };
+  if (Number.isInteger(pid) && pid > 0) { mark("programs"); renderProgram(pid).catch(() => render()); return; }
+  if (Number.isInteger(nid) && nid > 0) { mark("news"); renderNews(nid).catch(() => render()); return; }
+  setTab(["chat", "programs", "news", "rate"].includes(qs.get("tab")) ? qs.get("tab") : "home");
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+/* VORA Shared Components (Phase 6 · Gate 6B)
+ *
+ * กติกา: ทุก selector ต้องมี class .vora-* (เริ่มด้วย .vora- หรือ :where(.vora-) → หน้าเดิมที่ไม่ใช้ class เหล่านี้ไม่ได้รับผลใด ๆ
+ * คอมโพเนนต์หลักใช้ class เดี่ยว (ความเฉพาะเจาะจง 0,1,0) เพื่อชนะกฎ element ใน base.css เช่น
+ * `button, input { color: inherit; font: inherit }` (0,0,1) — ถ้าใช้ :where() ล้วน ปุ่ม/ช่องกรอกจะเสียสี (พบจากทดสอบ 6B ข้อ 7)
+ * ใช้ token จาก tokens.css เท่านั้น (ไม่มีค่าสี hard-code) · ใช้งานจริงใน Gate 6F (Mobile/Admin) และ 6G (Kiosk)
+ * ตัวอย่างครบทุกชิ้น: /shared/design-system.html
+ */
+
+/* ---------- พื้นฐาน ---------- */
+.vora-root {
+  font-family: var(--vora-font-body);
+  font-size: var(--vora-fs-md);
+  line-height: var(--vora-lh-body);
+  color: var(--vora-text);
+  background: var(--vora-bg);
+}
+.vora-root :where(h1, h2, h3, h4) { font-family: var(--vora-font-display); font-weight: var(--vora-fw-semibold); line-height: var(--vora-lh-tight); }
+.vora-focusable:focus-visible, .vora-btn:focus-visible, .vora-tab:focus-visible, .vora-link:focus-visible, .vora-input:focus-visible { outline: none; box-shadow: var(--vora-focus-ring); }
+.vora-sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- ไอคอน (ใช้คู่กับ /shared/icons.js) ---------- */
+.vora-icon { width: 1.25em; height: 1.25em; flex: none; display: inline-block; vertical-align: -0.2em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.vora-icon--sm { width: 1em; height: 1em; }
+.vora-icon--lg { width: 1.75em; height: 1.75em; }
+
+/* ---------- ปุ่ม ---------- */
+.vora-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--vora-space-2);
+  min-height: var(--vora-tap-min); padding: 0 var(--vora-space-4);
+  border-radius: var(--vora-radius-pill); border: 2px solid var(--vora-border);
+  background: var(--vora-surface-1); color: var(--vora-text);
+  font: inherit; font-weight: var(--vora-fw-semibold); cursor: pointer;
+  transition: background var(--vora-dur-fast), border-color var(--vora-dur-fast), transform var(--vora-dur-fast);
+}
+.vora-btn:hover { border-color: var(--vora-border-strong); }
+.vora-btn:active { transform: translateY(1px); }
+.vora-btn:disabled, .vora-btn[aria-disabled="true"] { opacity: .5; cursor: not-allowed; }
+.vora-btn--primary { background: var(--vora-brand); border-color: var(--vora-brand); color: var(--vora-on-brand); }
+.vora-btn--primary:hover { background: var(--vora-brand-strong); border-color: var(--vora-brand-strong); }
+.vora-btn--ghost { background: transparent; }
+.vora-btn--danger { background: var(--vora-danger); border-color: var(--vora-danger); color: var(--vora-on-danger); }
+.vora-btn--kiosk { min-height: var(--vora-tap-kiosk); padding: 0 var(--vora-space-5); font-size: var(--vora-fs-lg); }
+
+/* ---------- การ์ด ---------- */
+.vora-card { background: var(--vora-surface-1); color: var(--vora-text); border: 1px solid var(--vora-border); border-radius: var(--vora-radius-lg); box-shadow: var(--vora-shadow-1); padding: var(--vora-space-4); }
+.vora-card--raised { background: var(--vora-surface-2); box-shadow: var(--vora-shadow-2); }
+.vora-card__title { margin: 0 0 var(--vora-space-2); font-family: var(--vora-font-display); font-size: var(--vora-fs-lg); font-weight: var(--vora-fw-semibold); }
+
+/* ---------- ป้าย ---------- */
+.vora-badge { display: inline-flex; align-items: center; gap: var(--vora-space-1); padding: 2px var(--vora-space-3); border-radius: var(--vora-radius-pill); font-size: var(--vora-fs-sm); font-weight: var(--vora-fw-semibold); background: var(--vora-surface-3); color: var(--vora-text); white-space: nowrap; }
+.vora-badge--brand { background: var(--vora-brand); color: var(--vora-on-brand); }
+.vora-badge--ok { background: var(--vora-ok-soft); color: var(--vora-ok); }
+.vora-badge--warn { background: var(--vora-warn-soft); color: var(--vora-warn); }
+.vora-badge--danger { background: var(--vora-danger-soft); color: var(--vora-danger); }
+.vora-badge--info { background: var(--vora-info-soft); color: var(--vora-info); }
+
+/* ---------- แท็บ ---------- */
+.vora-tabs { display: flex; gap: var(--vora-space-1); padding: var(--vora-space-1); border-radius: var(--vora-radius-pill); background: var(--vora-surface-2); }
+.vora-tab { flex: 1; min-height: var(--vora-tap-min); border: 0; border-radius: var(--vora-radius-pill); background: transparent; color: var(--vora-text-muted); font: inherit; font-weight: var(--vora-fw-semibold); cursor: pointer; white-space: nowrap; }
+.vora-tab[aria-selected="true"] { background: var(--vora-surface-1); color: var(--vora-text); box-shadow: var(--vora-shadow-1); }
+
+/* ---------- ช่องกรอก ---------- */
+.vora-field { display: grid; gap: var(--vora-space-1); }
+.vora-field__label { font-weight: var(--vora-fw-semibold); }
+.vora-field__hint { color: var(--vora-text-muted); font-size: var(--vora-fs-sm); }
+.vora-field__error { color: var(--vora-danger); font-size: var(--vora-fs-sm); }
+.vora-input { min-height: var(--vora-tap-min); padding: var(--vora-space-2) var(--vora-space-3); border: 1.5px solid var(--vora-border); border-radius: var(--vora-radius-md); background: var(--vora-surface-1); color: var(--vora-text); font: inherit; }
+.vora-input[aria-invalid="true"] { border-color: var(--vora-danger); }
+
+/* ---------- ลิงก์ ---------- */
+.vora-link { color: var(--vora-link); font-weight: var(--vora-fw-semibold); text-decoration: underline; text-underline-offset: 3px; border-radius: 4px; }
+
+/* ---------- ป้ายแจ้ง (เช่น notice ของคำตอบจากอินเทอร์เน็ต — 6E/6F/6G) ---------- */
+.vora-notice { display: flex; gap: var(--vora-space-2); align-items: flex-start; padding: var(--vora-space-3) var(--vora-space-4); border-radius: var(--vora-radius-md); background: var(--vora-info-soft); color: var(--vora-text); border-left: 4px solid var(--vora-info); font-size: var(--vora-fs-sm); }
+.vora-notice--warn { background: var(--vora-warn-soft); border-left-color: var(--vora-warn); }
+.vora-notice--danger { background: var(--vora-danger-soft); border-left-color: var(--vora-danger); }
+
+/* ---------- ข้อมูลกิจกรรม วันที่ / เวลา / สถานที่ (Time Portal, Mobile) ---------- */
+.vora-meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--vora-space-1) var(--vora-space-3); margin: 0; }
+.vora-meta :where(dt) { color: var(--vora-text-muted); display: inline-flex; align-items: center; gap: var(--vora-space-1); }
+.vora-meta :where(dd) { margin: 0; font-weight: var(--vora-fw-medium); }
+:where(.vora-meta .is-unknown) { color: var(--vora-text-muted); font-weight: var(--vora-fw-regular); }
+
+/* ---------- การ์ด QR (ป้ายบอกปลายทางเสมอ — ปัญหา P8) ---------- */
+.vora-qr-card { display: inline-grid; justify-items: center; gap: var(--vora-space-2); padding: var(--vora-space-3); border-radius: var(--vora-radius-lg); background: var(--vora-surface-2); color: var(--vora-text); text-align: center; }
+.vora-qr-card__code { width: clamp(140px, 12vw, 220px); padding: 6px; border-radius: var(--vora-radius-sm); background: var(--vora-qr-bg); }
+.vora-qr-card__code :where(svg, img) { display: block; width: 100%; height: auto; }
+.vora-qr-card__dest { font-weight: var(--vora-fw-semibold); }
+.vora-qr-card__hint { color: var(--vora-text-muted); font-size: var(--vora-fs-sm); max-width: 16em; }
+
+/* ---------- ตาราง ---------- */
+.vora-table { width: 100%; border-collapse: collapse; background: var(--vora-surface-1); color: var(--vora-text); }
+.vora-table :where(th) { text-align: left; font-size: var(--vora-fs-sm); color: var(--vora-text-muted); font-weight: var(--vora-fw-semibold); white-space: nowrap; padding: var(--vora-space-2) var(--vora-space-3); border-bottom: 1px solid var(--vora-border); }
+.vora-table :where(td) { padding: var(--vora-space-3); border-bottom: 1px solid var(--vora-border); vertical-align: top; }
+.vora-nowrap { white-space: nowrap; }
+
+/* ---------- สถานะ AI (ฟัง/คิด/พูด) — ค่าเดียวทุกหน้าจอ (ปัญหา P10) ---------- */
+.vora-state { display: inline-flex; align-items: center; gap: var(--vora-space-2); font-weight: var(--vora-fw-semibold); }
+.vora-state::before { content: ""; width: .7em; height: .7em; border-radius: 50%; background: var(--vora-text-muted); }
+.vora-state--listen::before { background: var(--vora-state-listen); }
+.vora-state--think::before { background: var(--vora-state-think); }
+.vora-state--speak::before { background: var(--vora-state-speak); }
+
+/* ---------- Toast ---------- */
+.vora-toast { display: inline-flex; align-items: center; gap: var(--vora-space-2); padding: var(--vora-space-3) var(--vora-space-4); border-radius: var(--vora-radius-md); background: var(--vora-ink); color: var(--vora-on-ink); box-shadow: var(--vora-shadow-2); }
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.vora-btn, .vora-tab) { transition: none; }
+}

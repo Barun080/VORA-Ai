@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>VORA หุ่นยนต์ประชาสัมพันธ์</title>
+  <meta name="theme-color" content="#133f78">
+  <link rel="icon" href="/assets/icon.svg">
+  <link rel="stylesheet" href="/shared/base.css">
+  <link rel="stylesheet" href="kiosk.css">
+</head>
+<body>
+  <div class="app" id="app" data-state="idle">
+    <header class="top">
+      <div class="brand">
+        <img src="/assets/icon.svg" alt="" width="40" height="40">
+        <div>
+          <div class="brand-name" id="schoolName">วิทยาลัย</div>
+          <div class="brand-sub" id="robotLine">หุ่นยนต์ประชาสัมพันธ์อัจฉริยะ</div>
+        </div>
+      </div>
+      <div class="top-right">
+        <div class="clock" id="clock" aria-live="off"></div>
+        <div class="health" id="health" title="สถานะระบบ">
+          <span class="dot" id="dotServer"></span><span id="healthText">กำลังเชื่อมต่อ</span>
+        </div>
+        <div class="lang" role="group" aria-label="เลือกภาษา">
+          <button data-lang="th" aria-pressed="true">ไทย</button>
+          <button data-lang="en" aria-pressed="false">EN</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="stage" aria-label="หุ่นยนต์วอร่า">
+        <div class="avatar" id="avatar"></div>
+        <div class="status-pill" id="statusPill" role="status">พร้อมคุยแล้ว</div>
+        <p class="caption" id="caption" aria-live="polite"></p>
+        <div class="stage-foot">
+          <figure class="cam" id="camBox" hidden>
+            <video id="camVideo" muted playsinline></video>
+            <figcaption id="camText">กล้องประมวลผลในเครื่อง ไม่บันทึกภาพ</figcaption>
+          </figure>
+          <div class="gesture-help" id="gestureHelp" hidden>
+            <span><b>👍</b> ชอบคำตอบ</span><span><b>✋</b> หยุดพูด</span><span><b>☝️</b> ข่าวถัดไป</span><span><b>✌️</b> ถ่ายรูปกับวอร่า</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-label="บทสนทนา">
+        <div class="attract" id="attract">
+          <div class="attract-card" id="promoCard">
+            <div class="promo-media" id="promoMedia"></div>
+            <div class="promo-body">
+              <div class="promo-kind" id="promoKind"></div>
+              <h2 class="promo-title" id="promoTitle">ยินดีต้อนรับ</h2>
+              <p class="promo-text" id="promoText"></p>
+            </div>
+          </div>
+          <button class="start-btn" id="startBtn">แตะเพื่อคุยกับวอร่า</button>
+          <p class="attract-hint" id="attractHint">หรือเดินมายืนหน้าหุ่นยนต์ แล้ววอร่าจะทักทายเอง</p>
+        </div>
+
+        <div class="convo" id="convo" hidden>
+          <div class="messages" id="messages" aria-live="polite"></div>
+          <div class="media" id="media" hidden></div>
+        </div>
+
+        <div class="chips" id="chips"></div>
+      </section>
+    </main>
+
+    <footer class="dock">
+      <button class="mic" id="micBtn" aria-label="แตะแล้วพูด">
+        <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path fill="currentColor" d="M12 15a3.5 3.5 0 0 0 3.5-3.5v-6a3.5 3.5 0 1 0-7 0v6A3.5 3.5 0 0 0 12 15Zm6-3.5a1 1 0 1 0-2 0 4 4 0 0 1-8 0 1 1 0 1 0-2 0 6 6 0 0 0 5 5.91V20H8.5a1 1 0 1 0 0 2h7a1 1 0 1 0 0-2H13v-2.59A6 6 0 0 0 18 11.5Z"/></svg>
+        <span id="micLabel">แตะแล้วพูด</span>
+      </button>
+      <form class="ask" id="askForm" autocomplete="off">
+        <label class="sr-only" for="askInput">พิมพ์คำถาม</label>
+        <input id="askInput" maxlength="300" placeholder="หรือพิมพ์คำถามที่นี่ เช่น สมัครเรียนยังไง">
+        <button type="submit" id="sendBtn">ถาม</button>
+      </form>
+      <button class="stop" id="stopBtn" aria-label="หยุด" title="หยุดพูดและหยุดหุ่นยนต์">
+        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
+      </button>
+      <button class="qr-btn" id="qrBtn" title="ดูต่อบนมือถือ" aria-label="ดูต่อบนมือถือ">
+        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M3 3h8v8H3V3Zm2 2v4h4V5H5Zm8-2h8v8h-8V3Zm2 2v4h4V5h-4ZM3 13h8v8H3v-8Zm2 2v4h4v-4H5Zm11-2h2v2h-2v-2Zm-3 0h2v3h-2v-3Zm6 0h2v3h-2v-3Zm-6 5h3v3h-3v-3Zm5 0h3v3h-3v-3Zm-2-2h2v2h-2v-2Z"/></svg>
+      </button>
+    </footer>
+  </div>
+
+  <dialog class="sheet" id="rateSheet" aria-labelledby="rateTitle">
+    <h2 id="rateTitle">วอร่าช่วยคุณได้แค่ไหน</h2>
+    <div class="stars" id="stars" role="radiogroup" aria-label="ให้คะแนน 1 ถึง 5"></div>
+    <textarea id="rateComment" rows="2" maxlength="300" placeholder="อยากบอกอะไรเพิ่มเติม (ไม่บังคับ)"></textarea>
+    <div class="sheet-actions">
+      <button class="ghost" id="rateSkip">ข้าม</button>
+      <button class="primary" id="rateSend" disabled>ส่งความคิดเห็น</button>
+    </div>
+  </dialog>
+
+  <dialog class="sheet" id="qrSheet" aria-labelledby="qrTitle">
+    <h2 id="qrTitle">ดูข้อมูลต่อบนมือถือ</h2>
+    <div class="qr" id="qrBox"></div>
+    <p class="qr-url" id="qrUrl"></p>
+    <div class="sheet-actions"><button class="primary" id="qrClose">ปิด</button></div>
+  </dialog>
+
+  <div class="toast" id="toast" role="alert" hidden></div>
+  <div class="flash" id="flash" hidden></div>
+
+  <script src="/assets/vendor/qrcode.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
