@@ -1,0 +1,89 @@
+{
+  "file": "vora-before-migrate-0001-20261101-155713.db",
+  "bytes": 409600,
+  "sha256": "31c2de0334874c2d1a72cb91db8c09e387890080022c95a2ac8eaa0cf7006b8c",
+  "database": "sqlite:////root/vora/data/vora.db",
+  "backend": "sqlite",
+  "checked_at": "2026-11-01T15:57:13",
+  "tables": {
+    "audit_log": {
+      "live": 18,
+      "backup": 18
+    },
+    "chat_sessions": {
+      "live": 10,
+      "backup": 10
+    },
+    "eval_cases": {
+      "live": 20,
+      "backup": 20
+    },
+    "eval_runs": {
+      "live": 0,
+      "backup": 0
+    },
+    "feedback": {
+      "live": 1,
+      "backup": 1
+    },
+    "intent_examples": {
+      "live": 326,
+      "backup": 326
+    },
+    "knowledge": {
+      "live": 14,
+      "backup": 14
+    },
+    "messages": {
+      "live": 37,
+      "backup": 37
+    },
+    "model_versions": {
+      "live": 2,
+      "backup": 2
+    },
+    "news": {
+      "live": 4,
+      "backup": 4
+    },
+    "patrol_routes": {
+      "live": 1,
+      "backup": 1
+    },
+    "programs": {
+      "live": 7,
+      "backup": 7
+    },
+    "schedules": {
+      "live": 4,
+      "backup": 4
+    },
+    "settings": {
+      "live": 0,
+      "backup": 0
+    },
+    "system_events": {
+      "live": 18,
+      "backup": 18
+    },
+    "unanswered": {
+      "live": 0,
+      "backup": 0
+    },
+    "users": {
+      "live": 2,
+      "backup": 2
+    },
+    "vision_classes": {
+      "live": 6,
+      "backup": 6
+    },
+    "vision_samples": {
+      "live": 12,
+      "backup": 12
+    }
+  },
+  "total_rows": 482,
+  "ok": true,
+  "problems": []
+}
