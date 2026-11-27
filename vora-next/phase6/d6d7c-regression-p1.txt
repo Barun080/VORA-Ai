@@ -1,0 +1,40 @@
+PASS 1@1366 Active: Orbital Menu 6 หมวด แสดงรอบอวตาร ไม่บังใบหน้า/ตัวอวตาร ไม่ทับกัน อยู่ในเวที (1366×768) layout=orbital faceBottom=274 minOrbTop=363 inStage=true noFace=true noBody=true noOverlap=true
+PASS 2@1366 กล่องคำพูดยาวสุดไม่ทับปุ่มเมนู (1366×768) bubble.b=282 orbTop=363
+PASS 3@1366 Active: แสดง Chat, Quick Actions, Tool Icons, Voice Controls ครบ (1366×768) {"chat":true,"quick":true,"tools":true,"mic":true,"input":true,"textMenu":true,"menu":true}
+PASS 4@1366 Idle: ซ่อนแผงและเมนูทั้งหมด เหลืออวตาร + ข้อความแนะนำ (1366×768) {"mode":"idle","dmode":"idle","orbs":true,"panels":true,"hint":true,"avatar":true}
+PASS E@1366 ไม่มี JavaScript error (1366×768) 
+PASS 1@1600 Active: Orbital Menu 6 หมวด แสดงรอบอวตาร ไม่บังใบหน้า/ตัวอวตาร ไม่ทับกัน อยู่ในเวที (1600×900) layout=orbital faceBottom=318 minOrbTop=460 inStage=true noFace=true noBody=true noOverlap=true
+PASS 2@1600 กล่องคำพูดยาวสุดไม่ทับปุ่มเมนู (1600×900) bubble.b=325 orbTop=460
+PASS 3@1600 Active: แสดง Chat, Quick Actions, Tool Icons, Voice Controls ครบ (1600×900) {"chat":true,"quick":true,"tools":true,"mic":true,"input":true,"textMenu":true,"menu":true}
+PASS 4@1600 Idle: ซ่อนแผงและเมนูทั้งหมด เหลืออวตาร + ข้อความแนะนำ (1600×900) {"mode":"idle","dmode":"idle","orbs":true,"panels":true,"hint":true,"avatar":true}
+PASS E@1600 ไม่มี JavaScript error (1600×900) 
+PASS 1@1920 Active: Orbital Menu 6 หมวด แสดงรอบอวตาร ไม่บังใบหน้า/ตัวอวตาร ไม่ทับกัน อยู่ในเวที (1920×1080) layout=orbital faceBottom=381 minOrbTop=542 inStage=true noFace=true noBody=true noOverlap=true
+PASS 2@1920 กล่องคำพูดยาวสุดไม่ทับปุ่มเมนู (1920×1080) bubble.b=389 orbTop=542
+PASS 3@1920 Active: แสดง Chat, Quick Actions, Tool Icons, Voice Controls ครบ (1920×1080) {"chat":true,"quick":true,"tools":true,"mic":true,"input":true,"textMenu":true,"menu":true}
+PASS 4@1920 Idle: ซ่อนแผงและเมนูทั้งหมด เหลืออวตาร + ข้อความแนะนำ (1920×1080) {"mode":"idle","dmode":"idle","orbs":true,"panels":true,"hint":true,"avatar":true}
+PASS E@1920 ไม่มี JavaScript error (1920×1080) 
+PASS 5@mobile จอเล็ก (390×844): เปลี่ยนเป็น Compact Menu ไม่บังใบหน้า ปุ่มแรกไม่ถูกตัด layout=compact faceBottom=351 orbTop=624 firstL=21 scroll=518/364
+PASS 5b@mobile จอเล็ก: แตะเมนู → นำเสนอเต็มจอ ใช้งานได้ {"mode":"presentation","cards":4,"w":390,"vw":390}
+PASS E@mobile ไม่มี JavaScript error (mobile) 
+PASS 5@tablet จอเล็ก (768×1024): ใช้ Orbital ไม่บังใบหน้า ปุ่มแรกไม่ถูกตัด layout=orbital faceBottom=350 orbTop=415 firstL=118 scroll=742/742
+PASS 5b@tablet จอเล็ก: แตะเมนู → นำเสนอเต็มจอ ใช้งานได้ {"mode":"presentation","cards":4,"w":768,"vw":768}
+PASS E@tablet ไม่มี JavaScript error (tablet) 
+PASS 6 Trigger เข้า Active: เมาส์ คลิก แตะ คีย์บอร์ด ปุ่มเสียง ท่ามือ {"mouse":true,"click":true,"touch":true,"keyboard":true,"voice":true,"gesture":true}
+PASS 6b Visitor Detection: ค่าเริ่มต้นไม่ปลุกหน้าจอ (ทักใน Idle) · เปิด wakeOnVisitor แล้วเข้า Active default=idle wakeOnVisitor=true
+PASS 7 Presentation: 4 หมวดแสดงข้อมูลตรงกับ API จริง (สาขา/ข่าว/รับสมัคร/วิทยาลัย) ซ่อนแผงซ้าย-ขวา {"api":{"programs":7,"news":4,"admission":1,"about":7},"sec":{"departments":[7,0],"news":[4,0],"admission":[1,4],"college":[0,7]}}
+PASS 7b ปุ่มปิด: กลับสู่ Active และแผงซ้าย-ขวากลับมา {"mode":"active","left":"flex","hidden":true}
+PASS 8 รายละเอียดสาขา: อวตารบรรยายด้วยเสียงจริง, ปุ่มกลับ, Esc ปิดการนำเสนอ {"title":"ช่างยนต์","back":true,"spoke":["สวัสดีค่ะ หนูชื่อวอร","สวัสดีค่ะ หนูชื่อวอร","สาขาช่างยนต์ ระดับ ป"],"avatar":"pointing","cardsAfterBack":7,"esc":"active"}
+PASS 9 Presentation → Idle เมื่อไม่มีการใช้งานและไม่มีงานค้าง (มีงานค้าง = ยังไม่ปิด) whileBusy=presentation thenIdle=true active->presentation(open:news:orbit) presentation->active(close:timeout) active->idle(ui-idle)
+PASS 10 ระหว่างนำเสนอ Idle Timer ของ UIController ไม่ซ่อนหน้าจอ 
+PASS 11 Keyboard Navigation: ลูกศร/Home/End เลื่อนโฟกัสตามวง, Enter เปิด, Esc ปิด, โฟกัสย้ายเข้าพื้นที่นำเสนอ order=departments,news,feedback,assistant,departments,feedback,college open={"mode":"presentation","section":"departments","focus":"present-title"}
+PASS 12 เมนูตัวอักษรใหญ่: 6 หมวด ตัวอักษร ≥ 24px ปุ่มสูง ≥ 72px และเปิดหมวดได้ {"open":true,"n":6,"font":34.6,"h":102.3125,"mode":"presentation","section":"admission","dialog":false}
+PASS 13 สลับภาษาอังกฤษ: เมนูรอบตัวและหน้าการนำเสนอเปลี่ยนภาษา {"orb":"Departments","title":"Departments","close":"Close"}
+PASS 14 กล้องไม่หยุด/ไม่เปิดซ้ำ ระหว่าง Idle ⇄ Active ⇄ Presentation (5 รอบ) gum 1→1 track=live videoTime 89.3→111.1
+PASS 15 WebSocket ไม่หลุด/ไม่เชื่อมต่อซ้ำ ระหว่างสลับโหมด ws 1→1 open=1
+PASS 16 อวตารไม่ถูกสร้างใหม่ (SVG เดิม ตัวเดียว) ระหว่างสลับโหมด {"svgCount":1,"same":true}
+PASS 17 สลับโหมดรัว 30 ครั้ง: จบสถานะถูกต้อง ไม่มีพื้นที่ค้าง Listener ไม่เพิ่ม {"mode":"active","presentHidden":true,"cls":false,"listeners":34,"timers":0,"l0":34}
+PASS 18 ระบบเดิม: ถาม-ตอบ AI, เมนูซ้าย (ลิ้นชักข้อมูล), ปุ่มหยุด → /api/robot/stop ยังทำงาน {"bots":3,"drawer":4,"stop":true}
+PASS E ไม่มี JavaScript error ตลอดการทดสอบหลัก 
+PASS 19 Reduced Motion: ปิด Animation ลอย/เคลื่อนของเมนู {"anim":"none","tr":"0.01s"}
+
+38/38 passed

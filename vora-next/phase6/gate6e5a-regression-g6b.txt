@@ -1,0 +1,13 @@
+PASS 1 kiosk: โหลด tokens.css + components.css ผ่าน base.css · ยังไม่มี element ใช้ class/ธีม vora (หน้าตาเดิม) {"brand":"#FFD400","voraClass":0,"themed":0,"errs":[]}
+PASS 2 mobile: โหลด tokens.css + components.css ผ่าน base.css · ยังไม่มี element ใช้ class/ธีม vora (หน้าตาเดิม) {"brand":"#FFD400","voraClass":0,"themed":0,"errs":[]}
+PASS 3 admin: โหลด tokens.css + components.css ผ่าน base.css · ยังไม่มี element ใช้ class/ธีม vora (หน้าตาเดิม) {"brand":"#FFD400","voraClass":0,"themed":0,"errs":[]}
+PASS 4 pastel: โหลด tokens.css + components.css ผ่าน base.css · ยังไม่มี element ใช้ class/ธีม vora (หน้าตาเดิม) {"brand":"#FFD400","voraClass":0,"themed":0,"errs":[]}
+PASS 5 classic: โหลด tokens.css + components.css ผ่าน base.css · ยังไม่มี element ใช้ class/ธีม vora (หน้าตาเดิม) {"brand":"#FFD400","voraClass":0,"themed":0,"errs":[]}
+PASS 6 ธีม light/dark: พื้น/ตัวอักษรตาม token (light #F7F7F5 / dark #08090C) {"lightBg":"rgb(247, 247, 245)","darkBg":"rgb(8, 9, 12)","lightText":"rgb(20, 22, 27)","darkText":"rgb(255, 255, 255)","btnL":"rgb(255, 212, 0)","btnD":"rgb(255, 212, 0)","btnTxt":"rgb(11, 11, 13)","cardD":"rgb(20, 22, 2
+PASS 7 คอมโพเนนต์ใช้ token: ปุ่มหลักเหลืองแบรนด์ ตัวอักษรดำ · การ์ดธีมมืดใช้ surface-1 
+PASS 8 ไอคอน SVG ครบทุกตัว (32 แบบ × 2 ธีม) และแทนที่ data-vora-icon หมด svg=87
+PASS 9 ฟอนต์หลัก Anuphan โหลดจากเครื่อง · ไม่มีคำขอไปโดเมนภายนอก · ไม่มี error {"ext":[],"errs":[]}
+PASS 10 สลับธีมทั้งหน้า: light → dark → light (ค่าสีเปลี่ยนตาม token และกลับคืน) {"before":"rgb(247, 247, 245)","after":{"bg":"rgb(8, 9, 12)","t":"dark","tok":"#FFFFFF"},"back":"rgb(247, 247, 245)"}
+PASS 11 contrast ที่แสดงจริง ≥ 4.5:1 (ข้อความรอง, ลิงก์) ทั้งสองธีม [{"t":"light","muted":"6.64","link":"7.57"},{"t":"dark","muted":"10.37","link":"14.87"}]
+
+11/11 passed

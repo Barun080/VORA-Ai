@@ -1,0 +1,234 @@
+{
+ "note": "Eval 20 บนสำเนาข้อมูลจริง (PostgreSQL 16, vora_eval_old/new) · VORA_LLM_PROVIDER=none · โค้ดก่อน 6C เทียบหลัง 6C",
+ "before_6c": {
+  "summary": {
+   "label": "6C reference",
+   "total": 20,
+   "passed": 20,
+   "intent_accuracy": 1.0,
+   "answer_accuracy": 1.0,
+   "avg_latency_ms": 6,
+   "intent_model_version": 2,
+   "kb_documents": 26,
+   "created_by": "gate6c-baseline"
+  },
+  "cases": [
+   {
+    "question": "วิทยาลัยนี้มีแผนกไหนให้เลือกเรียนบ้างคะ",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "อยากเรียนเขียนเว็บ ต้องเข้าสาขาไหน",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "สาขาช่างไฟฟ้ากำลังเรียนเกี่ยวกับอะไรบ้าง",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "เรียนเมคคาทรอนิกส์จบไปทำงานอะไรได้",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "ขั้นตอนการสมัครเรียนเป็นอย่างไร",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "ไปสมัครต้องเตรียมเอกสารอะไรไปบ้าง",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "ค่าเล่าเรียนแพงไหม",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "มีทุนให้เด็กเรียนดีไหมคะ",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "ช่วงนี้มีข่าวอะไรน่าสนใจบ้าง",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "ห้องน้ำไปทางไหนครับ",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "งานทะเบียนอยู่อาคารไหน",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "เธอเป็นใครเหรอ",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "สวัสดีจ้า",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "โบกมือให้หน่อยได้ไหม",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "ราคาทองวันนี้เท่าไหร่",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "ห้องแล็บเคมีชั้นสามเปิดกี่โมง",
+    "answered": false,
+    "pass": true
+   },
+   {
+    "question": "What programs can I study here?",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "How can I apply to this college?",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "Where is the restroom?",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "Who are you?",
+    "answered": true,
+    "pass": true
+   }
+  ]
+ },
+ "after_6c": {
+  "summary": {
+   "label": "6C reference",
+   "total": 20,
+   "passed": 20,
+   "intent_accuracy": 1.0,
+   "answer_accuracy": 1.0,
+   "avg_latency_ms": 6,
+   "intent_model_version": 2,
+   "kb_documents": 26,
+   "created_by": "gate6c-baseline"
+  },
+  "cases": [
+   {
+    "question": "วิทยาลัยนี้มีแผนกไหนให้เลือกเรียนบ้างคะ",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "อยากเรียนเขียนเว็บ ต้องเข้าสาขาไหน",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "สาขาช่างไฟฟ้ากำลังเรียนเกี่ยวกับอะไรบ้าง",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "เรียนเมคคาทรอนิกส์จบไปทำงานอะไรได้",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "ขั้นตอนการสมัครเรียนเป็นอย่างไร",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "ไปสมัครต้องเตรียมเอกสารอะไรไปบ้าง",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "ค่าเล่าเรียนแพงไหม",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "มีทุนให้เด็กเรียนดีไหมคะ",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "ช่วงนี้มีข่าวอะไรน่าสนใจบ้าง",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "ห้องน้ำไปทางไหนครับ",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "งานทะเบียนอยู่อาคารไหน",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "เธอเป็นใครเหรอ",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "สวัสดีจ้า",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "โบกมือให้หน่อยได้ไหม",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "ราคาทองวันนี้เท่าไหร่",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "ห้องแล็บเคมีชั้นสามเปิดกี่โมง",
+    "answered": false,
+    "pass": true
+   },
+   {
+    "question": "What programs can I study here?",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "How can I apply to this college?",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "Where is the restroom?",
+    "answered": true,
+    "pass": true
+   },
+   {
+    "question": "Who are you?",
+    "answered": true,
+    "pass": true
+   }
+  ]
+ },
+ "identical": true
+}

@@ -1,0 +1,14 @@
+{
+ "copy": {
+  "questions": 60,
+  "llm_answers": 27,
+  "guard_rejects": 0,
+  "codes": []
+ },
+ "paraphrase": {
+  "questions": 60,
+  "llm_answers": 27,
+  "guard_rejects": 0,
+  "codes": []
+ }
+}
